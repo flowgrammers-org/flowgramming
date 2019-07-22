@@ -5,7 +5,10 @@ var paper = new joint.dia.Paper({
     model: graph,
     width: 8000,
     height: 6000,
-    gridSize: 1
+    gridSize: 1,
+    interactive: function(cellView, method) {
+        return cellView instanceof joint.dia.LinkView; // Only allow interaction with joint.dia.LinkView instances.
+    }
 });
 
 var rect = new joint.shapes.standard.Rectangle();
@@ -37,15 +40,9 @@ link.source(rect);
 link.target(rect2);
 link.addTo(graph);
 
-var input = new joint.shapes.standard.Rectangle();
-input.position(200,100)
-input.resize(100,40)
-input.attr({
-    body: {
-        transform: 'rotate(45)'
-    }
-})
-input.addTo(graph)
+
+
+
 
 window.paper = paper;
 window.graph = graph;
