@@ -1,20 +1,27 @@
 var graph = new joint.dia.Graph;
+var objects = [];
+var links = [];
+window.objects = objects;
+window.links = links;
+
+
 
 var paper = new joint.dia.Paper({
     el: document.getElementById('myholder'),
     model: graph,
-    width: 8000,
-    height: 6000,
+    width: 800,
+    height: 600,
     gridSize: 1,
-    interactive: function(cellView, method) {
-        return cellView instanceof joint.dia.LinkView; // Only allow interaction with joint.dia.LinkView instances.
-    }
+    // interactive: function(cellView, method) {
+    //     return cellView instanceof joint.dia.LinkView; // Only allow interaction with joint.dia.LinkView instances.
+    // }
 });
 
-var rect = new joint.shapes.standard.Rectangle();
-rect.position(100, 30);
-rect.resize(100, 40);
-rect.attr({
+var link = new joint.shapes.standard.Link();
+var start = new joint.shapes.standard.Rectangle();
+start.position(100, 30);
+start.resize(150, 60);
+start.attr({
     body: {
         fill: '#E74C3C',
         rx: 20,
@@ -27,23 +34,42 @@ rect.attr({
     }
 });
 
+objects.push({
+    type : "start",
+    model : start,
+    id : start.id,
+    outgoing_link : {
+        next : link.id
+    }
+});
+start.addTo(graph);
 
-rect.addTo(graph);
+var end = start.clone();
+end.attr('label/text', 'End');
+objects.push({
+    type : "end",
+    model : end,
+    id : end.id
+});
+end.translate(0, 100);
+end.addTo(graph);
 
-var rect2 = rect.clone();
-rect2.translate(0, 300);
-rect2.attr('label/text', 'End');
-rect2.addTo(graph);
 
-var link = new joint.shapes.standard.Link();
-link.source(rect);
-link.target(rect2);
+link.source(start);
+link.target(end);
 link.addTo(graph);
 
+links.push({
+    id : link.id,
+    source : start.id,
+    target : end.id,
+    model : link
+});
 
-
-
+// console.log(objects);
+// console.log(links);
 
 window.paper = paper;
 window.graph = graph;
+window.start = start;
 

@@ -7,7 +7,7 @@
 <body>
     <!-- content -->
     <div id="myholder"></div>
-
+    <button onclick="run()">Start</button>
     <!-- dependencies -->
     <script src="js/vendor/jquery.js"></script>
     <script src="js/vendor/bootstrap.js"></script>
@@ -16,15 +16,18 @@
     <script src="js/vendor/joint.js"></script>
     <script src="js/vendor/require.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/utility.js"></script>
     <script src="js/addElement.js"></script>
+    <script src="js/run.js"></script>
 
-    <div class="modal fade" id="options" role="dialog">
+    
+    
+
+    <div class="modal fade" id="modal" role="dialog">
         <div class="modal-dialog modal-sm vertical-align-center">
           <div class="modal-content">
             <div class="modal-body">
-                <button onclick="myFunction()"><img src="data:image/jpeg;base64,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"></button></img></a>
-		<button onclick="myFunction()"><img src="data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAGgAAAA0CAYAAABmUH0tAAAAwElEQVR4nO3cMQrDMBAAwVPIc/0c/9epA7G7OAuZKaXmYEGgQlozcwxZj18PwDWB4gSKEyhOoLjn2ca+73fO8fe2bfu4fhpoZmat9ZVheHcc5zcdR1ycQHECxQkUJ1CcQHECxQkUJ1CcQHECxQkUJ1CcQHECxQkUJ1CcQHECxQkUJ1CcQHECxQkUJ1CcQHECxQkUJ1CcQHECxQkUJ1CcQHECxQkUJ1Dc5Svvq9fH3GON367SHHFxAsUJFCdQnEBxL7ElC2j7RKV5AAAAAElFTkSuQmCC"></button></img></a>
-    
+                
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>

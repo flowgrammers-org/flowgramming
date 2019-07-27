@@ -1,29 +1,38 @@
 var paper = window.paper
 var graph = window.graph
+var objects = window.objects;
+var links = window.links;
+var currentLink;
+
 paper.on('link:pointerdblclick', function(linkView){
-    var currentLink = linkView.model;
-
-    var diamond = new joint.shapes.basic.Path({
-        size: { width: 150, height: 50 },
-        attrs: {
-            path: { d: 'M 21 1 L 197 0 L 173 69 L 0 69 Z' }
-        }
-    });
-    // diamond.position(200, 100)
-    diamond.attr('label/text', 'Path');
-    diamond.addTo(graph)
-    var currentEnd = graph.getCell(currentLink.get('target').id);
-    var currentStart = graph.getCell(currentLink.get('source').id);
-    let startPosition = currentStart.position();
-    // console.log(startPosition);
-    diamond.position(startPosition.x-25,startPosition.y+100);
-    currentLink.set({ target : diamond });
-    var link = new joint.shapes.standard.Link();
-    link.source(diamond);
-    link.target(currentEnd);
-    link.addTo(graph);
-
-
-    $('#options').modal('show')
-
+    var id = linkView.model.id;
+    currentLink = links.find(x => x.id == id);
+    $("#modal .modal-body").html(`<input onclick="addIF()" type="image" src="./src/1.png" />
+	<input onclick="addInput()" type="image" src="./src/2.png" />
+    <input onclick="addRect()" type="image" src="./src/3.png" />`);
+    $('#modal').modal('show')
 })
+
+
+function addInput(){
+    $('#modal').modal('hide')
+    var Parallelogram = getParallelogram();
+    Parallelogram.attr('label/text',getWrapText("input"));
+    Parallelogram.addTo(graph);
+    addElement(currentLink,Parallelogram);
+}
+
+
+function addRect(){
+    $('#modal').modal('hide')
+    var Rectangle = getRectangle();
+    Rectangle.attr('label/text',getWrapText("Statement"));
+    Rectangle.addTo(graph);
+    addElement(currentLink,Rectangle);
+}
+
+function addIF(){
+    $('#modal').modal('hide')
+
+}
+
