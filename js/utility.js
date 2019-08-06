@@ -14,7 +14,6 @@ function getParallelogram(){
 
 
 function getRectangle(){
-
     var rect = new joint.shapes.standard.Rectangle();
     rect.resize(150,75);
     return rect;

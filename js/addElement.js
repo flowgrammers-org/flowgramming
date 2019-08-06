@@ -7,11 +7,21 @@ var currentLink;
 paper.on('link:pointerdblclick', function(linkView){
     var id = linkView.model.id;
     currentLink = links.find(x => x.id == id);
-    $("#modal .modal-body").html(`<input onclick="addIF()" type="image" src="./src/1.png" />
-	<input onclick="addInput()" type="image" src="./src/2.png" />
-    <input onclick="addRect()" type="image" src="./src/3.png" />`);
+    $("#modal .modal-body").html(`<input onclick="addIF()" type="image" src="./src/if.png" />
+    <input onclick="addInput()" type="image" src="./src/input.png" />
+    <input onclick="addOutput()" type="image" src="./src/output.png" />
+    <input onclick="addAssignment()" type="image" src="./src/assignment.png" />`);
     $('#modal').modal('show')
 })
+
+
+function addOutput(){
+    $('#modal').modal('hide')
+    var Parallelogram = getParallelogram();
+    Parallelogram.attr('label/text',getWrapText("output"));
+    Parallelogram.addTo(graph);
+    addElement(currentLink,Parallelogram,"output");
+}
 
 
 function addInput(){
@@ -19,16 +29,16 @@ function addInput(){
     var Parallelogram = getParallelogram();
     Parallelogram.attr('label/text',getWrapText("input"));
     Parallelogram.addTo(graph);
-    addElement(currentLink,Parallelogram);
+    addElement(currentLink,Parallelogram,"input");
 }
 
 
-function addRect(){
+function addAssignment(){
     $('#modal').modal('hide')
     var Rectangle = getRectangle();
     Rectangle.attr('label/text',getWrapText("Statement"));
     Rectangle.addTo(graph);
-    addElement(currentLink,Rectangle);
+    addElement(currentLink,Rectangle,"assignment");
 }
 
 function addIF(){

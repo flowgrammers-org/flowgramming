@@ -17,6 +17,16 @@ var paper = new joint.dia.Paper({
     // }
 });
 
+graph.on('change:position', function() {
+    paper.fitToContent({
+        padding: 20,
+        minWidth: 800, // if you need it
+        minHeight: 600, // if you need it
+        gridWidth: 10,
+        gridHeight: 10    
+    });
+})
+
 var link = new joint.shapes.standard.Link();
 var start = new joint.shapes.standard.Rectangle();
 start.position(100, 30);
@@ -66,8 +76,9 @@ links.push({
     model : link
 });
 
-// console.log(objects);
-// console.log(links);
+// var rect = start.clone();
+// rect.position(150,700)
+// rect.addTo(graph);
 
 window.paper = paper;
 window.graph = graph;
