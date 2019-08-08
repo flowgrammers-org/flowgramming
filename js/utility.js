@@ -3,7 +3,9 @@ var paper = window.paper;
 var objects = window.objects;
 var links = window.links;
 
-
+/**
+ * Returns a new parallelogram object 
+ */
 function getParallelogram() {
     var parallelogram = new joint.shapes.standard.Path();
     parallelogram.resize(150, 75);
@@ -12,7 +14,9 @@ function getParallelogram() {
     return parallelogram;
 }
 
-
+/**
+ * Returns a new diamond shaped object
+ */
 function getDiamond() {
     var diamond = new joint.shapes.standard.Path();
     diamond.resize(100, 100);
@@ -20,12 +24,18 @@ function getDiamond() {
     return diamond;
 }
 
-
+/**
+ * Returns a new rectangle object
+ */
 function getRectangle() {
     var rect = new joint.shapes.standard.Rectangle();
     rect.resize(150, 75);
     return rect;
 }
+
+/**
+ * Returns a wrapText, extra text is replaced by ellipsis(...)
+ */
 
 function getWrapText(text) {
     var wraptext = joint.util.breakText(text, {
@@ -35,7 +45,12 @@ function getWrapText(text) {
     return wraptext;
 }
 
-
+/**
+ * Adds the given element to the graph, used for declare,assignment,input,output
+ * @param {"The link to add the element"} currentLink 
+ * @param {"The element to add"} element 
+ * @param {"Type of the element"} type 
+ */
 function addElement(currentLink, element, type) {
     let vertices = currentLink.model.vertices()
     if (currentLink.type == null) {
@@ -66,6 +81,7 @@ function addElement(currentLink, element, type) {
         translateDown(currentEnd, null)
     }
     else if (currentLink.type == "if") {
+        //Here there, are no elements inside the if, thus split into ifstart and ifend
         //This is to keep the array sorted
         if (vertices[0].y > vertices[1].y) {
             swap(vertices[0], vertices[1])
@@ -184,6 +200,12 @@ function getCircle() {
     return circle;
 }
 
+/**
+ * Adds a if Element to the given Link
+ * @param {"The link on which to add"} currentLink 
+ * @param {"The if element to add"} element 
+ * @param {"The type"} type 
+ */
 
 function addElementIf(currentLink, element, type) {
     let vertices = currentLink.model.vertices()
@@ -343,6 +365,10 @@ function addElementIf(currentLink, element, type) {
     setListener(element, "if")
 }
 
+/**
+ * This translates the IF block down as an entity by 100 units
+ * @param {"The if element to be translated"} element 
+ */
 function translateIF(element) {
     let nextLink = findLink(element.outgoing_link.next);
     let trueLink = findLink(element.outgoing_link.trueLink);
@@ -376,29 +402,27 @@ function translateIF(element) {
     }
 }
 
-
+/**
+ * Searches for the object in the global object array, based on ID
+ * @param {ID to search with} id 
+ */
 function findObject(id) {
     return objects.find(x => x.id == id);
 }
 
+/**
+ * Searches for the link object in the global links array, based on ID
+ * @param {ID to search with} id 
+ */
 function findLink(id) {
     return links.find(x => x.id == id);
 }
 
-function getCell(element) {
-    return graph.getCell(element.id)
-}
-
-function compare(a, b) {
-    if (a['y'] < b['y']) {
-        return -1;
-    }
-    if (a['y'] > b['y']) {
-        return 1;
-    }
-    return 0;
-}
-
+/**
+ * Translates all objects down from nextElement to till by 100 units
+ * @param {The element to start translation from} nextElement 
+ * @param {The element till which translation should happen} till 
+ */
 function translateDown(nextElement, till) {
     while (nextElement != till) {
         nextElement.model.translate(0, 100);
@@ -421,6 +445,11 @@ function translateDown(nextElement, till) {
     }
 }
 
+/**
+ * This function sets custom listeners, on the given object
+ * @param {The element to set listener} element 
+ * @param {The type of the element} type 
+ */
 function setListener(element, type) {
     if (type == "circle") {
         element.on('change:position', function (endCircle, position) {
@@ -450,26 +479,5 @@ function setListener(element, type) {
                 }
             });
         });
-    } else if (type == "if") {
-        // element.on('change:position', function (element1, position) {
-        //     let links1 = links.filter(x => x.source == element1.id);
-        //     links1.forEach(link => {
-        //         if (link.type) {
-        //             let vertices = link.model.vertices()
-        //             if (vertices.length == 2) {
-        //                 if (vertices[0].y > vertices[1].y) {
-        //                     swap(vertices[0], vertices[1])
-        //                 }
-        //             }
-        //             if (position.x > vertices[0].x) {
-        //                 vertices[0].x = position.x - 100
-        //             } else {
-        //                 vertices[0].x = position.x + 200
-        //             }
-        //             vertices[0].y = position.y + 50
-        //             link.model.vertices(vertices)
-        //         }
-        //     });
-        // });
     }
 }

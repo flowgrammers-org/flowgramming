@@ -4,6 +4,10 @@ var objects = window.objects;
 var links = window.links;
 var currentLink;
 
+
+/**
+ * This event fires if a link is double clicked.
+ */
 paper.on('link:pointerdblclick', function(linkView){
     var id = linkView.model.id;
     currentLink = links.find(x => x.id == id);

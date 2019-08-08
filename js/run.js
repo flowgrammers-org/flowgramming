@@ -20,5 +20,5 @@ function delay_loop(currentElement){
 
 function run(){
     var currentElement = start;
-    delay_loop(currentElement);
+    // delay_loop(currentElement);
 }
