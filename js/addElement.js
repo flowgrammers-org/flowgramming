@@ -39,10 +39,14 @@ function addAssignment(){
     Rectangle.attr('label/text',getWrapText("Statement"));
     Rectangle.addTo(graph);
     addElement(currentLink,Rectangle,"assignment");
+    // addElementIf(currentLink,Rectangle,"if");
 }
 
 function addIF(){
     $('#modal').modal('hide')
-
+    var diamond = getDiamond();
+    diamond.attr('label/text',getWrapText("if"));
+    diamond.addTo(graph);
+    addElementIf(currentLink,diamond,"if");
 }
 

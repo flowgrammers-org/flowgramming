@@ -29,7 +29,7 @@ graph.on('change:position', function() {
 
 var link = new joint.shapes.standard.Link();
 var start = new joint.shapes.standard.Rectangle();
-start.position(100, 30);
+start.position(200, 30);
 start.resize(150, 60);
 start.attr({
     body: {
@@ -76,9 +76,7 @@ links.push({
     model : link
 });
 
-// var rect = start.clone();
-// rect.position(150,700)
-// rect.addTo(graph);
+
 
 window.paper = paper;
 window.graph = graph;

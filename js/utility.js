@@ -4,7 +4,7 @@ var objects = window.objects;
 var links = window.links;
 
 
-function getParallelogram(){
+function getParallelogram() {
     var parallelogram = new joint.shapes.standard.Path();
     parallelogram.resize(150, 75);
     parallelogram.attr('root/title', 'joint.shapes.standard.Path');
@@ -13,76 +13,463 @@ function getParallelogram(){
 }
 
 
-function getRectangle(){
+function getDiamond() {
+    var diamond = new joint.shapes.standard.Path();
+    diamond.resize(100, 100);
+    diamond.attr('body/refD', 'M 30 0 L 60 30 30 60 0 30 Z');
+    return diamond;
+}
+
+
+function getRectangle() {
     var rect = new joint.shapes.standard.Rectangle();
-    rect.resize(150,75);
+    rect.resize(150, 75);
     return rect;
 }
 
-function getWrapText(text){
+function getWrapText(text) {
     var wraptext = joint.util.breakText(text, {
         width: 120,
         height: 70
-    },{ ellipsis: true });
-    // console.log(wraptext)
+    }, { ellipsis: true });
     return wraptext;
 }
 
 
-// function getDeclare(){
-//     var rect = new joint.shapes.standard.
-// }
+function addElement(currentLink, element, type) {
+    let vertices = currentLink.model.vertices()
+    if (currentLink.type == null) {
+        var currentEnd = findObject(currentLink.target)
+        var currentStart = findObject(currentLink.source).model
+        let startPosition = currentStart.position();
+        element.position(startPosition.x, startPosition.y + 100);
+        currentLink.model.set({ target: element });
+        currentLink.target = element.id;
+        var link = new joint.shapes.standard.Link();
+        objects.push({
+            type: type,
+            model: element,
+            id: element.id,
+            outgoing_link: {
+                next: link.id
+            }
+        });
+        link.source(element);
+        link.target(currentEnd.model);
+        link.addTo(graph);
+        links.push({
+            id: link.id,
+            target: currentEnd.id,
+            source: element.id,
+            model: link
+        });
+        translateDown(currentEnd, null)
+    }
+    else if (currentLink.type == "if") {
+        //This is to keep the array sorted
+        if (vertices[0].y > vertices[1].y) {
+            swap(vertices[0], vertices[1])
+        }
+        currentLink.type = "ifstart"
+        var currentEnd = findObject(currentLink.target)
+        var currentStart = findObject(currentLink.source).model
+        let startPosition = currentStart.position();
+        if (startPosition.x <= vertices[0].x) {
+            startPosition.x += 125
+        }
+        else {
+            startPosition.x -= 175
+        }
+        element.position(startPosition.x, startPosition.y + 100);
+        currentLink.model.set({ target: element });
+        currentLink.target = element.id;
+        var link = new joint.shapes.standard.Link();
+        link.vertices([{
+            x: vertices[1].x,
+            y: vertices[1].y + 100
+        }])
+        objects.push({
+            type: type,
+            model: element,
+            id: element.id,
+            outgoing_link: {
+                next: link.id
+            }
+        });
+        link.source(element);
+        link.target(currentEnd.model);
+        link.addTo(graph);
+        links.push({
+            id: link.id,
+            target: currentEnd.id,
+            source: element.id,
+            model: link,
+            type: "ifend"
+        });
+        currentLink.model.vertices([vertices[0]])
+        translateDown(currentEnd, null)
+
+    } else if (currentLink.type == "ifstart") {
+        var currentEnd = findObject(currentLink.target)
+        var currentStart = findObject(currentLink.source).model
+        let startPosition = currentStart.position();
+        if (startPosition.x <= vertices[0].x) {
+            startPosition.x += 150
+        }
+        else {
+            startPosition.x -= 150
+        }
+        element.position(startPosition.x, startPosition.y + 100);
+        currentLink.model.set({ target: element });
+        currentLink.target = element.id;
+        var link = new joint.shapes.standard.Link();
+        objects.push({
+            type: type,
+            model: element,
+            id: element.id,
+            outgoing_link: {
+                next: link.id
+            }
+        });
+        link.source(element);
+        link.target(currentEnd.model);
+        link.addTo(graph);
+        links.push({
+            id: link.id,
+            target: currentEnd.id,
+            source: element.id,
+            model: link
+        });
+        translateDown(currentEnd, null)
+    } else if (currentLink.type == "ifend") {
+        currentLink.model.vertices([])
+        var currentEnd = findObject(currentLink.target)
+        var currentStart = findObject(currentLink.source).model
+        let startPosition = currentStart.position();
+        element.position(startPosition.x, startPosition.y + 100);
+        currentLink.model.set({ target: element });
+        currentLink.target = element.id;
+        currentLink.type = null
+        var link = new joint.shapes.standard.Link();
+        link.vertices([{
+            x: vertices[0].x,
+            y: vertices[0].y + 100
+        }])
+        objects.push({
+            type: type,
+            model: element,
+            id: element.id,
+            outgoing_link: {
+                next: link.id
+            }
+        });
+        link.source(element);
+        link.target(currentEnd.model);
+        link.addTo(graph);
+        links.push({
+            id: link.id,
+            target: currentEnd.id,
+            source: element.id,
+            model: link,
+            type: "ifend"
+        });
+        translateDown(currentEnd, null)
+    }
+}
+
+function getCircle() {
+    var circle = new joint.shapes.standard.Circle();
+    circle.resize(25, 50);
+    circle.attr('body/fill', 'lightblue');
+    return circle;
+}
 
 
-
-
-function addElement(currentLink,element,type){
-    var currentEnd =  findObject(currentLink.target)
-    var currentStart = findObject(currentLink.source).model
+function addElementIf(currentLink, element, type) {
+    let vertices = currentLink.model.vertices()
+    if (vertices.length == 2) {
+        //This is to keep the array sorted
+        if (vertices[0].y > vertices[1].y) {
+            swap(vertices[0], vertices[1])
+        }
+    }
+    var currentEnd = findObject(currentLink.target)
+    var currentStart = findObject(currentLink.source)
+    var startType = currentStart.type
+    currentStart = currentStart.model
     let startPosition = currentStart.position();
-    element.position(startPosition.x,startPosition.y+100);
-    currentLink.model.set({ target : element });
+    if (currentLink.type == "if" || currentLink.type == "ifstart") {
+        if (startPosition.x <= vertices[0].x) {
+            startPosition.x += 125
+        }
+        else {
+            startPosition.x -= 175
+        }
+    }
+
+
+    //Set Current End of the link to IF element 
+    currentLink.model.set({ target: element });
     currentLink.target = element.id;
-    var link = new joint.shapes.standard.Link();
+
+    //Make a new circle 
+    var endCircle = getCircle();
+    endCircle.addTo(graph);
+    if (startType == 'circle') {
+        element.position(startPosition.x, startPosition.y + 100);
+        endCircle.position(startPosition.x, startPosition.y + 200);
+    } else {
+        element.position(startPosition.x + 25, startPosition.y + 100);
+        endCircle.position(startPosition.x + 60, startPosition.y + 200);
+    }
+
+    //Creating the invisible link
+    var invisibleLink = new joint.shapes.standard.Link();
+    invisibleLink.source(element)
+    invisibleLink.target(endCircle)
+    invisibleLink.addTo(graph)
+    invisibleLink.attr("./display", "none");
+    links.push({
+        id: invisibleLink.id,
+        target: endCircle.id,
+        source: element.id,
+        model: invisibleLink
+    })
+
+    let ifPosition = element.position();
+
+    //Creating True Link
+    var trueLink = new joint.shapes.standard.Link();
+    trueLink.vertices([
+        { x: ifPosition.x + 200, y: ifPosition.y + 50 },
+        { x: ifPosition.x + 200, y: endCircle.position().y + 25 }]);
+    trueLink.source(element)
+    trueLink.target(endCircle)
+    trueLink.addTo(graph)
+    trueLink.appendLabel({
+        attrs: { text: { text: 'True' } },
+        position: { distance: 0.1 }
+    });
+    links.push({
+        id: trueLink.id,
+        target: endCircle.id,
+        source: element.id,
+        model: trueLink,
+        type: "if"
+    });
+
+    //Creating False Link
+    var falseLink = new joint.shapes.standard.Link();
+    falseLink.vertices([
+        { x: ifPosition.x - 100, y: ifPosition.y + 50 },
+        { x: ifPosition.x - 100, y: endCircle.position().y + 25 }]);
+    falseLink.source(element)
+    falseLink.target(endCircle)
+    falseLink.addTo(graph)
+    falseLink.appendLabel({
+        attrs: { text: { text: 'False' } },
+        position: { distance: 0.1 }
+    });
+    links.push({
+        id: falseLink.id,
+        target: endCircle.id,
+        source: element.id,
+        model: falseLink,
+        type: "if"
+    });
     objects.push({
-        type : type,
-        model : element,
-        id : element.id,
-        outgoing_link : {
-           next :  link.id
+        type: type,
+        model: element,
+        id: element.id,
+        outgoing_link: {
+            next: invisibleLink.id,
+            trueLink: trueLink.id,
+            falseLink: falseLink.id
         }
     });
-    link.source(element);
+
+    //Creating the endLink
+    var link = new joint.shapes.standard.Link();
+    link.source(endCircle);
     link.target(currentEnd.model);
     link.addTo(graph);
-
-    links.push({
-        id : link.id,
-        target : currentEnd.id,
-        source : element.id,
-        model : link
+    if (currentLink.type == "if") {
+        currentLink.type = "ifstart"
+        link.vertices([{
+            x: vertices[1].x,
+            y: vertices[1].y + 100
+        }])
+        links.push({
+            id: link.id,
+            target: currentEnd.id,
+            source: endCircle.id,
+            model: link,
+            type: "ifend"
+        });
+        currentLink.model.vertices([vertices[0]])
+    } else if (currentLink.type == "ifend") {
+        currentLink.model.vertices([])
+        link.vertices([{
+            x: vertices[0].x,
+            y: vertices[0].y + 100
+        }])
+        currentLink.type = null
+        links.push({
+            id: link.id,
+            target: currentEnd.id,
+            source: endCircle.id,
+            model: link,
+            type: "ifend"
+        });
+    } else {
+        links.push({
+            id: link.id,
+            target: currentEnd.id,
+            source: endCircle.id,
+            model: link
+        });
+    }
+    objects.push({
+        type: "circle",
+        model: endCircle,
+        id: endCircle.id,
+        outgoing_link: {
+            next: link.id
+        }
     });
-    var nextElement = currentEnd;
-    while(nextElement){
-        nextElement.model.translate(0,100);
-        if(nextElement.outgoing_link){
-            nextElement = findObject(findLink(nextElement.outgoing_link.next).target)
-        }else{
+    translateDown(currentEnd, null)
+    translateDown(currentEnd, null)
+    setListener(endCircle, "circle")
+    setListener(element, "if")
+}
+
+function translateIF(element) {
+    let nextLink = findLink(element.outgoing_link.next);
+    let trueLink = findLink(element.outgoing_link.trueLink);
+    let falseLink = findLink(element.outgoing_link.falseLink);
+    if (nextLink.target == trueLink.target) {
+        let vertices = trueLink.model.vertices()
+        let newVertices = []
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
+        newVertices.push({ x: vertices[1].x, y: vertices[1].y + 100 })
+        trueLink.model.vertices(newVertices)
+    } else {
+        let vertices = trueLink.model.vertices()
+        let newVertices = []
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
+        trueLink.model.vertices(newVertices)
+        translateDown(findObject(trueLink.target), findObject(nextLink.target))
+    }
+
+    if (nextLink.target == falseLink.target) {
+        let vertices = falseLink.model.vertices()
+        let newVertices = []
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
+        newVertices.push({ x: vertices[1].x, y: vertices[1].y + 100 })
+        falseLink.model.vertices(newVertices)
+    } else {
+        let vertices = falseLink.model.vertices()
+        let newVertices = []
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
+        falseLink.model.vertices(newVertices)
+        translateDown(findObject(falseLink.target), findObject(nextLink.target))
+    }
+}
+
+
+function findObject(id) {
+    return objects.find(x => x.id == id);
+}
+
+function findLink(id) {
+    return links.find(x => x.id == id);
+}
+
+function getCell(element) {
+    return graph.getCell(element.id)
+}
+
+function compare(a, b) {
+    if (a['y'] < b['y']) {
+        return -1;
+    }
+    if (a['y'] > b['y']) {
+        return 1;
+    }
+    return 0;
+}
+
+function translateDown(nextElement, till) {
+    while (nextElement != till) {
+        nextElement.model.translate(0, 100);
+        if (nextElement.type == 'if') {
+            translateIF(nextElement);
+        }
+        if (nextElement.outgoing_link) {
+            let link = findLink(nextElement.outgoing_link.next)
+            let vertex = link.model.vertices();
+            if (link.type == "ifend") {
+                link.model.vertices([{
+                    x: vertex[0].x,
+                    y: vertex[0].y + 100
+                }])
+            }
+            nextElement = findObject(link.target)
+        } else {
             nextElement = null;
         }
     }
 }
 
-
-function findObject(id){
-    return objects.find(x => x.id == id);
+function setListener(element, type) {
+    if (type == "circle") {
+        element.on('change:position', function (endCircle, position) {
+            let links1 = links.filter(x => x.target == endCircle.id);
+            links1.forEach(link => {
+                if (link.type) {
+                    let vertices = link.model.vertices()
+                    if (vertices.length == 2) {
+                        if (vertices[0].y > vertices[1].y) {
+                            swap(vertices[0], vertices[1])
+                        }
+                        vertices[1].y = position.y + 25
+                        if (position.x > vertices[1].x) {
+                            vertices[1].x = position.x - 140
+                        } else {
+                            vertices[1].x = position.x + 160
+                        }
+                    } else {
+                        if (position.x > vertices[0].x) {
+                            vertices[0].x = position.x - 140
+                        } else {
+                            vertices[0].x = position.x + 160
+                        }
+                        vertices[0].y = position.y + 25
+                    }
+                    link.model.vertices(vertices)
+                }
+            });
+        });
+    } else if (type == "if") {
+        // element.on('change:position', function (element1, position) {
+        //     let links1 = links.filter(x => x.source == element1.id);
+        //     links1.forEach(link => {
+        //         if (link.type) {
+        //             let vertices = link.model.vertices()
+        //             if (vertices.length == 2) {
+        //                 if (vertices[0].y > vertices[1].y) {
+        //                     swap(vertices[0], vertices[1])
+        //                 }
+        //             }
+        //             if (position.x > vertices[0].x) {
+        //                 vertices[0].x = position.x - 100
+        //             } else {
+        //                 vertices[0].x = position.x + 200
+        //             }
+        //             vertices[0].y = position.y + 50
+        //             link.model.vertices(vertices)
+        //         }
+        //     });
+        // });
+    }
 }
-
-function findLink(id){
-    return links.find(x => x.id == id);
-}
-
-function getCell(element){
-    return graph.getCell(element.id)
-}
-
