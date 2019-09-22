@@ -1,39 +1,125 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="css/vendor/joint.css" />
-    <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap.min.css" />
-</head>
-<body>
-    <!-- content -->
-    <div id="myholder"></div>
-    <button onclick="run()">Start</button>
+
     <!-- dependencies -->
     <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/popper.js"></script>
     <script src="js/vendor/bootstrap.js"></script>
-    <script src="js/vendor/lodash.js"></script>
-    <script src="js/vendor/backbone.js"></script>
-    <script src="js/vendor/joint.js"></script>
-    <script src="js/vendor/require.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/utility.js"></script>
-    <script src="js/addElement.js"></script>
-    <script src="js/run.js"></script>
+    <script src="js/vendor/handlebars.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/vendor/joint.css"/>
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="css/chat.css"/>
+</head>
+<body>
+<!-- content -->
 
-    
-    
-
-    <div class="modal fade" id="modal" role="dialog">
-        <div class="modal-dialog modal-sm vertical-align-center">
-          <div class="modal-content">
-            <div class="modal-body">
-                
+<!--<div>-->
+<nav class="navbar navbar-dark bg-dark" style="height: 7%">
+    <a class="navbar-brand" href="#">Flow2Code</a>
+</nav>
+<div class="menudiv" style="height: 8%">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <p style="padding: 5px">
+                    <a href="#" class="btn btn-sq-sm" id="zoomin">
+                        <img src="src/zoomin.svg" width="35px" height="35px" align="center"/>
+                    </a>
+                    <a href="#" class="btn btn-sq-sm" id="zoomout">
+                        <img src="src/zoomout.png" width="35px" height="35px" align="center"/>
+                    </a>
+                </p>
             </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
-            </div>
-          </div>
         </div>
     </div>
+</div>
+
+
+<div class="myrow">
+    <div class="papercol">
+        <div id="myholder"></div>
+    </div>
+    <div class="chatcol" style="background-color: #0b2">
+        <div class="chat">
+            <div class="chat-history">
+                <ul style="list-style-type:none">
+                </ul>
+            </div> <!-- end chat-history -->
+            <div class="chat-message clearfix">
+                    <textarea name="message-to-send" id="message-to-send" placeholder="Type your message"
+                              rows="3"></textarea>
+                <button id="chatsend">Send</button>
+            </div> <!-- end chat-message -->
+        </div> <!-- end chat -->
+    </div> <!-- end container -->
+</div>
+
+
+<div class="modal fade" id="modal" role="dialog">
+    <div class="modal-dialog modal-sm vertical-align-center">
+        <div class="modal-content">
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button id="closebtn" type="button" class="btn" data-dismiss="modal">Close</button>
+                <button id="okbtn" type="button" class="btn">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="message-template" type="text/x-handlebars-template">
+    <li class="clearfix">
+        <div class="message-data align-right">
+            &nbsp; &nbsp;
+            <span class="message-data-name">You</span> <i class="fa fa-circle me"></i>
+        </div>
+        <div class="message other-message float-right">
+            {{messageOutput}}
+        </div>
+    </li>
+</script>
+
+<script id="message-response-template" type="text/x-handlebars-template">
+    <li>
+        <div class="message-data">
+            <span class="message-data-name"><i class="fa fa-circle online"></i> CodeBot</span>
+
+        </div>
+        <div class="message my-message">
+            {{response}}
+        </div>
+    </li>
+</script>
+<script>
+    let holder = $('#myholder');
+    $('#zoomin').on('click', function (e) {
+        let currentzoom = parseFloat(holder.css('zoom'));
+        holder.css('zoom', Math.min(currentzoom + 0.1, 2.0));
+    });
+
+    $('#zoomout').on('click', function (e) {
+        let currentzoom = parseFloat(holder.css('zoom'));
+        holder.css('zoom', Math.max(currentzoom - 0.1, 0.5));
+    });
+
+    function toggle(val) {
+        $('#datatypebtn').html(val)
+        $('#datatype').html(val)
+    }
+
+</script>
+
 </body>
+<script src="js/vendor/lodash.js"></script>
+<script src="js/vendor/backbone.js"></script>
+<script src="js/vendor/joint.js"></script>
+<script src="js/vendor/require.js"></script>
+<script src="js/main.js"></script>
+<script src="js/utility.js"></script>
+<script src="js/addElement.js"></script>
+<script src="js/run.js"></script>
+<script src="js/chat.js"></script>
 </html>

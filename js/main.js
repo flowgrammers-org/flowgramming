@@ -5,12 +5,13 @@ window.objects = objects;
 window.links = links;
 
 
-
+console.log($('#myholder').height());
+console.log($('#myholder').width());
 var paper = new joint.dia.Paper({
     el: document.getElementById('myholder'),
+    height: $('#papercol').height(),
+    width: $('#papercol').width(),
     model: graph,
-    width: 800,
-    height: 600,
     gridSize: 1,
     // interactive: function(cellView, method) {
     //     return cellView instanceof joint.dia.LinkView; // Only allow interaction with joint.dia.LinkView instances.
@@ -20,10 +21,10 @@ var paper = new joint.dia.Paper({
 graph.on('change:position', function() {
     paper.fitToContent({
         padding: 20,
-        minWidth: 800, // if you need it
-        minHeight: 600, // if you need it
+        minWidth: $('#papercol').width(),
+        minHeight: $('#papercol').height(),
         gridWidth: 10,
-        gridHeight: 10    
+        gridHeight: 10
     });
 })
 
