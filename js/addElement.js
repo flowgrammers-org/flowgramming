@@ -19,41 +19,6 @@ paper.on('link:pointerdblclick', function (linkView) {
     $('#modal').modal('show')
 });
 
-paper.on('element:pointerdblclick', function (elementView) {
-    let id = elementView.model.id;
-    let currentElement = objects.find(x => x.id == id);
-    if (currentElement.type === 'declare') {
-    $("#modal .modal-body").html(`
-            <p>Enter Variable Name and Type</p>
-            <div class="input-group">
-                <input id="variable" type="text" class="form-control" aria-label="Text input with dropdown button">
-                <p id="datatype" hidden>Default</p>
-                <div class="input-group-append">
-                    <button id="datatypebtn" class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">DataType
-                    </button>
-                    <div id="datatypedrop" class="dropdown-menu">
-                        <a class="dropdown-item" onclick="toggle('String')">String</a>
-                        <a class="dropdown-item" onclick="toggle('Integer')">Integer</a>
-                        <a class="dropdown-item" onclick="toggle('Float')">Float</a>
-            
-                    </div>
-                </div>
-            </div>
-            `);
-    $('#modal').modal('show');
-    $('#okbtn').on('click', function (event) {
-        let variablename = $('#variable').val();
-        let datatype = $('#datatype').html().trim();
-        if(variablename.length > 0 && datatype != "Default"){
-            $('#modal').modal('hide');
-            currentElement.model.attr('label/text', getWrapText("Declare " + variablename));
-        }
-    })
-    }
-
-})
-
 
 function addOutput() {
     $('#modal').modal('hide')

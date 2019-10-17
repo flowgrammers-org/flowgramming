@@ -407,7 +407,7 @@ function translateIF(element) {
  * @param {ID to search with} id 
  */
 function findObject(id) {
-    return objects.find(x => x.id == id);
+    return objects.find(x => x.id === id);
 }
 
 /**
@@ -415,7 +415,7 @@ function findObject(id) {
  * @param {ID to search with} id 
  */
 function findLink(id) {
-    return links.find(x => x.id == id);
+    return links.find(x => x.id === id);
 }
 
 /**

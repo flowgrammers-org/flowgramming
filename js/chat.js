@@ -8,20 +8,20 @@ function scrollToBottom() {
     $chatHistory.scrollTop($chatHistory[0].scrollHeight);
 }
 
-(function() {
-    $button.on('click', function (e) {
-        renderUser();
-    });
-    $textarea.on('keyup', function (e) {
-        if (e.keyCode === 13) {
-            renderUser();
-        }
-    });
-})();
+// (function() {
+//     $button.on('click', function (e) {
+//         renderUser();
+//     });
+//     $textarea.on('keyup', function (e) {
+//         if (e.keyCode === 13) {
+//             renderUser();
+//         }
+//     });
+// })();
 
 function renderUser() {
     scrollToBottom();
-    let messageToSend = $textarea.val();
+    let messageToSend = $textarea.val().trim();
     if (messageToSend.trim() !== '') {
         let template = Handlebars.compile($("#message-template").html());
         let context = {
@@ -31,6 +31,7 @@ function renderUser() {
         scrollToBottom();
         $textarea.val('');
     }
+    return messageToSend;
 }
 
 function renderProgram(text) {
@@ -44,10 +45,28 @@ function renderProgram(text) {
 
 renderProgram("Welcome to Flow2Code");
 
-function allowUser(){
-  $('#message-to-send').prop('disabled',false)
+async function allowUser() {
+    scrollToBottom();
+    $('#message-to-send').prop('disabled', false)
+
+    return new Promise(function (resolve, reject) {
+        $button.one('click', function (e) {
+            resolve(renderUser())
+        });
+        // $textarea.one('keyup', function (e) {
+        //     if (e.keyCode === 13) {
+        //         resolve(renderUser());
+        //     }
+        // });
+    });
 }
 
-function disableUser(){
-  $('#message-to-send').prop('disabled',true)
+function clearChat() {
+    $chatHistoryList.html("");
 }
+
+function disableUser() {
+    $('#message-to-send').prop('disabled', true)
+}
+
+disableUser();
