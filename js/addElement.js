@@ -11,11 +11,11 @@ var currentLink;
 paper.on('link:pointerdblclick', function (linkView) {
     var id = linkView.model.id;
     currentLink = links.find(x => x.id == id);
-    $("#modal .modal-body").html(`<input onclick="addIF()" type="image" src="./src/if.png" />
-    <input onclick="addInput()" type="image" src="./src/input.png" />
-    <input onclick="addOutput()" type="image" src="./src/output.png" />
-    <input onclick="addAssignment()" type="image" src="./src/assignment.png" />
-    <input onclick="addDeclaration()" type="image" src="./src/declaration.jpg" />`);
+    $("#modal .modal-body").html(`<input onclick="addIF()" type="image" src="./assets/if.png" />
+    <input onclick="addInput()" type="image" src="./assets/input.png" />
+    <input onclick="addOutput()" type="image" src="./assets/output.png" />
+    <input onclick="addAssignment()" type="image" src="./assets/assignment.png" />
+    <input onclick="addDeclaration()" type="image" src="./assets/declaration.jpg" />`);
     $('#modal').modal('show')
 });
 

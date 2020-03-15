@@ -8,75 +8,74 @@
     <script src="js/vendor/popper.js"></script>
     <script src="js/vendor/bootstrap.js"></script>
     <script src="js/vendor/handlebars.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/vendor/joint.css" />
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <link rel="stylesheet" type="text/css" href="css/chat.css" />
+    <link rel="stylesheet" type="text/css" href="css/vendor/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/vendor/joint.css"/>
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
+    <link rel="stylesheet" type="text/css" href="css/chat.css"/>
 </head>
 
 <body>
-    <!-- content -->
+<!-- content -->
 
-    <!--<div>-->
-    <nav class="navbar navbar-dark bg-dark" style="height: 7%">
-        <a class="navbar-brand" href="#">Flow2Code</a>
-    </nav>
-    <div class="menudiv" style="height: 8%">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <p style="padding: 5px">
-                        <a href="#" class="btn btn-sq-sm" id="zoomin">
-                            <img src="src/zoomin.svg" width="35px" height="35px" align="center" />
-                        </a>
-                        <a href="#" class="btn btn-sq-sm" id="zoomout">
-                            <img src="src/zoomout.png" width="35px" height="35px" align="center" />
-                        </a>
+<!--<div>-->
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Flow2Code</a>
+</nav>
 
-                        <a href="#" class="btn btn-sq-sm" id="play">
-                            <img src="src/play.png" width="40px" height="35px" align="left" />
-                        </a>
-                    </p>
+<div class="myrow">
+    <div class="papercol">
+        <div class="menudiv" style="height: 8%">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p style="padding: 5px">
+                            <a href="#" class="btn btn-sq-sm" id="zoomin">
+                                <img src="assets/zoomin.svg" width="35px" height="35px" align="center"/>
+                            </a>
+                            <a href="#" class="btn btn-sq-sm" id="zoomout">
+                                <img src="assets/zoomout.png" width="35px" height="35px" align="center"/>
+                            </a>
+
+                            <a href="#" class="btn btn-sq-sm" id="play">
+                                <img src="assets/play.png" width="40px" height="35px" align="left"/>
+                            </a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
+        <div id="myholder"></div>
     </div>
-
-
-    <div class="myrow">
-        <div class="papercol">
-            <div id="myholder"></div>
-        </div>
-        <div class="chatcol" style="background-color: #0b2">
-            <div class="chat">
-                <div class="chat-history">
-                    <ul style="list-style-type:none">
-                    </ul>
-                </div> <!-- end chat-history -->
-                <div class="chat-message clearfix">
+    <div class="chatcol" style="background-color: #0b2">
+        <div class="chat">
+            <div class="chat-history">
+                <ul style="list-style-type:none">
+                </ul>
+            </div> <!-- end chat-history -->
+            <div class="chat-message clearfix">
                     <textarea name="message-to-send" id="message-to-send" placeholder="Type your message"
-                        rows="3"></textarea>
-                    <button id="chatsend">Send</button>
-                </div> <!-- end chat-message -->
-            </div> <!-- end chat -->
-        </div> <!-- end container -->
-    </div>
+                              rows="3"></textarea>
+                <button id="chatsend">Send</button>
+            </div> <!-- end chat-message -->
+        </div> <!-- end chat -->
+    </div> <!-- end container -->
+</div>
 
 
-    <div class="modal fade" id="modal" role="dialog">
-        <div class="modal-dialog modal-sm vertical-align-center">
-            <div class="modal-content">
-                <div class="modal-body">
+<div class="modal fade" id="modal" role="dialog">
+    <div class="modal-dialog modal-sm vertical-align-center">
+        <div class="modal-content">
+            <div class="modal-body">
 
-                </div>
-                <div class="modal-footer">
-                    <button id="closebtn" type="button" class="btn" data-dismiss="modal">Close</button>
-                    <button id="okbtn" type="button" class="btn">OK</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closebtn" type="button" class="btn" data-dismiss="modal">Close</button>
+                <button id="okbtn" type="button" class="btn">OK</button>
             </div>
         </div>
     </div>
-    <script id="message-template" type="text/x-handlebars-template">
+</div>
+<script id="message-template" type="text/x-handlebars-template">
     <li class="clearfix">
         <div class="message-data align-right">
             &nbsp; &nbsp;
@@ -88,7 +87,7 @@
     </li>
 </script>
 
-    <script id="message-response-template" type="text/x-handlebars-template">
+<script id="message-response-template" type="text/x-handlebars-template">
     <li>
         <div class="message-data">
             <span class="message-data-name"><i class="fa fa-circle online"></i> CodeBot</span>

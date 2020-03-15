@@ -1,36 +1,48 @@
-/** {*/
-/*    box-sizing: border-box;*/
-/*}*/
-html,body{
+@font-face {
+    font-family: 'inter', sans-serif;
+    url('assets/fonts/inter.eot');
+    url('assets/fonts/inter.woff2') format('woff2'),
+    url('assets/fonts/inter.woff') format('woff'),
+    url('assets/fonts/inter.ttf') format('truetype'),
+    url('assets/fonts/inter.svg#inter') format('svg'),
+    url('assets/fonts/inter.eot?#iefix') format('embedded-opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body {
     overflow: hidden;
     height: 100%;
     width: 100%;
     margin: 0;
+    font-family: inter, sans-serif !important;
 }
+
 .btn-sq-sm {
     width: 40px !important;
     height: 40px !important;
     font-size: 10px;
     padding: 5px;
 }
+
 .myrow {
     height: 85%;
 }
 
- #myholder{
-     height: 85%;
-     zoom: 1;
+#myholder {
+    height: 85%;
+    zoom: 1;
 }
 
- .papercol{
-     float: left;
-     width: 50%;
-     height: 100%;
-     overflow: scroll;
- }
+.papercol {
+    float: left;
+    width: 50%;
+    height: 100%;
+    overflow: scroll;
+}
 
- .chatcol{
-     width: 50%;
-     float: right;
-     height: 100%;
- }
+.chatcol {
+    width: 50%;
+    float: right;
+    height: 100%;
+}
