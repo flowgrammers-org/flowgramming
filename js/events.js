@@ -1,5 +1,5 @@
-var paper = window.paper
-var graph = window.graph
+var paper = window.paper;
+var graph = window.graph;
 var objects = window.objects;
 var links = window.links;
 
@@ -13,8 +13,8 @@ paper.on('element:pointerdblclick', function (elementView) {
     if (currentElement.type === 'declare') {
         $("#modal .modal-body").html(`
             <p>Enter Variable Name and Type</p>
-            <div class="input-group">
-                <input id="variable" type="text" class="form-control" aria-label="Text input with dropdown button">
+             <div class="input-group">
+                <input id="variable" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Variable Name">
                 <p id="datatype" hidden>Default</p>
                 <div class="input-group-append">
                     <button id="datatypebtn" class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
@@ -32,12 +32,14 @@ paper.on('element:pointerdblclick', function (elementView) {
         $('#modal').modal('show');
         $('#okbtn').one('click', function (event) {
             let variablename = $('#variable').val();
-            let datatype = $('#datatype').html().trim();
-            if (variablename.length > 0 && datatype != "Default") {
+            let datatype = $('#datatype').text().trim();
+            if (variablename.length > 0 && datatype !== "Default") {
                 $('#modal').modal('hide');
-                currentElement.model.attr('label/text', getWrapText("Declare " + variablename));
+                currentElement.model.attr('label/text', getWrapText("Declare " +datatype+ " " +variablename));
+                currentElement.variablename = variablename;
+                currentElement.variabletype = datatype;
             }
-        })
+        });
     } else if (currentElement.type === 'input') {
         $("#modal .modal-body").html(`
             <p>Enter Variable Name</p>
@@ -74,10 +76,12 @@ paper.on('element:pointerdblclick', function (elementView) {
             }
         });
     }
-
 });
 
-
+function toggle(dataType) {
+    $('#datatype').text(dataType);
+    $('#datatypebtn').text(dataType);
+}
 
 
 
