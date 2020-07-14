@@ -19,10 +19,10 @@ paper.on('element:pointerdblclick', function (elementView) {
                             aria-haspopup="true" aria-expanded="false">DataType
                     </button>
                     <div id="datatypedrop" class="dropdown-menu">
-                        <a class="dropdown-item" onclick="toggle('String')">String</a>
                         <a class="dropdown-item" onclick="toggle('Integer')">Integer</a>
                         <a class="dropdown-item" onclick="toggle('Float')">Float</a>
-            
+                        <a class="dropdown-item" onclick="toggle('Char')">Character</a>
+                        <a class="dropdown-item" onclick="toggle('String')">String</a>
                     </div>
                 </div>
             </div>

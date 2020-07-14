@@ -21,112 +21,143 @@ async function delay_loop (currentElement) {
   } else if (currentElement.type === 'output') {
     await handleOutput(currentElement).then((doc) => {
 
-    }).catch((err) => {
-      alert(err.toString())
-      currentElement.model.attr('body/strokeWidth', width)
-      currentElement = null
-    })
-  } else if (currentElement.type === 'if') {
-    await handleIf(currentElement).then((doc) => {
-      ifresult = doc
-    }).catch((err) => {
-      alert(err.toString())
-      currentElement.model.attr('body/strokeWidth', width)
-      currentElement = null
-    })
-  }
-  setTimeout(function () {
-    currentElement.model.attr('body/strokeWidth', width)
-    if (currentElement.outgoing_link) {
-      if (currentElement.type === 'if') {
-        if (ifresult) {
-          const currentLink = findLink(currentElement.outgoing_link.trueLink)
-          currentElement = findObject(currentLink.target)
-        } else {
-          const currentLink = findLink(currentElement.outgoing_link.falseLink)
-          currentElement = findObject(currentLink.target)
-        }
-        delay_loop(currentElement)
-      } else {
-        const currentLink = findLink(currentElement.outgoing_link.next)
-        currentElement = findObject(currentLink.target)
-        delay_loop(currentElement)
-      }
+        }).catch((err) => {
+            alert(err.toString());
+            currentElement.model.attr("body/strokeWidth", width);
+            currentElement = null;
+        })
+    } else if (currentElement.type === 'if') {
+        await handleIf(currentElement).then((doc) => {
+            ifresult = doc;
+        }).catch((err) => {
+            alert(err.toString());
+            currentElement.model.attr("body/strokeWidth", width);
+            currentElement = null;
+        })
+    } else if (currentElement.type === 'declare') {
+        await handleDeclaration(currentElement).then((doc) => {
+
+        }).catch((err) => {
+            alert(err.toString());
+            currentElement.model.attr("body/strokeWidth", width);
+            currentElement = null;
+        })
     }
+    setTimeout(function () {
+        currentElement.model.attr("body/strokeWidth", width);
+        if (currentElement.outgoing_link) {
+            if (currentElement.type === 'if') {
+                if (ifresult) {
+                    let currentLink = findLink(currentElement.outgoing_link.trueLink);
+                    currentElement = findObject(currentLink.target);
+                } else {
+                    let currentLink = findLink(currentElement.outgoing_link.falseLink);
+                    currentElement = findObject(currentLink.target);
+                }
+                delay_loop(currentElement);
+            } else {
+                let currentLink = findLink(currentElement.outgoing_link.next);
+                currentElement = findObject(currentLink.target);
+                delay_loop(currentElement);
+            }
+        }
   }, delay)
 }
 
-async function handleInput (element) {
-  if (!element.variablename) {
-    throw new Error('Assign a variable name')
-  }
-  renderProgram('Enter the value for variable ' + element.variablename)
-
-  var A = await allowUser()
-  let type, val
-
-  if (is_int(A) === true) {
-    type = 'int'
-    val = parseInt(A)
-    window.geval('var ' + element.variablename + ' = ' + 'parseInt(' + A + ');')
-  } else if (is_float(A) === true) {
-    type = 'float'
-    val = parseFloat(A)
-    window.geval(window, 'var ' + element.variablename + ' = ' + 'parseFloat(' + A + ');')
-  } else {
-    type = 'string'
-    val = A
-    window.geval(window, 'var ' + element.variablename + " = '" + A + "';")
-  }
-  variables[element.variablename] = {
-    type: type,
-    value: val
-  }
-
-  return { status: 'Ok' }
-}
-
-async function handleOutput (element) {
-  if (!element.exp) {
-    throw new Error('Assign a Expression')
-  }
-  var A = window.geval(element.exp)
-  renderProgram(A)
-  return { status: 'Ok' }
-}
-
-async function handleIf (element) {
-  if (!element.exp) {
-    throw new Error('Assign a Expression')
-  }
-  var A = window.geval(element.exp)
-  if (A) { return true } else { return false }
-}
-
-function run () {
-  var currentElement = start
-  delay_loop(currentElement)
-  clearChat()
-}
-
-function is_float (n) {
-  if (!isNaN(parseFloat(n)) && isFinite(n)) {
-    if (n.includes('.')) {
-      return true
-    } else {
-      return false
+async function handleDeclaration(element) {
+    let type;
+    if (element.variabletype === "Integer") {
+        type = "int";
+    } else if (element.variabletype === "Float") {
+        type = "float";
+    } else if (element.variabletype === 'Char') {
+        type = "char";
+    } else
+    {
+        type = 'string';
     }
-  }
-  return false
+    variables [element.variablename] = {
+        type: type,
+        value: null
+    }
 }
 
-function is_int (n) {
-  if (!isNaN(parseFloat(n)) && isFinite(n)) {
-    if (n.includes('.')) {
-      return false
-    } else {
-      return true
+async function handleInput(element) {
+    if (!element.variablename) {
+        throw new Error("Assign a variable name");
     }
+    renderProgram("Enter the value for variable " + element.variablename);
+    if (!(element.variablename in variables) ){
+        throw new Error("Declare the variable before using it.");
+    }
+    var A = await allowUser();
+    let type, val, obj;
+    obj = variables[element.variablename];
+    type = obj.type;
+    if (type === "int" && is_int(A) === true) {
+        val = parseInt(A);
+        window.geval("var " + element.variablename + " = " + "parseInt(" + A + ");");
+    } else if (type === "float" &&is_float(A) === true) {
+        val = parseFloat(A);
+        window.geval("var " + element.variablename + " = " + "parseFloat(" + A + ");");
+    } else if (type === "char"){
+        if (A.length>1){
+            throw new Error("Enter a Character");
+        }
+        val = A;
+        window.geval("var " + element.variablename + " = '" + A + "';");
+    } else if (type === "string"){
+        val = A;
+        window.geval("var " + element.variablename + " = '" + A + "';");
+    } else {
+        throw new Error("Data type mismatch.");
+    }
+    variables[element.variablename] = {
+        type: type,
+        value: val
+    };
+    return { status: "Ok" };
+}
+
+async function handleOutput(element) {
+    if (!element.exp) {
+        throw new Error("Assign a Expression");
+    }
+    var A = window.geval(element.exp);
+    renderProgram(A);
+    return { status: "Ok" };
+}
+
+async function handleIf(element) {
+    if (!element.exp) {
+        throw new Error("Assign a Expression");
+    }
+    var A = window.geval(element.exp);
+    if (A)
+        return true;
+    else
+        return false;
+}
+
+
+function run() {
+    var currentElement = start;
+    delay_loop(currentElement).then(() => variables = []);
+    clearChat();
+}
+
+
+
+function is_float(n) {
+    if (!isNaN(parseFloat(n)) && isFinite(n)) {
+        return !!n.includes(".");
+    }
+    return false
   }
-  return false
+
+function is_int(n) {
+    if (!isNaN(parseFloat(n)) && isFinite(n)) {
+        return !n.includes(".");
+    }
+    return false
 }
