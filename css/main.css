@@ -25,8 +25,12 @@ html, body {
     padding: 5px;
 }
 
+*:focus{
+    box-shadow: none !important;
+}
+
 .myrow {
-    height: 85%;
+    height: 100%;
 }
 
 #myholder {
