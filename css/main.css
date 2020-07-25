@@ -25,12 +25,12 @@ html, body {
     padding: 5px;
 }
 
-*:focus{
+.btn-sq-sm:focus{
     box-shadow: none !important;
 }
 
 .myrow {
-    height: 100%;
+    height: 90%;
 }
 
 #myholder {
