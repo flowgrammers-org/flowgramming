@@ -1,54 +1,37 @@
 {
-  "name": "flow2code",
+  "name": "flowgramming",
   "version": "1.0.0",
-  "description": "",
+  "description": "a web app that will help novice programmers to understand and design problem solving strategy techniques in graphical design",
   "main": "index.js",
-  "dependencies": {},
   "devDependencies": {
-    "electron": "^5.0.6",
-    "electron-builder": "^21.2.0",
-    "electron-packager": "^14.0.6",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4",
+    "open": "^7.1.0",
+    "serve-index": "^1.9.1",
     "standard": "^14.3.4"
   },
+  "nodemonConfig": {
+    "ext": "html,js,css",
+    "ignore": [
+      "assets",
+      "js/vendor",
+      "css/vendor",
+      "node_modules"
+    ],
+    "verbose": true
+  },
   "scripts": {
-    "start": "electron .",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pack": "build --dir",
     "dist": "build"
   },
   "standard": {
     "ignore": [
-      "/js/vendor"
+      "/js/vendor",
+      "index.html"
     ]
   },
-  "build": {
-    "appId": "yourappid",
-    "category": "your.app.category.type",
-    "dmg": {
-      "contents": [
-        {
-          "x": 110,
-          "y": 150
-        },
-        {
-          "x": 240,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ]
-    },
-    "win": {
-      "target": "squirrel",
-      "icon": "build/icon.ico"
-    }
-  },
-  "author": "Harshit",
+  "author": "CORE Lab",
   "license": "ISC"
 }

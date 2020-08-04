@@ -80,3 +80,11 @@ links.push({
 window.paper = paper
 window.graph = graph
 window.start = startModel
+
+window.onload = () => {
+  'use strict'
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+  }
+}
