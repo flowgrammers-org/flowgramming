@@ -15,12 +15,18 @@
 </head>
 
 <body>
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Flowgramming</a>
+    <div class="navbar-nav">
+        <input accept=".fgmin" hidden id="open-file" type="file"/>
+        <a id="open-btn" class="nav-item nav-link" href="#">Open</a>
+        <a id="save-btn" class="nav-item nav-link" href="#">Save</a>
+        <a class="nav-item nav-link" href="#" id="run-btn">Run</a>
+    </div>
 </nav>
 
 <div class="myrow">
-    <div class="papercol">
+    <div class="paperColumn">
         <div class="menudiv">
             <div class="container">
                 <div class="row">
@@ -32,16 +38,12 @@
                             <a href="#" class="btn btn-sq-sm" id="zoomout">
                                 <img src="assets/zoomout.png" width="35px" height="35px" align="center"/>
                             </a>
-
-                            <a href="#" class="btn btn-sq-sm" id="play">
-                                <img src="assets/play.png" width="40px" height="35px" align="left"/>
-                            </a>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="myholder"></div>
+        <div id="myHolder" style="transform-origin:0 0;"></div>
     </div>
     <div class="chatcol" style="background-color: #0b2">
         <div class="chat">
@@ -71,7 +73,7 @@
             </div>
             <div class="modal-footer">
                 <button id="closebtn" type="button" class="btn" data-dismiss="modal">Close</button>
-                <button id="okbtn" type="button" class="btn">OK</button>
+                <button class="btn" id="okButton" type="button">OK</button>
             </div>
         </div>
     </div>
@@ -104,6 +106,7 @@
 <script src="js/chat.js"></script>
 <script src="js/vendor/lodash.js"></script>
 <script src="js/vendor/backbone.js"></script>
+<script src="js/vendor/cycle.js"></script>
 <script src="js/vendor/joint.js"></script>
 <script src="js/vendor/require.js"></script>
 <script src="js/main.js"></script>
@@ -111,21 +114,44 @@
 <script src="js/addElement.js"></script>
 <script src="js/run.js"></script>
 <script src="js/events.js"></script>
+<script src="js/save.js"></script>
 <script>
-    let holder = $('#myholder');
-    $('#zoomin').on('click', function (e) {
-        let currentzoom = parseFloat(holder.css('zoom'));
-        holder.css('zoom', Math.min(currentzoom + 0.1, 2.0));
-    });
+  let element = $('#myHolder')
+  let zoomArr = [0.5,0.75,0.85,0.9,1,1.2,1.5]
+  let indexOfArr = 4
 
-    $('#zoomout').on('click', function (e) {
-        let currentzoom = parseFloat(holder.css('zoom'));
-        holder.css('zoom', Math.max(currentzoom - 0.1, 0.5));
-    });
+  $('#zoomin').on('click', function () {
+    if (indexOfArr < zoomArr.length - 1) {
+      element.css('transform', `scale(${zoomArr[++indexOfArr]})`)
+    }
+  })
 
-    $('#play').on('click', function (e) {
-        run();
-    });
+  $('#zoomout').on('click', function () {
+    if (indexOfArr > 0) {
+      element.css('transform', `scale(${zoomArr[--indexOfArr]})`)
+    }
+  })
+
+  $('#run-btn').on('click', function () {
+    run()
+  })
+
+  $('#save-btn').on('click', function () {
+    saveFlowChart()
+  })
+
+  $('#open-btn').on('click', function () {
+    $('#open-file').click()
+  })
+
+  $('#open-file').on('change', function () {
+      const fileReader = new FileReader()
+      fileReader.onload = function () {
+        const data = fileReader.result
+        openFromFile(data)
+      }
+      fileReader.readAsText($('#open-file').prop('files')[0])
+    })
 </script>
 
 </html>

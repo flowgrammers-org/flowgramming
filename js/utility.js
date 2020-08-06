@@ -1,13 +1,8 @@
-var graph = window.graph
-var paper = window.paper
-var objects = window.objects
-var links = window.links
-
 /**
  * Returns a new parallelogram object
  */
 function getParallelogram () {
-  var parallelogram = new joint.shapes.standard.Path()
+  const parallelogram = new joint.shapes.standard.Path()
   parallelogram.resize(150, 75)
   parallelogram.attr('root/title', 'joint.shapes.standard.Path')
   parallelogram.attr('body/refD', 'M 21 1 L 197 0 L 173 69 L 0 69 Z')
@@ -18,7 +13,7 @@ function getParallelogram () {
  * Returns a new diamond shaped object
  */
 function getDiamond () {
-  var diamond = new joint.shapes.standard.Path()
+  const diamond = new joint.shapes.standard.Path()
   diamond.resize(100, 100)
   diamond.attr('body/refD', 'M 30 0 L 60 30 30 60 0 30 Z')
   return diamond
@@ -28,7 +23,7 @@ function getDiamond () {
  * Returns a new rectangle object
  */
 function getRectangle () {
-  var rect = new joint.shapes.standard.Rectangle()
+  const rect = new joint.shapes.standard.Rectangle()
   rect.resize(150, 75)
   return rect
 }
@@ -38,56 +33,65 @@ function getRectangle () {
  */
 
 function getWrapText (text) {
-  var wraptext = joint.util.breakText(text, {
+  return joint.util.breakText(text, {
     width: 120,
     height: 70
   }, { ellipsis: true })
-  return wraptext
+}
+
+function getCircle () {
+  const circle = new joint.shapes.standard.Circle()
+  circle.resize(25, 50)
+  circle.attr('body/fill', 'lightblue')
+  return circle
 }
 
 /**
  * Adds the given element to the graph, used for declare,assignment,input,output
- * @param {"The link to add the element"} currentLink
- * @param {"The element to add"} element
- * @param {"Type of the element"} type
+ * @param currentLink "The link to add the element"
+ * @param element "The element to add"
+ * @param {string} type
  */
 function addElement (currentLink, element, type) {
-  const vertices = currentLink.model.vertices()
-  if (currentLink.type == null) {
-    var currentEnd = findObject(currentLink.target)
-    var currentStart = findObject(currentLink.source).model
+  let link
+  let currentStart
+  let currentEnd
+  const vertices = currentLink.vertices()
+  if (currentLink.attr('element/type') == null) {
+    currentEnd = findModel(currentLink.attr('element/target'))
+    currentStart = findModel(currentLink.attr('element/source'))
     const startPosition = currentStart.position()
     element.position(startPosition.x, startPosition.y + 100)
-    currentLink.model.set({ target: element })
-    currentLink.target = element.id
-    var link = new joint.shapes.standard.Link()
-    objects.push({
-      type: type,
-      model: element,
-      id: element.id,
+    currentLink.set({ target: element })
+
+    currentLink.attr('element/target', element.id)
+    link = new joint.shapes.standard.Link()
+
+    element.attr({
+      element: { type },
       outgoing_link: {
         next: link.id
       }
     })
     link.source(element)
-    link.target(currentEnd.model)
+    link.target(currentEnd)
     link.addTo(graph)
-    links.push({
-      id: link.id,
-      target: currentEnd.id,
-      source: element.id,
-      model: link
+    link.attr({
+      element: {
+        target: currentEnd.id,
+        source: element.id,
+      }
     })
     translateDown(currentEnd, null)
-  } else if (currentLink.type == 'if') {
-    // Here there, are no elements inside the if, thus split into ifstart and ifend
+  } else if (currentLink.attr('element/type') === 'if') {
+    // Here there, are no elements inside the if, thus split into ifStart and ifEnd
     // This is to keep the array sorted
     if (vertices[0].y > vertices[1].y) {
       swap(vertices[0], vertices[1])
     }
-    currentLink.type = 'ifstart'
-    var currentEnd = findObject(currentLink.target)
-    var currentStart = findObject(currentLink.source).model
+    currentLink.attr('element/type', 'ifStart')
+    currentEnd = findModel(currentLink.attr('element/target'))
+    currentStart = findModel(currentLink.attr('element/source'))
     const startPosition = currentStart.position()
     if (startPosition.x <= vertices[0].x) {
       startPosition.x += 125
@@ -95,36 +99,34 @@ function addElement (currentLink, element, type) {
       startPosition.x -= 175
     }
     element.position(startPosition.x, startPosition.y + 100)
-    currentLink.model.set({ target: element })
-    currentLink.target = element.id
-    var link = new joint.shapes.standard.Link()
+    currentLink.set({ target: element })
+    currentLink.attr('element/target', element.id)
+    link = new joint.shapes.standard.Link()
     link.vertices([{
       x: vertices[1].x,
       y: vertices[1].y + 100
     }])
-    objects.push({
-      type: type,
-      model: element,
-      id: element.id,
+    element.attr({
+      element: { type },
       outgoing_link: {
         next: link.id
       }
     })
     link.source(element)
-    link.target(currentEnd.model)
+    link.target(currentEnd)
     link.addTo(graph)
-    links.push({
-      id: link.id,
-      target: currentEnd.id,
-      source: element.id,
-      model: link,
-      type: 'ifend'
+    link.attr({
+      element: {
+        target: currentEnd.id,
+        source: element.id,
+        type: 'ifEnd'
+      }
     })
-    currentLink.model.vertices([vertices[0]])
+    currentLink.vertices([vertices[0]])
     translateDown(currentEnd, null)
-  } else if (currentLink.type == 'ifstart') {
-    var currentEnd = findObject(currentLink.target)
-    var currentStart = findObject(currentLink.source).model
+  } else if (currentLink.attr('element/type') === 'ifStart') {
+    currentEnd = findModel(currentLink.attr('element/target'))
+    currentStart = findModel(currentLink.attr('element/source'))
     const startPosition = currentStart.position()
     if (startPosition.x <= vertices[0].x) {
       startPosition.x += 150
@@ -132,91 +134,81 @@ function addElement (currentLink, element, type) {
       startPosition.x -= 150
     }
     element.position(startPosition.x, startPosition.y + 100)
-    currentLink.model.set({ target: element })
-    currentLink.target = element.id
-    var link = new joint.shapes.standard.Link()
-    objects.push({
-      type: type,
-      model: element,
-      id: element.id,
+    currentLink.set({ target: element })
+    currentLink.attr('element/target', element.id)
+    link = new joint.shapes.standard.Link()
+    element.attr({
+      element: {
+        type,
+      },
       outgoing_link: {
         next: link.id
       }
     })
     link.source(element)
-    link.target(currentEnd.model)
+    link.target(currentEnd)
     link.addTo(graph)
-    links.push({
-      id: link.id,
-      target: currentEnd.id,
-      source: element.id,
-      model: link
+    link.attr({
+      element: {
+        target: currentEnd.id,
+        source: element.id,
+      }
     })
     translateDown(currentEnd, null)
-  } else if (currentLink.type == 'ifend') {
-    currentLink.model.vertices([])
-    var currentEnd = findObject(currentLink.target)
-    var currentStart = findObject(currentLink.source).model
+  } else if (currentLink.attr('element/type') === 'ifEnd') {
+    currentLink.vertices([])
+    currentEnd = findModel(currentLink.attr('element/target'))
+    currentStart = findModel(currentLink.attr('element/source'))
     const startPosition = currentStart.position()
     element.position(startPosition.x, startPosition.y + 100)
-    currentLink.model.set({ target: element })
-    currentLink.target = element.id
-    currentLink.type = null
-    var link = new joint.shapes.standard.Link()
+    currentLink.set({ target: element })
+    currentLink.attr('element/target', element.id)
+    currentLink.attr('element/type', null)
+    link = new joint.shapes.standard.Link()
     link.vertices([{
       x: vertices[0].x,
       y: vertices[0].y + 100
     }])
-    objects.push({
-      type: type,
-      model: element,
-      id: element.id,
+    element.attr({
+      element: { type },
       outgoing_link: {
         next: link.id
       }
     })
     link.source(element)
-    link.target(currentEnd.model)
+    link.target(currentEnd)
     link.addTo(graph)
-    links.push({
-      id: link.id,
-      target: currentEnd.id,
-      source: element.id,
-      model: link,
-      type: 'ifend'
+    link.attr({
+      element: {
+        target: currentEnd.id,
+        source: element.id,
+        type: 'ifEnd'
+      }
     })
     translateDown(currentEnd, null)
   }
 }
 
-function getCircle () {
-  var circle = new joint.shapes.standard.Circle()
-  circle.resize(25, 50)
-  circle.attr('body/fill', 'lightblue')
-  return circle
-}
-
 /**
  * Adds a if Element to the given Link
- * @param {"The link on which to add"} currentLink
- * @param {"The if element to add"} element
- * @param {"The type"} type
+ * @param currentLink The link on which to add
+ * @param element The if element to add
+ * @param {string} type
  */
 
 function addElementIf (currentLink, element, type) {
-  const vertices = currentLink.model.vertices()
-  if (vertices.length == 2) {
+  const vertices = currentLink.vertices()
+  if (vertices.length === 2) {
     // This is to keep the array sorted
     if (vertices[0].y > vertices[1].y) {
       swap(vertices[0], vertices[1])
     }
   }
-  var currentEnd = findObject(currentLink.target)
-  var currentStart = findObject(currentLink.source)
-  var startType = currentStart.type
-  currentStart = currentStart.model
+  const currentEnd = findModel(currentLink.attr('element/target'))
+  let currentStart = findModel(currentLink.attr('element/source'))
+  const startType = currentStart.attr('element/type')
   const startPosition = currentStart.position()
-  if (currentLink.type == 'if' || currentLink.type == 'ifstart') {
+  if (['if', 'ifStart'].includes(currentLink.attr('element/type'))) {
     if (startPosition.x <= vertices[0].x) {
       startPosition.x += 125
     } else {
@@ -225,13 +217,13 @@ function addElementIf (currentLink, element, type) {
   }
 
   // Set Current End of the link to IF element
-  currentLink.model.set({ target: element })
-  currentLink.target = element.id
+  currentLink.set({ target: element })
+  currentLink.attr('element/target', element.id)
 
   // Make a new circle
-  var endCircle = getCircle()
+  const endCircle = getCircle()
   endCircle.addTo(graph)
-  if (startType == 'circle') {
+  if (startType === 'circle') {
     element.position(startPosition.x, startPosition.y + 100)
     endCircle.position(startPosition.x, startPosition.y + 200)
   } else {
@@ -240,22 +232,22 @@ function addElementIf (currentLink, element, type) {
   }
 
   // Creating the invisible link
-  var invisibleLink = new joint.shapes.standard.Link()
+  const invisibleLink = new joint.shapes.standard.Link()
   invisibleLink.source(element)
   invisibleLink.target(endCircle)
   invisibleLink.addTo(graph)
   invisibleLink.attr('./display', 'none')
-  links.push({
-    id: invisibleLink.id,
-    target: endCircle.id,
-    source: element.id,
-    model: invisibleLink
+  invisibleLink.attr({
+    element: {
+      target: endCircle.id,
+      source: element.id,
+    }
   })
 
   const ifPosition = element.position()
 
   // Creating True Link
-  var trueLink = new joint.shapes.standard.Link()
+  const trueLink = new joint.shapes.standard.Link()
   trueLink.vertices([
     { x: ifPosition.x + 200, y: ifPosition.y + 50 },
     { x: ifPosition.x + 200, y: endCircle.position().y + 25 }])
@@ -266,16 +258,16 @@ function addElementIf (currentLink, element, type) {
     attrs: { text: { text: 'True' } },
     position: { distance: 0.1 }
   })
-  links.push({
-    id: trueLink.id,
-    target: endCircle.id,
-    source: element.id,
-    model: trueLink,
-    type: 'if'
+  trueLink.attr({
+    element: {
+      target: endCircle.id,
+      source: element.id,
+      type: 'if'
+    }
   })
 
   // Creating False Link
-  var falseLink = new joint.shapes.standard.Link()
+  const falseLink = new joint.shapes.standard.Link()
   falseLink.vertices([
     { x: ifPosition.x - 100, y: ifPosition.y + 50 },
     { x: ifPosition.x - 100, y: endCircle.position().y + 25 }])
@@ -286,17 +278,15 @@ function addElementIf (currentLink, element, type) {
     attrs: { text: { text: 'False' } },
     position: { distance: 0.1 }
   })
-  links.push({
-    id: falseLink.id,
-    target: endCircle.id,
-    source: element.id,
-    model: falseLink,
-    type: 'if'
+  falseLink.attr({
+    element: {
+      target: endCircle.id,
+      source: element.id,
+      type: 'if'
+    }
   })
-  objects.push({
-    type: type,
-    model: element,
-    id: element.id,
+  element.attr({
+    element: { type },
     outgoing_link: {
       next: invisibleLink.id,
       trueLink: trueLink.id,
@@ -305,50 +295,54 @@ function addElementIf (currentLink, element, type) {
   })
 
   // Creating the endLink
-  var link = new joint.shapes.standard.Link()
+  const link = new joint.shapes.standard.Link()
   link.source(endCircle)
-  link.target(currentEnd.model)
+  link.target(currentEnd)
   link.addTo(graph)
-  if (currentLink.type == 'if') {
-    currentLink.type = 'ifstart'
+  if (currentLink.attr('element/type') === 'if') {
+    currentLink.attr({
+      element: {
+        type: 'ifStart'
+      }
+    })
     link.vertices([{
       x: vertices[1].x,
       y: vertices[1].y + 100
     }])
-    links.push({
-      id: link.id,
-      target: currentEnd.id,
-      source: endCircle.id,
-      model: link,
-      type: 'ifend'
+    link.attr({
+      element: {
+        target: currentEnd.id,
+        source: endCircle.id,
+        type: 'ifEnd'
+      }
     })
-    currentLink.model.vertices([vertices[0]])
-  } else if (currentLink.type == 'ifend') {
-    currentLink.model.vertices([])
+    currentLink.vertices([vertices[0]])
+  } else if (currentLink.attr('element/type') === 'ifEnd') {
+    currentLink.vertices([])
     link.vertices([{
       x: vertices[0].x,
       y: vertices[0].y + 100
     }])
-    currentLink.type = null
-    links.push({
-      id: link.id,
-      target: currentEnd.id,
-      source: endCircle.id,
-      model: link,
-      type: 'ifend'
+    currentLink.attr('element/type', null)
+    link.attr({
+      element: {
+        target: currentEnd.id,
+        source: endCircle.id,
+        type: 'ifEnd'
+      }
     })
   } else {
-    links.push({
-      id: link.id,
-      target: currentEnd.id,
-      source: endCircle.id,
-      model: link
+    link.attr({
+      element: {
+        target: currentEnd.id,
+        source: endCircle.id,
+      }
     })
   }
-  objects.push({
-    type: 'circle',
-    model: endCircle,
-    id: endCircle.id,
+  endCircle.attr({
+    element: {
+      type: 'circle',
+    },
     outgoing_link: {
       next: link.id
     }
@@ -364,75 +358,67 @@ function addElementIf (currentLink, element, type) {
  * @param {"The if element to be translated"} element
  */
 function translateIF (element) {
-  const nextLink = findLink(element.outgoing_link.next)
-  const trueLink = findLink(element.outgoing_link.trueLink)
-  const falseLink = findLink(element.outgoing_link.falseLink)
-  if (nextLink.target == trueLink.target) {
-    const vertices = trueLink.model.vertices()
+  const nextLink = findModel(element.attr('outgoing_link/next'))
+  const trueLink = findModel(element.attr('outgoing_link/trueLink'))
+  const falseLink = findModel(element.attr('outgoing_link/falseLink'))
+  if (nextLink.attr('element/target') === trueLink.attr('element/target')) {
+    const vertices = trueLink.vertices()
     const newVertices = []
     newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
     newVertices.push({ x: vertices[1].x, y: vertices[1].y + 100 })
-    trueLink.model.vertices(newVertices)
+    trueLink.vertices(newVertices)
   } else {
-    const vertices = trueLink.model.vertices()
+    const vertices = trueLink.vertices()
     const newVertices = []
     newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
-    trueLink.model.vertices(newVertices)
-    translateDown(findObject(trueLink.target), findObject(nextLink.target))
+    trueLink.vertices(newVertices)
+    translateDown(findModel(trueLink.attr('element/target')), findModel(nextLink.attr('element/target')))
   }
 
-  if (nextLink.target == falseLink.target) {
-    const vertices = falseLink.model.vertices()
+  if (nextLink.attr('element/target') === falseLink.attr('element/target')) {
+    const vertices = falseLink.vertices()
     const newVertices = []
     newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
     newVertices.push({ x: vertices[1].x, y: vertices[1].y + 100 })
-    falseLink.model.vertices(newVertices)
+    falseLink.vertices(newVertices)
   } else {
-    const vertices = falseLink.model.vertices()
+    const vertices = falseLink.vertices()
     const newVertices = []
     newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
-    falseLink.model.vertices(newVertices)
-    translateDown(findObject(falseLink.target), findObject(nextLink.target))
+    falseLink.vertices(newVertices)
+    translateDown(findModel(falseLink.attr('element/target')), findModel(nextLink.attr('element/target')))
   }
 }
 
 /**
- * Searches for the object in the global object array, based on ID
- * @param {ID to search with} id
+ * Searches for the model in the graph, based on ID
+ * @param id
  */
-function findObject (id) {
-  return objects.find(x => x.id === id)
-}
-
-/**
- * Searches for the link object in the global links array, based on ID
- * @param {ID to search with} id
- */
-function findLink (id) {
-  return links.find(x => x.id === id)
+function findModel (id) {
+  return graph.attributes.cells.models.find(x => x.id === id)
 }
 
 /**
  * Translates all objects down from nextElement to till by 100 units
- * @param {The element to start translation from} nextElement
- * @param {The element till which translation should happen} till
+ * @param nextElement - The element to start translation from nextElement
+ * @param till - The element till which translation should happen
  */
 function translateDown (nextElement, till) {
-  while (nextElement != till) {
-    nextElement.model.translate(0, 100)
-    if (nextElement.type == 'if') {
+  while (nextElement !== till) {
+    nextElement.translate(0, 100)
+    if (nextElement.attr('element/type') === 'if') {
       translateIF(nextElement)
     }
-    if (nextElement.outgoing_link) {
-      const link = findLink(nextElement.outgoing_link.next)
-      const vertex = link.model.vertices()
-      if (link.type == 'ifend') {
-        link.model.vertices([{
+    if (nextElement.attr('outgoing_link')) {
+      const link = findModel(nextElement.attr('outgoing_link/next'))
+      const vertex = link.vertices()
+      if (link.attr('element/type') === 'ifEnd') {
+        link.vertices([{
           x: vertex[0].x,
           y: vertex[0].y + 100
         }])
       }
-      nextElement = findObject(link.target)
+      nextElement = findModel(link.attr('element/target'))
     } else {
       nextElement = null
     }
@@ -441,17 +427,17 @@ function translateDown (nextElement, till) {
 
 /**
  * This function sets custom listeners, on the given object
- * @param {The element to set listener} element
- * @param {The type of the element} type
+ * @param element The element to set listener
+ * @param type The type of the element
  */
 function setListener (element, type) {
-  if (type == 'circle') {
+  if (type === 'circle') {
     element.on('change:position', function (endCircle, position) {
-      const links1 = links.filter(x => x.target == endCircle.id)
+      const links1 = graph.attributes.cells.models.filter(x => x.attr('element/target') === endCircle.id)
       links1.forEach(link => {
-        if (link.type) {
-          const vertices = link.model.vertices()
-          if (vertices.length == 2) {
+        if (link.attr('element/type')) {
+          const vertices = link.vertices()
+          if (vertices.length === 2) {
             if (vertices[0].y > vertices[1].y) {
               swap(vertices[0], vertices[1])
             }
@@ -469,7 +455,7 @@ function setListener (element, type) {
             }
             vertices[0].y = position.y + 25
           }
-          link.model.vertices(vertices)
+          link.vertices(vertices)
         }
       })
     })

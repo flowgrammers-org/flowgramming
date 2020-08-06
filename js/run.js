@@ -1,163 +1,132 @@
-var graph = window.graph
-var paper = window.paper
-var objects = window.objects
-var links = window.links
-var start = window.start
-var variables = window.variables
+const strokeHigh = 5
+let strokeLow = 0
 
 async function delay_loop (currentElement) {
-  var delay = 1000
-  const width = currentElement.model.attr('body/strokeWidth')
-  currentElement.model.attr('body/strokeWidth', 5)
-  var ifresult
-  if (currentElement.type === 'input') {
-    await handleInput(currentElement).then((doc) => {
-
-    }).catch((err) => {
-      alert(err.toString())
-      currentElement.model.attr('body/strokeWidth', width)
-      currentElement = null
-    })
-  } else if (currentElement.type === 'output') {
-    await handleOutput(currentElement).then((doc) => {
-
-        }).catch((err) => {
-            alert(err.toString());
-            currentElement.model.attr("body/strokeWidth", width);
-            currentElement = null;
-        })
-    } else if (currentElement.type === 'if') {
-        await handleIf(currentElement).then((doc) => {
-            ifresult = doc;
-        }).catch((err) => {
-            alert(err.toString());
-            currentElement.model.attr("body/strokeWidth", width);
-            currentElement = null;
-        })
-    } else if (currentElement.type === 'declare') {
-        await handleDeclaration(currentElement).then((doc) => {
-
-        }).catch((err) => {
-            alert(err.toString());
-            currentElement.model.attr("body/strokeWidth", width);
-            currentElement = null;
-        })
-    }
-    setTimeout(function () {
-        currentElement.model.attr("body/strokeWidth", width);
-        if (currentElement.outgoing_link) {
-            if (currentElement.type === 'if') {
-                if (ifresult) {
-                    let currentLink = findLink(currentElement.outgoing_link.trueLink);
-                    currentElement = findObject(currentLink.target);
-                } else {
-                    let currentLink = findLink(currentElement.outgoing_link.falseLink);
-                    currentElement = findObject(currentLink.target);
-                }
-                delay_loop(currentElement);
-            } else {
-                let currentLink = findLink(currentElement.outgoing_link.next);
-                currentElement = findObject(currentLink.target);
-                delay_loop(currentElement);
-            }
+    const delay = 1000
+    strokeLow = currentElement.attr('body/strokeWidth')
+    currentElement.attr('body/strokeWidth', strokeHigh)
+    let ifResult = false
+    try {
+        switch (currentElement.attr('element/type')) {
+            case 'input' :
+                await handleInput(currentElement)
+                break
+            case 'output' :
+                await handleOutput(currentElement)
+                break
+            case 'if' :
+                ifResult = await handleIf(currentElement)
+                break
+            case 'declare' :
+                await handleDeclaration(currentElement)
+                break
         }
-  }, delay)
+        setTimeout(function () {
+            currentElement.attr('body/strokeWidth', strokeLow)
+            if (currentElement.attr('outgoing_link')) {
+                let currentLink
+                if (currentElement.attr('element/type') === 'if') {
+                    if (ifResult) {
+                        currentLink = findModel(currentElement.attr('outgoing_link/trueLink'))
+                    } else {
+                        currentLink = findModel(currentElement.attr('outgoing_link/falseLink'))
+                    }
+                } else {
+                    currentLink = findModel(currentElement.attr('outgoing_link/next'))
+                }
+                currentElement = findModel(currentLink.attr('element/target'))
+                delay_loop(currentElement)
+            }
+        }, delay)
+    } catch (err) {
+        alert(err.toString())
+        currentElement.attr('body/strokeWidth', strokeLow)
+        currentElement = null
+    }
 }
 
 async function handleDeclaration(element) {
-    let type;
-    if (element.variabletype === "Integer") {
-        type = "int";
-    } else if (element.variabletype === "Float") {
-        type = "float";
-    } else if (element.variabletype === 'Char') {
-        type = "char";
-    } else
-    {
-        type = 'string';
+    let types = {
+        'Integer': 'int',
+        'Float': 'float',
+        'Char': 'char',
+        'String': 'string'
     }
-    variables [element.variablename] = {
-        type: type,
+    variables [element.attr('element/variableName')] = {
+        type: types[element.attr('element/variableType')],
         value: null
     }
 }
 
 async function handleInput(element) {
-    if (!element.variablename) {
-        throw new Error("Assign a variable name");
+    const variableName = element.attr('element/variableName')
+    if (!variableName) {
+        throw new Error('Assign a variable name')
     }
-    renderProgram("Enter the value for variable " + element.variablename);
-    if (!(element.variablename in variables) ){
-        throw new Error("Declare the variable before using it.");
+    renderProgram('Enter the value for variable ' + variableName)
+    if (!(variableName in variables)) {
+        throw new Error('Declare the variable before using it.')
     }
-    var A = await allowUser();
-    let type, val, obj;
-    obj = variables[element.variablename];
-    type = obj.type;
-    if (type === "int" && is_int(A) === true) {
-        val = parseInt(A);
-        window.geval("var " + element.variablename + " = " + "parseInt(" + A + ");");
-    } else if (type === "float" &&is_float(A) === true) {
-        val = parseFloat(A);
-        window.geval("var " + element.variablename + " = " + "parseFloat(" + A + ");");
-    } else if (type === "char"){
-        if (A.length>1){
-            throw new Error("Enter a Character");
+    const userInput = await allowUser()
+    let type, val, obj
+    obj = variables[variableName]
+    type = obj.type
+    if (type === 'int' && isInteger(userInput) === true) {
+        val = parseInt(userInput)
+        globalEval('var ' + variableName + ' = ' + 'parseInt(' + userInput + ');')
+    } else if (type === 'float' && isFloat(userInput) === true) {
+        val = parseFloat(userInput)
+        globalEval('var ' + variableName + ' = ' + 'parseFloat(' + userInput + ');')
+    } else if (type === 'char') {
+        if (userInput.length > 1) {
+            throw new Error('Enter a Character')
         }
-        val = A;
-        window.geval("var " + element.variablename + " = '" + A + "';");
-    } else if (type === "string"){
-        val = A;
-        window.geval("var " + element.variablename + " = '" + A + "';");
+        val = userInput
+        globalEval('var ' + variableName + ' = \'' + userInput + '\';')
+    } else if (type === 'string') {
+        val = userInput
+        globalEval('var ' + variableName + ' = \'' + userInput + '\';')
     } else {
-        throw new Error("Data type mismatch.");
+        throw new Error('Data type mismatch.')
     }
-    variables[element.variablename] = {
+    variables[variableName] = {
         type: type,
         value: val
-    };
+    }
     return { status: "Ok" };
 }
 
 async function handleOutput(element) {
-    if (!element.exp) {
-        throw new Error("Assign a Expression");
+    if (!element.attr('element/expression')) {
+        throw new Error('Assign a Expression')
     }
-    var A = window.geval(element.exp);
-    renderProgram(A);
-    return { status: "Ok" };
+    renderProgram(globalEval(element.attr('element/expression')))
+    return { status: 'Ok' }
 }
 
 async function handleIf(element) {
-    if (!element.exp) {
-        throw new Error("Assign a Expression");
+    if (!element.attr('element/expression')) {
+        throw new Error('Assign a Expression')
     }
-    var A = window.geval(element.exp);
-    if (A)
-        return true;
-    else
-        return false;
+    return !!globalEval(element.attr('element/expression'))
 }
 
 
 function run() {
-    var currentElement = start;
-    delay_loop(currentElement).then(() => variables = []);
-    clearChat();
+    delay_loop(start).then(() => variables = [])
+    clearChat()
 }
 
-
-
-function is_float(n) {
+function isFloat (n) {
     if (!isNaN(parseFloat(n)) && isFinite(n)) {
-        return !!n.includes(".");
+        return !!n.includes('.')
     }
     return false
-  }
+}
 
-function is_int(n) {
+function isInteger (n) {
     if (!isNaN(parseFloat(n)) && isFinite(n)) {
-        return !n.includes(".");
+        return !n.includes('.')
     }
     return false
 }

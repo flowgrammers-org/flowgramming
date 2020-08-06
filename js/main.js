@@ -1,36 +1,37 @@
-var graph = new joint.dia.Graph()
-var objects = []
-var links = []
-var variables = []
-window.objects = objects
-window.links = links
-window.variables = variables
-window.geval = eval
+let graph = new joint.dia.Graph()
+let variables = []
+const globalEval = eval
 
-var paper = new joint.dia.Paper({
-  el: document.getElementById('myholder'),
-  height: $('#papercol').height(),
-  width: $('#papercol').width(),
+const paperColumn = $('#paperColumn')
+const paper = new joint.dia.Paper({
+  el: document.getElementById('myHolder'),
+  height: paperColumn.height(),
+  width: paperColumn.width(),
   model: graph,
   gridSize: 1
-
 })
 
 graph.on('change:position', function () {
   paper.fitToContent({
     padding: 20,
-    minWidth: $('#papercol').width(),
-    minHeight: $('#papercol').height(),
+    minWidth: paperColumn.width(),
+    minHeight: paperColumn.height(),
     gridWidth: 10,
     gridHeight: 10
   })
 })
 
-var link = new joint.shapes.standard.Link()
-var start = new joint.shapes.standard.Rectangle()
+const link = new joint.shapes.standard.Link()
+let start = new joint.shapes.standard.Rectangle()
 start.position(200, 30)
 start.resize(150, 60)
 start.attr({
+  element: {
+    type: 'start',
+  },
+  outgoing_link: {
+    next: link.id
+  },
   body: {
     fill: '#E74C3C',
     rx: 20,
@@ -43,43 +44,31 @@ start.attr({
   }
 })
 
-var startModel = {
-  type: 'start',
-  model: start,
-  id: start.id,
-  outgoing_link: {
-    next: link.id
-  }
-}
-objects.push(startModel)
 start.addTo(graph)
 
-var end = start.clone()
-end.attr('label/text', 'End')
+const end = start.clone()
+end.attr({
+  label: {
+    text: 'End'
+  },
+  element: {
+    type: 'end'
+  },
+  outgoing_link: null
+})
 
-var endModel = {
-  type: 'end',
-  model: end,
-  id: end.id
-}
-objects.push(endModel)
 end.translate(0, 100)
 end.addTo(graph)
 
 link.source(start)
 link.target(end)
 link.addTo(graph)
-
-links.push({
-  id: link.id,
-  source: start.id,
-  target: end.id,
-  model: link
+link.attr({
+  element: {
+    source: start.id,
+    target: end.id,
+  }
 })
-
-window.paper = paper
-window.graph = graph
-window.start = startModel
 
 window.onload = () => {
   'use strict'

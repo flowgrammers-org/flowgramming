@@ -1,79 +1,96 @@
-var paper = window.paper
-var graph = window.graph
-var objects = window.objects
-var links = window.links
-
 paper.on('element:pointerdblclick', function (elementView) {
-  var id = elementView.model.id
+  handleElementDoubleClick(elementView)
+})
 
-  var currentElement = findObject(id)
+function handleElementDoubleClick (elementView) {
+  const id = elementView.model.id
+  const currentElement = findModel(id)
 
-  if (currentElement.type === 'declare') {
+  if (currentElement.attr('element/type') === 'declare') {
     $('#modal .modal-body').html(`
             <p>Enter Variable Name and Type</p>
              <div class="input-group">
                 <input id="variable" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Variable Name">
-                <p id="datatype" hidden>Default</p>
+                <p id="variableType" hidden>Default</p>
                 <div class="input-group-append">
-                    <button id="datatypebtn" class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">DataType
+                    <button id="dataTypeButton" class="btn btn-outline-secondary dropdown-toggle"
+                     type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        DataType
                     </button>
-                    <div id="datatypedrop" class="dropdown-menu">
-                        <a class="dropdown-item" onclick="toggle('Integer')">Integer</a>
-                        <a class="dropdown-item" onclick="toggle('Float')">Float</a>
-                        <a class="dropdown-item" onclick="toggle('Char')">Character</a>
-                        <a class="dropdown-item" onclick="toggle('String')">String</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" onclick="toggleDataType('Integer')">Integer</a>
+                        <a class="dropdown-item" onclick="toggleDataType('Float')">Float</a>
+                        <a class="dropdown-item" onclick="toggleDataType('Char')">Character</a>
+                        <a class="dropdown-item" onclick="toggleDataType('String')">String</a>
                     </div>
                 </div>
             </div>
-            `)
+    `)
     $('#modal').modal('show')
-    $('#okbtn').one('click', function (event) {
-      const variablename = $('#variable').val()
-      const datatype = $('#datatype').text().trim()
-      if (variablename.length > 0 && datatype !== 'Default') {
+    $('#okButton').one('click', function () {
+      const variableName = $('#variable').val()
+      const variableType = $('#variableType').text().trim()
+      if (variableName.length > 0 && variableType !== 'Default') {
         $('#modal').modal('hide')
-        currentElement.model.attr('label/text', getWrapText('Declare ' + datatype + ' ' + variablename))
-        currentElement.variablename = variablename
-        currentElement.variabletype = datatype
+        currentElement.attr({
+          label: {
+            text: getWrapText('Declare ' + variableType + ' ' + variableName)
+          },
+          element: {
+            variableName,
+            variableType
+          }
+        })
       }
     })
-  } else if (currentElement.type === 'input') {
+  } else if (currentElement.attr('element/type') === 'input') {
     $('#modal .modal-body').html(`
             <p>Enter Variable Name</p>
             <div class="input-group">
                 <input id="variable" type="text" class="form-control" aria-label="Text input with dropdown button">
             </div>
-            `)
+    `)
     $('#modal').modal('show')
-    $('#okbtn').one('click', function (event) {
-      const variablename = $('#variable').val()
-      if (variablename.length > 0) {
+    $('#okButton').one('click', function () {
+      const variableName = $('#variable').val()
+      if (variableName.length > 0) {
         $('#modal').modal('hide')
-        currentElement.model.attr('label/text', getWrapText('Input ' + variablename))
-        currentElement.variablename = variablename
+        currentElement.attr({
+          label: { text: getWrapText('Input ' + variableName) },
+          element: {
+            variableName,
+          }
+        })
       }
     })
-  } else if (currentElement.type === 'output' || currentElement.type === 'if') {
+  } else if (currentElement.attr('element/type') === 'output' || currentElement.attr('element/type') === 'if') {
     $('#modal .modal-body').html(`
             <p>Enter the expression</p>
             <div class="input-group">
                 <input id="exp" type="text" class="form-control" aria-label="Text input with dropdown button">
             </div>
-            `)
+    `)
     $('#modal').modal('show')
-    $('#okbtn').one('click', function (event) {
-      const exp = $('#exp').val()
-      if (exp.length > 0) {
+    $('#okButton').one('click', function () {
+      const expression = $('#exp').val()
+      if (expression.length > 0) {
         $('#modal').modal('hide')
-        if (currentElement.type === 'if') { currentElement.model.attr('label/text', getWrapText(exp)) } else { currentElement.model.attr('label/text', getWrapText('Print ' + exp)) }
-        currentElement.exp = exp
+        currentElement.attr({
+          label: {
+            text: getWrapText(
+              (currentElement.attr('element/type') !== 'if' ? 'Print ' : '') + expression
+            )
+          },
+          element: {
+            expression
+          }
+        })
       }
     })
   }
-})
+}
 
-function toggle (dataType) {
-  $('#datatype').text(dataType)
-  $('#datatypebtn').text(dataType)
+function toggleDataType (dataType) {
+  $('#variableType').text(dataType)
+  $('#dataTypeButton').text(dataType)
 }
