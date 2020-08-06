@@ -73,7 +73,7 @@ link.attr({
 window.onload = () => {
   'use strict'
 
-  if ('serviceWorker' in navigator) {
+  if (location.hostname != 'localhost' && 'serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
   }
 }
