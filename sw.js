@@ -6,6 +6,7 @@ self.addEventListener('install', function (e) {
     caches.open(cacheName).then(function (cache) {
       return cache.addAll(
         [
+          "/",
           "/js/vendor/jquery.js",
           "/js/vendor/popper.js",
           "/js/vendor/bootstrap.js",
