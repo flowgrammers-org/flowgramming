@@ -1,4 +1,4 @@
-const cacheName = 'flowgramming'
+const cacheName = 'flowgramming-v0.0.1'
 
 /* Start the service worker and cache all of the app's content */
 self.addEventListener('install', function (e) {
@@ -10,6 +10,7 @@ self.addEventListener('install', function (e) {
           "/js/vendor/jquery.js",
           "/js/vendor/popper.js",
           "/js/vendor/bootstrap.js",
+          "/js/vendor/cycle.js",
           "/js/vendor/handlebars.min.js",
           "/js/chat.js",
           "/js/vendor/lodash.js",
@@ -21,6 +22,7 @@ self.addEventListener('install', function (e) {
           "/js/addElement.js",
           "/js/run.js",
           "/js/events.js",
+          "/js/save.js",
           "/css/vendor/bootstrap.min.css",
           "/css/vendor/joint.css",
           "/css/main.css",
