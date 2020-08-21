@@ -21,9 +21,17 @@ function handleElementDoubleClick(elementView) {
                         <a class="dropdown-item" onclick="toggleDataType('Integer')">Integer</a>
                         <a class="dropdown-item" onclick="toggleDataType('Float')">Float</a>
                         <a class="dropdown-item" onclick="toggleDataType('Char')">Character</a>
-                        <a class="dropdown-item" onclick="toggleDataType('String')">String</a>
+                        <button id="arrayTypeButton" class="btn btn-outline-secondary dropdown-toggle"
+                        type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Array
+                        </button>
+                           <div class="dropdown-menu">
+                           <a class="dropdown-item" onclick="toggleDataType('Integer array')">Integer</a>
+                           <a class="dropdown-item" onclick="toggleDataType('Float array')">Float</a>
+                           <a class="dropdown-item" onclick="toggleDataType('Char array')">Character</a>
                     </div>
                 </div>
+            </div>
             </div>
     `)
         $('#modal').modal('show')
@@ -99,6 +107,29 @@ function handleElementDoubleClick(elementView) {
                     },
                     element: {
                         expression
+                    }
+                })
+            }
+        })
+    } else if (currentElement.attr('element/type') === 'assignment') {
+        $('#modal .modal-body').html(`
+            <p>Select a variable and enter the value</p>
+            <div class="input-group mb-3">
+              <input type="text" id="variableName" class="form-control" placeholder="Variable name">
+              <input type="text" id="variableValue" class="form-control" placeholder="Variable value">
+            </div>
+            `)
+        $('#modal').modal('show')
+        $('#okButton').one('click', function (event) {
+            const variableValue = $('#variableValue').val()
+            const variableName = $('#variableName').val()
+            if (variableValue.length > 0 && variableName.length > 0) {
+                $('#modal').modal('hide')
+                currentElement.attr({
+                    label: {text: getWrapText(variableName + ' = ' + variableValue)},
+                    element: {
+                        variableName,
+                        variableValue
                     }
                 })
             }

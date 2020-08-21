@@ -50,3 +50,6 @@ html, body {
     float: right;
     height: 100%;
 }
+#arrayTypeButton {
+    padding-right: 57%;
+}

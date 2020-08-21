@@ -1,7 +1,7 @@
 const strokeHigh = 5
 let strokeLow = 0
 
-async function delay_loop (currentElement) {
+async function delay_loop(currentElement) {
     const delay = 1000
     strokeLow = currentElement.attr('body/strokeWidth')
     currentElement.attr('body/strokeWidth', strokeHigh)
@@ -19,6 +19,9 @@ async function delay_loop (currentElement) {
                 break
             case 'declare' :
                 await handleDeclaration(currentElement)
+                break
+            case 'assignment' :
+                await handleAssignment(currentElement)
                 break
         }
         setTimeout(function () {
@@ -45,55 +48,107 @@ async function delay_loop (currentElement) {
     }
 }
 
+async function handleAssignment(element) {
+    let type, obj, arrayNotation
+    const variableName = element.attr('element/variableName')
+    let variableValue = element.attr('element/variableValue')
+    if (!variableName) {
+        throw new Error('Assign a variable name')
+    }
+    if (!variableValue) {
+        throw new Error("Assign a variable value")
+    }
+    if (isArrayNotation(variableName)) {
+        arrayNotation = variableName.split('[')
+    }
+    obj = getDeclaredVariable(variableName, arrayNotation)
+    type = obj.type
+    if (type === 'int') {
+        variableValue = parseInt(globalEval(variableValue))
+        globalEval(variableName + ' = ' + variableValue)
+    } else if (type === 'float') {
+        variableValue = parseFloat(globalEval(variableValue))
+        globalEval(variableName + ' = ' + variableValue)
+    } else if (type === 'char' && variableValue.length === 1) {
+        globalEval(variableName + ' = ' + '\'' + variableValue + '\'')
+    } else if (type === 'int(array)') {
+        variableValue = parseInt(globalEval(variableValue))
+        globalEval(variableName + '=' + variableValue)
+    } else if (type === 'float(array)') {
+        variableValue = parseFloat(globalEval(variableValue))
+        globalEval(variableName + '=' + variableValue)
+    } else if (type === 'char(array)') {
+        if (isArrayNotation(variableValue)) {
+            variableValue = globalEval('\'' + variableValue + '\'')
+            globalEval(variableName + '=' + variableValue)
+        } else if (variableValue.length === 1) {
+            globalEval(variableName + '=' + '\'' + variableValue + '\'')
+        }
+    }
+    storeVariables(variableName, arrayNotation, variableValue, type)
+    return {status: "Ok"}
+}
+
 async function handleDeclaration(element) {
     let types = {
         'Integer': 'int',
         'Float': 'float',
         'Char': 'char',
-        'String': 'string'
+        'Integer array': 'int(array)',
+        'Float array': 'float(array)',
+        'Char array': 'char(array)'
     }
-    variables [element.attr('element/variableName')] = {
-        type: types[element.attr('element/variableType')],
-        value: null
+    const type = types[element.attr('element/variableType')]
+    if (type.includes('array')) {
+        globalEval(element.attr('element/variableName') + '= []')
+        variables [element.attr('element/variableName')] = {
+            type: type,
+            value: []
+        }
+    } else {
+        variables [element.attr('element/variableName')] = {
+            type: type,
+            value: null
+        }
     }
 }
 
 async function handleInput(element) {
+    let type, val, obj, arrayNotation
     const variableName = element.attr('element/variableName')
     if (!variableName) {
         throw new Error('Assign a variable name')
     }
     renderProgram('Enter the value for variable ' + variableName)
-    if (!(variableName in variables)) {
-        throw new Error('Declare the variable before using it.')
+    if (isArrayNotation(variableName)) {
+        arrayNotation = variableName.split('[')
     }
-    const userInput = await allowUser()
-    let type, val, obj
-    obj = variables[variableName]
+    obj = getDeclaredVariable(variableName, arrayNotation)
     type = obj.type
+    const userInput = await allowUser()
     if (type === 'int' && isInteger(userInput) === true) {
         val = parseInt(userInput)
-        globalEval('var ' + variableName + ' = ' + 'parseInt(' + userInput + ');')
+        globalEval(variableName + ' = ' + val)
     } else if (type === 'float' && isFloat(userInput) === true) {
         val = parseFloat(userInput)
-        globalEval('var ' + variableName + ' = ' + 'parseFloat(' + userInput + ');')
+        globalEval(variableName + ' = ' + val)
     } else if (type === 'char') {
         if (userInput.length > 1) {
             throw new Error('Enter a Character')
         }
         val = userInput
-        globalEval('var ' + variableName + ' = \'' + userInput + '\';')
-    } else if (type === 'string') {
-        val = userInput
-        globalEval('var ' + variableName + ' = \'' + userInput + '\';')
+        globalEval(variableName + ' = \'' + userInput + '\'')
+    } else if (type === 'int(array)') {
+        val = handleArrays(userInput, isInteger, parseInt, variableName, 'integer')
+    } else if (type === 'float(array)') {
+        val = handleArrays(userInput, isFloat, parseFloat, variableName, 'float')
+    } else if (type === 'char(array)') {
+        val = handleArrays(userInput, isChar, parseChar, variableName, 'character')
     } else {
         throw new Error('Data type mismatch.')
     }
-    variables[variableName] = {
-        type: type,
-        value: val
-    }
-    return { status: "Ok" };
+    storeVariables(variableName, arrayNotation, val, type)
+    return {status: "Ok"}
 }
 
 async function handleOutput(element) {
@@ -101,7 +156,7 @@ async function handleOutput(element) {
         throw new Error('Assign a Expression')
     }
     renderProgram(globalEval(element.attr('element/expression')))
-    return { status: 'Ok' }
+    return {status: 'Ok'}
 }
 
 async function handleIf(element) {
@@ -117,16 +172,83 @@ function run() {
     clearChat()
 }
 
-function isFloat (n) {
+function isFloat(n) {
     if (!isNaN(parseFloat(n)) && isFinite(n)) {
         return !!n.includes('.')
     }
     return false
 }
 
-function isInteger (n) {
+function isInteger(n) {
     if (!isNaN(parseFloat(n)) && isFinite(n)) {
         return !n.includes('.')
     }
     return false
+}
+
+function isChar(n) {
+    return n.length === 1;
+
+}
+
+function parseChar(n) {
+    return '\'' + n + '\''
+}
+
+function isArrayNotation(n) {
+    return !!(n.includes('[') && n.includes(']'));
+}
+
+function getDeclaredVariable(variableName, arrayNotation) {
+    let obj
+    if (isArrayNotation(variableName)) {
+        arrayNotation = variableName.split('[')
+        if (!(arrayNotation[0] in variables)) {
+            throw new Error('Declare the variable before using it.')
+        }
+        obj = variables[arrayNotation[0]]
+    } else if (!(variableName in variables)) {
+        throw new Error('Declare the variable before using it.')
+    } else {
+        obj = variables[variableName]
+    }
+    return obj
+}
+
+function storeVariables(variableName, arrayNotation, variableValue, type) {
+    if (isArrayNotation(variableName)) {
+        //Extracting the index position from the array notation
+        const indexPosition = arrayNotation[1].split(']')
+        variables[arrayNotation[0]].type = type
+        variables[arrayNotation[0]].value[parseInt(indexPosition[0])] = variableValue
+    } else {
+        variables[variableName] = {
+            type: type,
+            value: variableValue
+        }
+    }
+}
+
+function handleArrays(userInput, checkType, parsingType, variableName, type) {
+    let val
+    if (isArrayNotation(variableName)) {
+        if (checkType(userInput)) {
+            val = parsingType(userInput)
+            globalEval(variableName + '=' + val)
+        } else {
+            throw new Error('Data type mismatch. Declared array is of type ' + type + '.')
+        }
+    } else {
+        val = userInput.split(',')
+        for (let i = 0; i < val.length; i++) {
+            if (checkType(val[i])) {
+                val[i] = parsingType(val[i])
+            } else {
+                throw new Error('Data type mismatch.\n\nDeclared array is of type ' + type + ' but value at position '
+                    + (i + 1) + ' in the array is not of type ' + type + '.')
+            }
+        }
+        globalEval(variableName + '=[' + val + ']')
+    }
+    return val
 }
