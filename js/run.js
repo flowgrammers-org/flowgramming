@@ -69,8 +69,10 @@ async function handleAssignment(element) {
     } else if (type === 'float') {
         variableValue = parseFloat(globalEval(variableValue))
         globalEval(variableName + ' = ' + variableValue)
-    } else if (type === 'char' && variableValue.length === 1) {
+    } else if (type === 'char' && isChar(variableValue)) {
         globalEval(variableName + ' = ' + '\'' + variableValue + '\'')
+    } else if (type === 'string') {
+        variableValue = handleArrays(variableValue, isChar, parseChar, variableName, 'string', false)
     } else if (type === 'int(array)') {
         variableValue = handleArrays(variableValue, isInteger, parseInt, variableName, 'integer', false)
     } else if (type === 'float(array)') {
@@ -87,12 +89,13 @@ async function handleDeclaration(element) {
         'Integer': 'int',
         'Float': 'float',
         'Char': 'char',
+        'String': 'string',
         'Integer array': 'int(array)',
         'Float array': 'float(array)',
         'Char array': 'char(array)'
     }
     const type = types[element.attr('element/variableType')]
-    if (type.includes('array')) {
+    if (type.includes('array') || type.includes('string')) {
         globalEval(element.attr('element/variableName') + '= []')
         variables [element.attr('element/variableName')] = {
             type: type,
@@ -126,11 +129,13 @@ async function handleInput(element) {
         val = parseFloat(userInput)
         globalEval(variableName + ' = ' + val)
     } else if (type === 'char') {
-        if (userInput.length > 1) {
+        if (!isChar(userInput)) {
             throw new Error('Enter a Character')
         }
         val = userInput
         globalEval(variableName + ' = \'' + userInput + '\'')
+    } else if (type === 'string') {
+        val = handleArrays(userInput, isChar, parseChar, variableName, 'string', true)
     } else if (type === 'int(array)') {
         val = handleArrays(userInput, isInteger, parseInt, variableName, 'integer', true)
     } else if (type === 'float(array)') {
@@ -223,7 +228,7 @@ function storeVariables(variableName, arrayNotation, variableValue, type) {
 }
 
 function handleArrayAssignment(userInput, type) {
-    if (type === 'character') {
+    if (type === 'character' || type === 'string') {
         if (isArrayNotation(userInput)) {
             return globalEval(userInput)
         } else {
@@ -244,7 +249,11 @@ function handleArrays(userInput, checkType, parsingType, variableName, type, isI
             throw new Error('Data type mismatch. Declared array is of type ' + type + '.')
         }
     } else {
-        val = userInput.split(',')
+        if (type === 'string') {
+            val = userInput.split('')
+        } else {
+            val = userInput.split(',')
+        }
         for (let i = 0; i < val.length; i++) {
             if (checkType(val[i])) {
                 val[i] = parsingType(val[i])

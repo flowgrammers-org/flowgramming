@@ -21,6 +21,7 @@ function handleElementDoubleClick(elementView) {
                         <a class="dropdown-item" onclick="toggleDataType('Integer')">Integer</a>
                         <a class="dropdown-item" onclick="toggleDataType('Float')">Float</a>
                         <a class="dropdown-item" onclick="toggleDataType('Char')">Character</a>
+                        <a class="dropdown-item" onclick="toggleDataType('String')">String</a>
                         <button id="arrayTypeButton" class="btn btn-outline-secondary dropdown-toggle"
                         type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Array
