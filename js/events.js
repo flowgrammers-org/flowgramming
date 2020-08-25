@@ -38,14 +38,18 @@ function handleElementDoubleClick(elementView) {
         $('#okButton').one('click', function () {
             const variableName = $('#variable').val()
             const variableType = $('#variableType').text().trim()
-            if (variableName.length > 0 && variableType !== 'Default') {
+            $('#modal').modal('hide')
+            if (variableName.length <= 0) {
+                alert('Error: Please enter the variable name before declaring the variable')
+            } else if (variableType === 'Default') {
+                alert('Error: Please enter the variable type before declaring the variable')
+            } else {
                 const regex = new RegExp('^[a-zA-Z_][a-zA-Z0-9_]*$')
                 const keyWords = ['int', 'float', 'string', 'array', 'char', 'if', 'else', 'while', 'for',
                     'switch', 'case', 'default', 'break', 'continue', 'auto', 'const', 'let', 'var', 'do',
                     'foreach', 'enum', 'long', 'register', 'return', 'short', 'signed', 'sizeof', 'static',
                     'struct', 'typedef', 'union', 'unsigned', 'void', 'volatile', 'new', 'throw', 'catch',
                     'printf', 'scanf', 'print', 'cin', 'cout', 'scanner', 'list', 'in', 'true', 'false', 'null', 'None', 'not']
-                $('#modal').modal('hide')
                 if (!regex.test(variableName)) {
                     alert('Follow naming convention while declaring a variable \n \n'
                         + '-> Variable name should start only either with an underscore or an alphabet. It should not start with number or any other special symbols. \n'
