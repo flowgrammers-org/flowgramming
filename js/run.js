@@ -63,24 +63,29 @@ async function handleAssignment(element) {
     }
     obj = getDeclaredVariable(variableName, arrayNotation)
     type = obj.type
-    if (type === 'int') {
-        variableValue = parseInt(globalEval(variableValue))
-        globalEval(variableName + ' = ' + variableValue)
-    } else if (type === 'float') {
-        variableValue = parseFloat(globalEval(variableValue))
-        globalEval(variableName + ' = ' + variableValue)
-    } else if (type === 'char' && isChar(variableValue)) {
-        globalEval(variableName + ' = ' + '\'' + variableValue + '\'')
-    } else if (type === 'string') {
-        variableValue = handleArrays(variableValue, isChar, parseChar, variableName, 'string', false)
-    } else if (type === 'int(array)') {
-        variableValue = handleArrays(variableValue, isInteger, parseInt, variableName, 'integer', false)
-    } else if (type === 'float(array)') {
-        variableValue = handleArrays(variableValue, isFloat, parseFloat, variableName, 'float', false)
-    } else if (type === 'char(array)') {
-        variableValue = handleArrays(variableValue, isChar, parseChar, variableName, 'character', false)
+    try {
+        if (type === 'int') {
+            variableValue = parseInt(globalEval(variableValue))
+            globalEval(variableName + ' = ' + variableValue)
+        } else if (type === 'float') {
+            variableValue = parseFloat(globalEval(variableValue))
+            globalEval(variableName + ' = ' + variableValue)
+        } else if (type === 'char' && isChar(variableValue)) {
+            globalEval(variableName + ' = ' + '\'' + variableValue + '\'')
+        } else if (type === 'string') {
+            variableValue = handleArrays(variableValue, isChar, parseChar, variableName, 'string', false)
+        } else if (type === 'int(array)') {
+            variableValue = handleArrays(variableValue, isInteger, parseInt, variableName, 'integer', false)
+        } else if (type === 'float(array)') {
+            variableValue = handleArrays(variableValue, isFloat, parseFloat, variableName, 'float', false)
+        } else if (type === 'char(array)') {
+            variableValue = handleArrays(variableValue, isChar, parseChar, variableName, 'character', false)
+        }
+        storeVariables(variableName, arrayNotation, variableValue, type)
+    } catch (e) {
+        handleNotInitializedVariables(e)
     }
-    storeVariables(variableName, arrayNotation, variableValue, type)
+
     return {status: "Ok"}
 }
 
@@ -96,7 +101,6 @@ async function handleDeclaration(element) {
     }
     const type = types[element.attr('element/variableType')]
     if (type.includes('array') || type.includes('string')) {
-        globalEval(element.attr('element/variableName') + '= []')
         variables [element.attr('element/variableName')] = {
             type: type,
             value: []
@@ -153,7 +157,11 @@ async function handleOutput(element) {
     if (!element.attr('element/expression')) {
         throw new Error('Assign a Expression')
     }
-    renderProgram(globalEval(element.attr('element/expression')))
+    try {
+        renderProgram(globalEval(element.attr('element/expression')))
+    } catch (e) {
+        handleNotInitializedVariables(e)
+    }
     return {status: 'Ok'}
 }
 
@@ -161,7 +169,11 @@ async function handleIf(element) {
     if (!element.attr('element/expression')) {
         throw new Error('Assign a Expression')
     }
-    return !!globalEval(element.attr('element/expression'))
+    try {
+        return !!globalEval(element.attr('element/expression'))
+    } catch (e) {
+        handleNotInitializedVariables(e)
+    }
 }
 
 
@@ -265,4 +277,17 @@ function handleArrays(userInput, checkType, parsingType, variableName, type, isI
         globalEval(variableName + '=[' + val + ']')
     }
     return val
+}
+
+function handleNotInitializedVariables(e) {
+    e = e.toString()
+    if (e.includes('ReferenceError')) {
+        let err = e.split(':')
+        if (variables[err[1].charAt(1)]) {
+            err[1] = err[1].replace('defined', 'initialized')
+            throw new Error(err[1] + '.\n\nPlease initialize the variable before using it.')
+        }
+        throw new Error(err[1] + '.\n\nPlease define the variable before using it.')
+    }
+    throw new Error(e)
 }
