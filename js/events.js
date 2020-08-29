@@ -92,7 +92,7 @@ function handleElementDoubleClick(elementView) {
                 })
             }
         })
-    } else if (currentElement.attr('element/type') === 'output' || currentElement.attr('element/type') === 'if') {
+    } else if (['output', 'if', 'while'].includes(currentElement.attr('element/type'))) {
         $('#modal .modal-body').html(`
             <p>Enter the expression</p>
             <div class="input-group">
@@ -107,7 +107,7 @@ function handleElementDoubleClick(elementView) {
                 currentElement.attr({
                     label: {
                         text: getWrapText(
-                            (currentElement.attr('element/type') !== 'if' ? 'Print ' : '') + expression
+                            (currentElement.attr('element/type') === 'output' ? 'Print ' : '') + expression
                         )
                     },
                     element: {

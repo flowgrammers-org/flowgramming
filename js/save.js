@@ -56,6 +56,6 @@ function saveFile (filename, data) {
     setTimeout(function () {
       document.body.removeChild(a)
       window.URL.revokeObjectURL(url)
-    }, 0)
+    }, 20)
   }
 }

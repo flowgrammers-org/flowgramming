@@ -1,11 +1,11 @@
 const strokeHigh = 5
 let strokeLow = 0
 
-async function delay_loop(currentElement) {
+async function delayLoop(currentElement) {
     const delay = 1000
     strokeLow = currentElement.attr('body/strokeWidth')
     currentElement.attr('body/strokeWidth', strokeHigh)
-    let ifResult = false
+    let expressionResult = false
     try {
         switch (currentElement.attr('element/type')) {
             case 'input' :
@@ -15,7 +15,8 @@ async function delay_loop(currentElement) {
                 await handleOutput(currentElement)
                 break
             case 'if' :
-                ifResult = await handleIf(currentElement)
+            case 'while' :
+                expressionResult = await handleBooleanExpression(currentElement)
                 break
             case 'declare' :
                 await handleDeclaration(currentElement)
@@ -28,17 +29,14 @@ async function delay_loop(currentElement) {
             currentElement.attr('body/strokeWidth', strokeLow)
             if (currentElement.attr('outgoing_link')) {
                 let currentLink
-                if (currentElement.attr('element/type') === 'if') {
-                    if (ifResult) {
-                        currentLink = findModel(currentElement.attr('outgoing_link/trueLink'))
-                    } else {
-                        currentLink = findModel(currentElement.attr('outgoing_link/falseLink'))
-                    }
+                const currentElementType = currentElement.attr('element/type');
+                if (['if', 'while'].includes(currentElementType)) {
+                    currentLink = getConditionalNextLink(currentElement, currentElementType, expressionResult)
                 } else {
                     currentLink = findModel(currentElement.attr('outgoing_link/next'))
                 }
                 currentElement = findModel(currentLink.attr('element/target'))
-                delay_loop(currentElement)
+                delayLoop(currentElement)
             }
         }, delay)
     } catch (err) {
@@ -46,6 +44,14 @@ async function delay_loop(currentElement) {
         currentElement.attr('body/strokeWidth', strokeLow)
         currentElement = null
     }
+}
+
+function getConditionalNextLink(ele, elementType, expResult) {
+    const links = {
+        'if': ['outgoing_link/falseLink', 'outgoing_link/trueLink'],
+        'while': ['outgoing_link/next', 'outgoing_link/loopLink']
+    }
+    return findModel(ele.attr(links[elementType][Number(expResult)]))
 }
 
 async function handleAssignment(element) {
@@ -165,7 +171,7 @@ async function handleOutput(element) {
     return {status: 'Ok'}
 }
 
-async function handleIf(element) {
+async function handleBooleanExpression(element) {
     if (!element.attr('element/expression')) {
         throw new Error('Assign a Expression')
     }
@@ -178,7 +184,7 @@ async function handleIf(element) {
 
 
 function run() {
-    delay_loop(start).then(() => variables = [])
+    delayLoop(start).then(() => variables = [])
     clearChat()
 }
 
