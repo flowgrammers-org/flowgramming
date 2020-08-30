@@ -492,7 +492,10 @@ function addElementWhile(currentLink, element, type) {
         }
     })
     element.attr({
-        element: {type},
+        element: {
+            type: 'while',
+            loopType: type
+        },
         outgoing_link: {
             next: nextLink.id,
             loopLink: loopLink.id

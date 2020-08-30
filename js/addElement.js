@@ -26,16 +26,18 @@ function handleDoubleClick(linkView) {
     });
     newElementPaper.on('element:pointerclick', function (elementView) {
         const callBackMap = {
-            'OUTPUT' : addOutput,
-            'INPUT' : addInput,
-            'WHILE' : addWhile,
-            'ASSIGNMENT' : addAssignment,
-            'DECLARATION' : addDeclaration,
-            'IF' : addIF
+            'OUTPUT': addOutput,
+            'INPUT': addInput,
+            'WHILE': addWhile,
+            'FOR': addForLoop,
+            'ASSIGNMENT': addAssignment,
+            'DECLARATION': addDeclaration,
+            'IF': addIF
         }
         callBackMap[elementView.model.attr('label/text')]()
         $('#modal .modal-content').removeClass('modal-height')
         $('.joint-element').removeClass('cursor-click')
+        $('#modal').modal('hide')
     })
 
     populateAvailableElements(addElementGraph)
@@ -76,15 +78,20 @@ function populateAvailableElements(addElementGraph) {
     whileElement.attr('label/text', 'WHILE')
     whileElement.addTo(addElementGraph)
 
+    const forElement = getHexagon()
+    forElement.resize(115, 63)
+    forElement.position(whileElement.position().x + 130, whileElement.position().y)
+    forElement.attr('label/text', 'FOR')
+    forElement.addTo(addElementGraph)
+
     const ifElement = getDiamond()
     ifElement.resize(115, 63)
-    ifElement.position(whileElement.position().x + 130, whileElement.position().y)
+    ifElement.position(whileElement.position().x, whileElement.position().y + 90)
     ifElement.attr('label/text', 'IF')
     ifElement.addTo(addElementGraph)
 }
 
 function addOutput() {
-    $('#modal').modal('hide')
     const Parallelogram = getParallelogram()
     Parallelogram.attr('label/text', getWrapText('output'))
     Parallelogram.addTo(graph)
@@ -92,7 +99,6 @@ function addOutput() {
 }
 
 function addInput() {
-    $('#modal').modal('hide')
     const Parallelogram = getParallelogram()
     Parallelogram.attr('label/text', getWrapText('input'))
     Parallelogram.addTo(graph)
@@ -100,7 +106,6 @@ function addInput() {
 }
 
 function addAssignment() {
-    $('#modal').modal('hide')
     const Rectangle = getRectangle()
     Rectangle.attr('label/text', getWrapText('Statement'))
     Rectangle.addTo(graph)
@@ -108,15 +113,20 @@ function addAssignment() {
 }
 
 function addWhile() {
-    $('#modal').modal('hide')
     const hexagon = getHexagon()
     hexagon.attr('label/text', getWrapText('while'))
     hexagon.addTo(graph)
     addElementWhile(doubleClickedLink, hexagon, 'while')
 }
 
+function addForLoop() {
+    const hexagon = getHexagon()
+    hexagon.attr('label/text', getWrapText('for'))
+    hexagon.addTo(graph)
+    addElementWhile(doubleClickedLink, hexagon, 'for')
+}
+
 function addDeclaration() {
-    $('#modal').modal('hide')
     const Rectangle = getRectangle()
     Rectangle.attr('label/text', getWrapText('Declare Variable'))
     Rectangle.addTo(graph)
@@ -124,7 +134,6 @@ function addDeclaration() {
 }
 
 function addIF() {
-    $('#modal').modal('hide')
     const diamond = getDiamond()
     diamond.attr('label/text', getWrapText('if'))
     diamond.addTo(graph)

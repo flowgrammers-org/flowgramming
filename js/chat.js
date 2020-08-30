@@ -1,10 +1,10 @@
 $chatHistory = $('.chat-history')
 $button = $('#chatsend')
 $textarea = $('#message-to-send')
-$chatHistoryList = this.$chatHistory.find('ul')
+$chatHistoryList = $chatHistory.find('ul')
 
 function scrollToBottom () {
-  $chatHistory.scrollTop($chatHistory[0].scrollHeight)
+  document.getElementById('message-to-send').scrollIntoView()
 }
 
 function renderUser () {
@@ -35,7 +35,7 @@ renderProgram('Welcome to Flowgramming')
 
 async function allowUser () {
   scrollToBottom()
-  $('#message-to-send').prop('disabled', false)
+  $textarea.prop('disabled', false)
 
   return new Promise(function (resolve, reject) {
     $button.one('click', function (e) {
@@ -49,7 +49,7 @@ function clearChat () {
 }
 
 function disableUser () {
-  $('#message-to-send').prop('disabled', true)
+  $textarea.prop('disabled', true)
 }
 
 disableUser()

@@ -1,10 +1,13 @@
 const strokeHigh = 5
 let strokeLow = 0
+const visitedItems = new Set()
 
 async function delayLoop(currentElement) {
     const delay = 1000
+
     strokeLow = currentElement.attr('body/strokeWidth')
     currentElement.attr('body/strokeWidth', strokeHigh)
+
     let expressionResult = false
     try {
         switch (currentElement.attr('element/type')) {
@@ -15,8 +18,17 @@ async function delayLoop(currentElement) {
                 await handleOutput(currentElement)
                 break
             case 'if' :
-            case 'while' :
                 expressionResult = await handleBooleanExpression(currentElement)
+                break
+            case 'while' :
+                switch (currentElement.attr('element/loopType')) {
+                    case 'while' :
+                        expressionResult = await handleBooleanExpression(currentElement)
+                        break
+                    case 'for' :
+                        expressionResult = await handleForLoop(currentElement)
+                        break
+                }
                 break
             case 'declare' :
                 await handleDeclaration(currentElement)
@@ -25,6 +37,7 @@ async function delayLoop(currentElement) {
                 await handleAssignment(currentElement)
                 break
         }
+        visitedItems.add(currentElement.id)
         setTimeout(function () {
             currentElement.attr('body/strokeWidth', strokeLow)
             if (currentElement.attr('outgoing_link')) {
@@ -52,6 +65,27 @@ function getConditionalNextLink(ele, elementType, expResult) {
         'while': ['outgoing_link/next', 'outgoing_link/loopLink']
     }
     return findModel(ele.attr(links[elementType][Number(expResult)]))
+}
+
+async function handleForLoop(element) {
+    try {
+        if (!visitedItems.has(element.id)) {
+            const initExp = element.attr('element/forLoop/init')
+            if (!initExp) {
+                throw new Error("Enter the initialisation expression")
+            }
+            globalEval(initExp)
+        } else {
+            const incrExp = element.attr('element/forLoop/incr')
+            if (!incrExp) {
+                throw new Error("Enter the incrementation expression")
+            }
+            globalEval(incrExp)
+        }
+    } catch (e) {
+        handleNotInitializedVariables(e)
+    }
+    return handleBooleanExpression(element)
 }
 
 async function handleAssignment(element) {
@@ -184,6 +218,7 @@ async function handleBooleanExpression(element) {
 
 
 function run() {
+    visitedItems.clear()
     delayLoop(start).then(() => variables = [])
     clearChat()
 }
@@ -295,5 +330,5 @@ function handleNotInitializedVariables(e) {
         }
         throw new Error(err[1] + '.\n\nPlease define the variable before using it.')
     }
-    throw new Error(e)
+    throw e
 }
