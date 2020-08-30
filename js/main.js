@@ -23,7 +23,7 @@ graph.on('change:position', function () {
 
 const link = new joint.shapes.standard.Link()
 let start = new joint.shapes.standard.Rectangle()
-start.position(200, 30)
+start.position(350, 30)
 start.resize(150, 60)
 start.attr({
   element: {

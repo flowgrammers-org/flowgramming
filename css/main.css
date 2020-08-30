@@ -1,13 +1,23 @@
 @font-face {
     font-family: 'inter', sans-serif;
-    url('assets/fonts/inter.eot');
-    url('assets/fonts/inter.woff2') format('woff2'),
-    url('assets/fonts/inter.woff') format('woff'),
-    url('assets/fonts/inter.ttf') format('truetype'),
-    url('assets/fonts/inter.svg#inter') format('svg'),
-    url('assets/fonts/inter.eot?#iefix') format('embedded-opentype');
+url('assets/fonts/inter.eot');
+url('assets/fonts/inter.woff2') format('woff2'),
+url('assets/fonts/inter.woff') format('woff'),
+url('assets/fonts/inter.ttf') format('truetype'),
+url('assets/fonts/inter.svg#inter') format('svg'),
+url('assets/fonts/inter.eot?#iefix') format('embedded-opentype');
     font-weight: normal;
     font-style: normal;
+}
+
+@font-face {
+    font-family: 'merinda';
+url('assets/fonts/merinda.ttf')
+}
+
+.navbar-brand {
+    font-family: merinda, cursive;
+    font-size: x-large;
 }
 
 html, body {
@@ -40,7 +50,7 @@ html, body {
 
 .paperColumn {
     float: left;
-    width: 50%;
+    width: 65%;
     height: 100%;
     overflow: scroll;
 }
@@ -54,7 +64,7 @@ html, body {
 }
 
 .chatcol {
-    width: 50%;
+    width: 35%;
     float: right;
     height: 100%;
 }

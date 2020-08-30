@@ -31,7 +31,7 @@ function renderProgram (text) {
   this.scrollToBottom()
 }
 
-renderProgram('Welcome to Flowgramming')
+renderProgram('Start Flowgramming!')
 
 async function allowUser () {
   scrollToBottom()

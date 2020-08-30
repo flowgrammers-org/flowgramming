@@ -30,7 +30,7 @@ function importFlowGram (file) {
     alert('Something went wrong!')
   } finally {
     clearChat()
-    renderProgram('Welcome to Flowgramming')
+    renderProgram('Start Flowgramming!')
   }
 }
 
@@ -47,15 +47,8 @@ function saveFile (filename, data) {
   if (window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveOrOpenBlob(file, filename)
   } else {
-    const a = document.createElement('a')
-    const url = URL.createObjectURL(file)
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    setTimeout(function () {
-      document.body.removeChild(a)
-      window.URL.revokeObjectURL(url)
-    }, 20)
+    const saveButton = document.getElementById('save-btn')
+    saveButton.href = URL.createObjectURL(file)
+    saveButton.download = filename
   }
 }
