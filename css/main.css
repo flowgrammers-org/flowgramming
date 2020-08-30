@@ -45,6 +45,14 @@ html, body {
     overflow: scroll;
 }
 
+.modal-height {
+    height: 400px;
+}
+
+.cursor-click {
+    cursor: pointer !important;
+}
+
 .chatcol {
     width: 50%;
     float: right;

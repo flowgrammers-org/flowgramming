@@ -35,11 +35,6 @@ self.addEventListener('install', function (e) {
           '/assets/fonts/inter.ttf',
           '/assets/fonts/inter.svg#inter',
           '/assets/fonts/inter.eot?#iefix',
-          '/assets/assignment.png',
-          '/assets/declaration.jpg',
-          '/assets/if.png',
-          '/assets/input.png',
-          '/assets/output.png',
         ]
       )
     })
