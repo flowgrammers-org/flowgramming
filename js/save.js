@@ -39,7 +39,7 @@ function openFromFile (file) {
   renderProgram('Please wait while your file is getting imported..')
   setTimeout(() => {
     importFlowGram(file)
-  }, 10)
+  }, 1000)
 }
 
 function saveFile (filename, data) {

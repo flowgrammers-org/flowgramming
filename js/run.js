@@ -38,6 +38,14 @@ async function delayLoop(currentElement) {
                 break
         }
         visitedItems.add(currentElement.id)
+
+        // This is to handle an edge case where a for-loop comes inside another loop.
+        // In that case, we would want to execute the for-loop's initialisation statements again.
+        // Hence, deleting the element from the HashSet.
+        if (!expressionResult) {
+            visitedItems.delete(currentElement.id)
+        }
+
         setTimeout(function () {
             currentElement.attr('body/strokeWidth', strokeLow)
             if (currentElement.attr('outgoing_link')) {
