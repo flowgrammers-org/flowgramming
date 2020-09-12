@@ -80,14 +80,15 @@ async function handleForLoop(element) {
         if (!visitedItems.has(element.id)) {
             const initExp = element.attr('element/forLoop/init')
             if (!initExp) {
-                throw new Error("Enter the initialisation expression")
+                throw new Error('Enter the initialisation expression')
             }
             globalEval(initExp)
         } else {
             const incrExp = element.attr('element/forLoop/incr')
             if (!incrExp) {
-                throw new Error("Enter the incrementation expression")
+                throw new Error('Enter the incrementation expression')
             }
+            handleRuntimeErrors(incrExp)
             globalEval(incrExp)
         }
     } catch (e) {
@@ -104,13 +105,14 @@ async function handleAssignment(element) {
         throw new Error('Assign a variable name')
     }
     if (!variableValue) {
-        throw new Error("Assign a variable value")
+        throw new Error('Assign a variable value')
     }
     if (isArrayNotation(variableName)) {
         arrayNotation = variableName.split('[')
     }
     obj = getDeclaredVariable(variableName, arrayNotation)
     type = obj.type
+    handleRuntimeErrors(variableValue)
     try {
         if (type === 'int') {
             variableValue = parseInt(globalEval(variableValue))
@@ -147,6 +149,9 @@ async function handleDeclaration(element) {
         'Float array': 'float(array)',
         'Char array': 'char(array)'
     }
+    if (variables[element.attr('element/variableName')]) {
+        throw new Error('Variable with the same name is already declared')
+    }
     const type = types[element.attr('element/variableType')]
     if (type.includes('array') || type.includes('string')) {
         variables [element.attr('element/variableName')] = {
@@ -165,7 +170,7 @@ async function handleInput(element) {
     let type, val, obj, arrayNotation
     const variableName = element.attr('element/variableName')
     if (!variableName) {
-        throw new Error('Assign a variable name')
+        throw new Error('Assign a variable name to take input')
     }
     renderProgram('Enter the value for variable ' + variableName)
     if (isArrayNotation(variableName)) {
@@ -180,10 +185,7 @@ async function handleInput(element) {
     } else if (type === 'float' && isFloat(userInput) === true) {
         val = parseFloat(userInput)
         globalEval(variableName + ' = ' + val)
-    } else if (type === 'char') {
-        if (!isChar(userInput)) {
-            throw new Error('Enter a Character')
-        }
+    } else if (type === 'char' && isChar(userInput)) {
         val = userInput
         globalEval(variableName + ' = \'' + userInput + '\'')
     } else if (type === 'string') {
@@ -195,16 +197,18 @@ async function handleInput(element) {
     } else if (type === 'char(array)') {
         val = handleArrays(userInput, isChar, parseChar, variableName, 'character', true)
     } else {
-        throw new Error('Data type mismatch.')
+        throw new Error('Data type mismatch\n\nDeclared variable is of type ' + type)
     }
     storeVariables(variableName, arrayNotation, val, type)
     return {status: "Ok"}
+
 }
 
 async function handleOutput(element) {
     if (!element.attr('element/expression')) {
         throw new Error('Assign a Expression')
     }
+    handleRuntimeErrors(element.attr('element/expression'))
     try {
         renderProgram(globalEval(element.attr('element/expression')))
     } catch (e) {
@@ -217,6 +221,7 @@ async function handleBooleanExpression(element) {
     if (!element.attr('element/expression')) {
         throw new Error('Assign a Expression')
     }
+    handleRuntimeErrors(element.attr('element/expression'))
     try {
         return !!globalEval(element.attr('element/expression'))
     } catch (e) {
@@ -263,11 +268,11 @@ function getDeclaredVariable(variableName, arrayNotation) {
     if (isArrayNotation(variableName)) {
         arrayNotation = variableName.split('[')
         if (!(arrayNotation[0] in variables)) {
-            throw new Error('Declare the variable before using it.')
+            throw new Error('Declare the variable ' + arrayNotation[0] + ' before using it')
         }
         obj = variables[arrayNotation[0]]
     } else if (!(variableName in variables)) {
-        throw new Error('Declare the variable before using it.')
+        throw new Error('Declare the variable ' + variableName + ' before using it')
     } else {
         obj = variables[variableName]
     }
@@ -289,54 +294,77 @@ function storeVariables(variableName, arrayNotation, variableValue, type) {
 }
 
 function handleArrayAssignment(userInput, type) {
-    if (type === 'character' || type === 'string') {
-        if (isArrayNotation(userInput)) {
-            return globalEval(userInput)
+    try {
+        if (type === 'character' || type === 'string') {
+            if (isArrayNotation(userInput)) {
+                return globalEval(userInput)
+            } else {
+                return userInput
+            }
         } else {
-            return userInput
+            return globalEval(userInput).toString()
         }
-    } else {
-        return globalEval(userInput).toString()
+    } catch (e) {
+        handleNotInitializedVariables(e)
     }
 }
 
 function handleArrays(userInput, checkType, parsingType, variableName, type, isInput) {
     let val
-    if (isArrayNotation(variableName)) {
-        if ((isInput) ? checkType(userInput) : checkType(handleArrayAssignment(userInput, type))) {
-            val = (isInput) ? parsingType(userInput) : parsingType(handleArrayAssignment(userInput, type))
-            globalEval(variableName + '=' + val)
-        } else {
-            throw new Error('Data type mismatch. Declared array is of type ' + type + '.')
-        }
-    } else {
-        if (type === 'string') {
-            val = userInput.split('')
-        } else {
-            val = userInput.split(',')
-        }
-        for (let i = 0; i < val.length; i++) {
-            if (checkType(val[i])) {
-                val[i] = parsingType(val[i])
+    try {
+        if (isArrayNotation(variableName)) {
+            let typeCheck
+            if (isInput) {
+                typeCheck = checkType(userInput)
+                val = parsingType(userInput)
             } else {
-                throw new Error('Data type mismatch.\n\nDeclared array is of type ' + type + ' but value at position '
-                    + (i + 1) + ' in the array is not of type ' + type + '.')
+                typeCheck = checkType(handleArrayAssignment(userInput,type))
+                val = parsingType(handleArrayAssignment(userInput, type))
             }
+            if (typeCheck) {
+                globalEval(variableName + '=' + val)
+            } else {
+                throw new Error('Data type mismatch\n\nDeclared array is of type ' + type)
+            }
+        } else {
+            if (type === 'string') {
+                val = userInput.split('')
+            } else {
+                val = userInput.split(',')
+            }
+            for (let i = 0; i < val.length; i++) {
+                if (checkType(val[i])) {
+                    val[i] = parsingType(val[i])
+                } else {
+                    throw new Error('Data type mismatch\n\nDeclared array is of type ' + type + ' but value at position '
+                        + (i + 1) + ' in the array is not of type ' + type)
+                }
+            }
+            globalEval(variableName + '=[' + val + ']')
         }
-        globalEval(variableName + '=[' + val + ']')
+        return val
+    } catch (e) {
+        handleNotInitializedVariables(e)
     }
-    return val
 }
 
 function handleNotInitializedVariables(e) {
-    e = e.toString()
-    if (e.includes('ReferenceError')) {
-        let err = e.split(':')
-        if (variables[err[1].charAt(1)]) {
-            err[1] = err[1].replace('defined', 'initialized')
-            throw new Error(err[1] + '.\n\nPlease initialize the variable before using it.')
+    const msg = e.message
+    if (e instanceof ReferenceError) {
+        const err = msg.split(' ')
+        if (variables[err[0]]) {
+            throw new Error(err[0] + ' is not initialised.\n\nInitialize the variable before using it')
         }
-        throw new Error(err[1] + '.\n\nPlease define the variable before using it.')
+        throw new Error(err[0] + ' is not defined.\n\nDefine the variable before using it')
+    } else if (e instanceof TypeError) {
+        throw new Error('Undefined variable is used')
     }
-    throw e
+    throw e.message
+}
+
+function handleRuntimeErrors(expression) {
+    const regex = /[/][\s]*[0]/
+    if (expression.search(regex) !== -1) {
+        throw new Error('Variable divided by zero')
+    }
 }

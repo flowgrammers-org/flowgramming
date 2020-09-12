@@ -41,25 +41,11 @@ function handleElementDoubleClick(elementView) {
                 const variableType = $('#variableType').text().trim()
                 $('#modal').modal('hide')
                 if (variableName.length <= 0) {
-                    alert('Error: Please enter the variable name before declaring the variable')
+                    alert('Error: Enter the variable name before declaring it')
                 } else if (variableType === 'Default') {
-                    alert('Error: Please enter the variable type before declaring the variable')
+                    alert('Error: Enter the variable type before declaring it')
                 } else {
-                    const regex = new RegExp('^[a-zA-Z_][a-zA-Z0-9_]*$')
-                    const keyWords = ['int', 'float', 'string', 'array', 'char', 'if', 'else', 'while', 'for',
-                        'switch', 'case', 'default', 'break', 'continue', 'auto', 'const', 'let', 'var', 'do',
-                        'foreach', 'enum', 'long', 'register', 'return', 'short', 'signed', 'sizeof', 'static',
-                        'struct', 'typedef', 'union', 'unsigned', 'void', 'volatile', 'new', 'throw', 'catch',
-                        'printf', 'scanf', 'print', 'cin', 'cout', 'scanner', 'list', 'in', 'true', 'false', 'null', 'None', 'not']
-                    if (!regex.test(variableName)) {
-                        alert('Follow naming convention while declaring a variable \n \n'
-                            + '-> Variable name should start only either with an underscore or an alphabet. It should not start with number or any other special symbols. \n'
-                            + '-> Other characters apart from first character can be alphabets, numbers or _ character. \n'
-                            + '-> Variable name should not contain space. \n'
-                        )
-                    } else if (keyWords.includes(variableName)) {
-                        alert('Variable name must not be a keyword. \n')
-                    } else {
+                    if (handleNamingConvention()) {
                         currentElement.attr({
                             label: {
                                 text: getWrapText(variableType + ' ' + variableName)
@@ -83,14 +69,16 @@ function handleElementDoubleClick(elementView) {
             `
             handlerFunction = function () {
                 const variableName = $('#variable').val()
+                $('#modal').modal('hide')
                 if (variableName.length > 0) {
-                    $('#modal').modal('hide')
                     currentElement.attr({
                         label: {text: getWrapText('Input ' + variableName)},
                         element: {
                             variableName,
                         }
                     })
+                } else {
+                    alert('Error: Enter input variable name')
                 }
             }
             break
@@ -107,8 +95,8 @@ function handleElementDoubleClick(elementView) {
                 `
                 handlerFunction = function () {
                     const expression = $('#exp').val()
+                    $('#modal').modal('hide')
                     if (expression.length > 0) {
-                        $('#modal').modal('hide')
                         currentElement.attr({
                             label: {
                                 text: getWrapText(
@@ -119,6 +107,8 @@ function handleElementDoubleClick(elementView) {
                                 expression
                             }
                         })
+                    } else {
+                        alert('Error: Enter the expression')
                     }
                 }
             } else {
@@ -143,18 +133,26 @@ function handleElementDoubleClick(elementView) {
                     const cond = $('#condition').val()
                     const incr = $('#incrementation').val()
                     $('#modal').modal('hide')
-                    currentElement.attr({
-                        label: {
-                            text: getWrapText(`${init}; ${cond}; ${incr}`)
-                        },
-                        element: {
-                            expression: cond,
-                            forLoop: {
-                                init,
-                                incr
+                    if (init.length === 0) {
+                        alert('Error: Enter initial value')
+                    } else if (cond.length === 0) {
+                        alert('Error: Enter the condition')
+                    } else if (incr.length === 0) {
+                        alert('Error: Increment the variable')
+                    } else {
+                        currentElement.attr({
+                            label: {
+                                text: getWrapText(`${init}; ${cond}; ${incr}`)
+                            },
+                            element: {
+                                expression: cond,
+                                forLoop: {
+                                    init,
+                                    incr
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
             }
             break
@@ -170,8 +168,12 @@ function handleElementDoubleClick(elementView) {
             handlerFunction = function () {
                 const variableValue = $('#variableValue').val()
                 const variableName = $('#variableName').val()
-                if (variableValue.length > 0 && variableName.length > 0) {
-                    $('#modal').modal('hide')
+                $('#modal').modal('hide')
+                if (variableName.length <= 0) {
+                    alert('Error: Enter the variable name')
+                } else if (variableValue.length <= 0) {
+                    alert('Error: Enter variable value')
+                } else {
                     currentElement.attr({
                         label: {text: getWrapText(variableName + ' = ' + variableValue)},
                         element: {
@@ -191,4 +193,25 @@ function handleElementDoubleClick(elementView) {
 function toggleDataType(dataType) {
     $('#variableType').text(dataType)
     $('#dataTypeButton').text(dataType)
+}
+
+function handleNamingConvention(variableName) {
+    const regex = new RegExp('^[a-zA-Z_][a-zA-Z0-9_]*$')
+    const keyWords = ['int', 'float', 'string', 'array', 'char', 'if', 'else', 'while', 'for',
+        'switch', 'case', 'default', 'break', 'continue', 'auto', 'const', 'let', 'var', 'do',
+        'foreach', 'enum', 'long', 'register', 'return', 'short', 'signed', 'sizeof', 'static',
+        'struct', 'typedef', 'union', 'unsigned', 'void', 'volatile', 'new', 'throw', 'catch',
+        'printf', 'scanf', 'print', 'cin', 'cout', 'scanner', 'list', 'in', 'true', 'false', 'null', 'None', 'not']
+    if (!regex.test(variableName)) {
+        alert('Error: Follow naming convention \n \n'
+            + '-> Variable name should start only either with an underscore or an alphabet. It should not start with number or any other special symbols \n'
+            + '-> Other characters apart from first character can be alphabets, numbers or _ character \n'
+            + '-> Variable name should not contain space \n'
+        )
+        return false
+    } else if (keyWords.includes(variableName)) {
+        alert('Error: Variable name must not be a keyword \n')
+        return false
+    }
+    return true
 }
