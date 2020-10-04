@@ -43,6 +43,13 @@
                       fill-rule="evenodd"/>
             </svg>
         </a>
+        <span class="nav-item d-flex pr-3 mr-2 border-right" title="Control speed of execution">
+          <select class="custom-select custom-select-sm" id="speedOfExecution">
+            <option value="slow">Slow</option>
+            <option value="medium">Medium</option>
+            <option value="fast">Fast</option>
+          </select>
+        </span>
         <a class="nav-item d-flex" href="#" id="zoomin" title="Zoom in">
             <svg class="mx-2 bi bi-zoom-in my-auto" fill="white" height="1.5em" viewBox="0 0 16 16" width="1.5em"
                  xmlns="http://www.w3.org/2000/svg">
@@ -179,6 +186,20 @@
             openFromFile(data)
         }
         fileReader.readAsText($('#open-file').prop('files')[0])
+    })
+
+    // Let's get hold of the dropdown that controls the speed of flowgram execution
+    const speedOfExecutionDropdown = $('#speedOfExecution')
+
+    // Check for the speed if stored in localStorage and set it on dropdown
+    // If not found, set 'medium' as the default selected speed.
+    speedOfExecutionDropdown.val(localStorage.getItem('speedOfExecution') || 'medium')
+
+    // Setting the onchange listener to the dropdown,
+    // and setting to localStorage immediately
+    speedOfExecutionDropdown.on('change', function(e) {
+        const speed = e.target.value
+        localStorage.setItem('speedOfExecution', speed)
     })
 </script>
 

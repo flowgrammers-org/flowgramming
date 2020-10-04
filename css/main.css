@@ -68,6 +68,14 @@ html, body {
     float: right;
     height: 100%;
 }
+
 #arrayTypeButton {
     padding-right: 57%;
+}
+
+#run-btn {
+    padding-left: .5rem;
+    margin-left: .5rem;
+    margin-right: .25rem;
+    border-left: 1px solid white;
 }

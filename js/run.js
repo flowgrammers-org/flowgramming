@@ -1,9 +1,22 @@
-const strokeHigh = 5
 let strokeLow = 0
+const strokeHigh = 5
 const visitedItems = new Set()
 
+// The HashMap that sets the delay in milliseconds after processing each block
+// in the flowgram. However, in case the speed is not stored in localStorage,
+// we set the speed to 'medium' in the dropdown in index.html. To support that,
+// we are mapping undefined to the same speed as 'medium'
+const speedToDelayMapping = {
+    'slow': 1500,
+    'medium': 1000,
+    undefined: 1000,
+    'fast': 500,
+}
+
 async function delayLoop(currentElement) {
-    const delay = 1000
+
+    // Let's get the delay in ms according to the speed stored in localStorage
+    const delay = speedToDelayMapping[localStorage.getItem('speedOfExecution')]
 
     strokeLow = currentElement.attr('body/strokeWidth')
     currentElement.attr('body/strokeWidth', strokeHigh)
