@@ -78,6 +78,8 @@ function addElement(currentLink, element, type) {
             element.position(startPosition.x - 60, startPosition.y + 100)
         } else if (startType === 'while') {
             element.position(startPosition.x + 30, startPosition.y + 100)
+        } else if (startType === 'doWhileExpr') {
+            element.position(startPosition.x, startPosition.y + 150)
         } else {
             element.position(startPosition.x, startPosition.y + 100)
         }
@@ -143,6 +145,48 @@ function addElement(currentLink, element, type) {
         })
         currentLink.vertices([vertices[0]])
         translateDown(currentEnd, null)
+    } else if (currentLink.attr('element/type') === 'doWhile') {
+        // Here there, are no elements inside the doWhile, thus split them into 2 parts
+
+        // This is to keep the array sorted
+        if (vertices[0].y > vertices[1].y) {
+            swap(vertices[0], vertices[1])
+        }
+        currentLink.attr('element/type', 'doWhileStart')
+        currentEnd = findModel(currentLink.attr('element/target'))
+        currentStart = findModel(currentLink.attr('element/source'))
+        const startPosition = currentStart.position()
+        if (startPosition.x <= vertices[0].x) {
+            startPosition.x += 125
+        } else {
+            startPosition.x -= 175
+        }
+        element.position(startPosition.x, startPosition.y + 100)
+        currentLink.set({target: element})
+        currentLink.attr('element/target', element.id)
+        link = new joint.shapes.standard.Link()
+        link.vertices([{
+            x: vertices[1].x,
+            y: vertices[1].y + 100
+        }])
+        element.attr({
+            element: {type},
+            outgoing_link: {
+                next: link.id
+            }
+        })
+        link.source(element)
+        link.target(currentEnd)
+        link.addTo(graph)
+        link.attr({
+            element: {
+                target: currentEnd.id,
+                source: element.id,
+                type: 'doWhileEnd'
+            }
+        })
+        currentLink.vertices([vertices[0]])
+        translateDown(currentEnd, null)
     } else if (currentLink.attr('element/type') === 'while') {
         if (vertices[0].y > vertices[1].y) {
             swap(vertices[0], vertices[1])
@@ -195,7 +239,7 @@ function addElement(currentLink, element, type) {
         })
         currentLink.vertices([vertices[0]])
         translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-    } else if (['ifStart', 'whileStart'].includes(currentLink.attr('element/type'))) {
+    } else if (['ifStart', 'whileStart', 'doWhileStart'].includes(currentLink.attr('element/type'))) {
         currentEnd = findModel(currentLink.attr('element/target'))
         currentStart = findModel(currentLink.attr('element/source'))
         const startPosition = currentStart.position()
@@ -207,6 +251,8 @@ function addElement(currentLink, element, type) {
 
         if (currentLink.attr('element/type') === 'whileStart') {
             startPosition.x += 50
+        } else if (currentLink.attr('element/type') === 'doWhileStart') {
+            startPosition.x -= 50
         }
 
         element.position(startPosition.x, startPosition.y + 100)
@@ -231,7 +277,7 @@ function addElement(currentLink, element, type) {
             }
         })
         translateDown(currentEnd, null)
-    } else if (['ifEnd', 'whileEnd'].includes(currentLink.attr('element/type'))) {
+    } else if (['ifEnd', 'whileEnd', 'doWhileEnd'].includes(currentLink.attr('element/type'))) {
         currentLink.vertices([])
         currentEnd = findModel(currentLink.attr('element/target'))
         currentStart = findModel(currentLink.attr('element/source'))
@@ -278,10 +324,17 @@ function addElement(currentLink, element, type) {
             currentLink.attr('element/type', null)
             translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
         } else {
-            link.vertices([{
-                x: element.position().x,
-                y: element.position().y + 100
-            }])
+            if (currentLink.attr('element/type') === 'doWhileEnd') {
+                link.vertices([{
+                    x: element.position().x + 75,
+                    y: element.position().y + 187.5
+                }])
+            } else {
+                link.vertices([{
+                    x: element.position().x,
+                    y: element.position().y + 100
+                }])
+            }
             link.target(currentEnd)
             element.attr({
                 element: {type},
@@ -303,6 +356,235 @@ function addElement(currentLink, element, type) {
     }
 }
 
+function addElementDoWhile(currentLink, element) {
+    const vertices = currentLink.vertices()
+    if (vertices.length === 2) {
+        // This is to keep the array sorted
+        if (vertices[0].y > vertices[1].y) {
+            swap(vertices[0], vertices[1])
+        }
+    }
+    const currentEnd = findModel(currentLink.attr('element/target'))
+    let currentStart = findModel(currentLink.attr('element/source'))
+    const startType = currentStart.attr('element/type')
+    const startPosition = currentStart.position()
+    if (['if', 'ifStart'].includes(currentLink.attr('element/type'))) {
+        if (startPosition.x <= vertices[0].x) {
+            startPosition.x += 125
+        } else {
+            startPosition.x -= 175
+        }
+    } else if (['while', 'whileStart'].includes(currentLink.attr('element/type'))) {
+        startPosition.x += 225
+    } else if (['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))) {
+        startPosition.x += 187.5
+    }
+
+
+    // Make a new circle
+    const doWhileStartCircle = getCircle()
+    doWhileStartCircle.addTo(graph)
+    if (startType === 'circle') {
+        doWhileStartCircle.position(startPosition.x, startPosition.y + 100)
+        element.position(startPosition.x - 62, startPosition.y + 200)
+    } else {
+        doWhileStartCircle.position(startPosition.x + 62, startPosition.y + 100)
+        element.position(startPosition.x, startPosition.y + 250)
+    }
+
+    currentLink.set({target: doWhileStartCircle})
+    currentLink.attr('element/target', doWhileStartCircle.id)
+
+    // Creating the invisible link
+    const trueLink = new joint.shapes.standard.Link()
+    trueLink.source(element)
+    trueLink.target(doWhileStartCircle)
+    trueLink.addTo(graph)
+    trueLink.appendLabel({
+        attrs: {text: {text: 'True'}},
+        position: {distance: 0.2}
+    })
+    trueLink.attr({
+        element: {
+            target: doWhileStartCircle.id,
+            source: element.id,
+            type: 'doWhileTrue'
+        }
+    })
+
+    const endCirclePosition = doWhileStartCircle.position()
+
+    // Creating True Link
+    const loopLink = new joint.shapes.standard.Link()
+    loopLink.vertices([
+        {x: endCirclePosition.x + 200, y: endCirclePosition.y + 25},
+        {x: endCirclePosition.x + 200, y: element.position().y + 38.5}])
+    loopLink.source(doWhileStartCircle)
+    loopLink.target(element)
+    loopLink.addTo(graph)
+    loopLink.attr({
+        element: {
+            target: element.id,
+            source: doWhileStartCircle.id,
+            type: 'doWhile'
+        }
+    })
+
+    // Creating the endLink
+    const link = new joint.shapes.standard.Link()
+    link.source(element)
+    link.target(currentEnd)
+    link.appendLabel({
+        attrs: {text: {text: 'False'}},
+        position: {distance: 0.18}
+    })
+    link.addTo(graph)
+
+    element.attr({
+        element: {
+            type: 'doWhileExpr'
+        },
+        outgoing_link: {
+            next: link.id,
+            loopLink: trueLink.id
+        }
+    })
+
+    // Creating the invisible link for helping in translating down
+    const invisibleLink = new joint.shapes.standard.Link()
+    invisibleLink.source(doWhileStartCircle)
+    invisibleLink.target(element)
+    invisibleLink.addTo(graph)
+    invisibleLink.attr('./display', 'none')
+    invisibleLink.attr({
+        element: {
+            target: element.id,
+            source: doWhileStartCircle.id,
+        }
+    })
+
+    const currentLinkType = currentLink.attr('element/type')
+    if (['if', 'doWhile'].includes(currentLinkType)) {
+        currentLink.attr({
+            element: {
+                type: `${currentLinkType}Start`
+            }
+        })
+        if (currentLinkType === 'doWhile') {
+            link.vertices([{
+                x: element.position().x + 75,
+                y: vertices[1].y + 300
+            }])
+        } else {
+            link.vertices([{
+                x: vertices[1].x,
+                y: vertices[1].y + 100
+            }])
+        }
+        link.attr({
+            element: {
+                target: currentEnd.id,
+                source: element.id,
+                type: `${currentLinkType}End`
+            }
+        })
+        currentLink.vertices([vertices[0]])
+        translateDown(currentEnd, null)
+        translateDown(currentEnd, null)
+        translateDown(currentEnd, null)
+    } else if (['ifEnd', 'doWhileEnd'].includes(currentLinkType)) {
+        currentLink.vertices([])
+        link.vertices([{
+            x: vertices[0].x,
+            y: vertices[0].y + (currentLinkType === 'doWhileEnd' ? 300 : 100)
+        }])
+        currentLink.attr('element/type', null)
+        link.attr({
+            element: {
+                target: currentEnd.id,
+                source: element.id,
+                type: currentLinkType
+            }
+        })
+        translateDown(currentEnd, null)
+        translateDown(currentEnd, null)
+        translateDown(currentEnd, null)
+    } else if (currentLinkType === 'whileEnd') {
+        currentLink.vertices([])
+        link.vertices([
+            {x: vertices[0].x, y: element.position().y + 175},
+            {x: vertices[1].x, y: element.position().y + 175},
+        ])
+        link.target(currentEnd, {
+            anchor: {
+                name: 'bottomRight',
+                args: {
+                    dx: -50
+                }
+            }
+        })
+        currentLink.attr('element/type', null)
+        link.attr({
+            element: {
+                target: currentEnd.id,
+                source: element.id,
+                type: 'whileEnd'
+            }
+        })
+        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+    } else if (currentLinkType === 'while') {
+        link.target(currentEnd, {
+            anchor: {
+                name: 'bottomRight',
+                args: {
+                    dx: -50
+                }
+            }
+        })
+        currentLink.attr({
+            element: {
+                type: 'whileStart'
+            }
+        })
+        link.attr({
+            element: {
+                target: currentEnd.id,
+                source: element.id,
+                type: 'whileEnd'
+            }
+        })
+        link.vertices([
+            {x: vertices[1].x, y: element.position().y + 100},
+            {x: vertices[2].x, y: element.position().y + 100},
+        ])
+        currentLink.vertices([vertices[0]])
+        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+    } else {
+        link.attr({
+            element: {
+                target: currentEnd.id,
+                source: element.id,
+            }
+        })
+        translateDown(currentEnd, null)
+        translateDown(currentEnd, null)
+        translateDown(currentEnd, null)
+    }
+    doWhileStartCircle.attr({
+        element: {
+            type: 'circle',
+            circleType: 'doWhile'
+        },
+        outgoing_link: {
+            next: loopLink.id,
+            invisibleLink: invisibleLink.id
+        }
+    })
+}
+
 function addElementWhile(currentLink, element, type) {
     const vertices = currentLink.vertices()
     const currentEnd = findModel(currentLink.attr('element/target'))
@@ -317,6 +599,8 @@ function addElementWhile(currentLink, element, type) {
         }
     } else if (['while', 'whileStart'].includes(currentLink.attr('element/type'))) {
         startPosition.x += 225
+    } else if (['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))) {
+        startPosition.x += 187.5
     }
 
     // Set Current End of the link to while element
@@ -386,7 +670,39 @@ function addElementWhile(currentLink, element, type) {
 
     let whileFlag = false
 
-    if (currentLink.attr('element/type') === 'if') {
+    if (currentLink.attr('element/type') === 'doWhile') {
+        currentLink.attr({
+            element: {
+                type: 'doWhileStart'
+            }
+        })
+        endLink.vertices([{
+            x: vertices[1].x,
+            y: vertices[1].y + 300
+        }])
+        endLink.attr({
+            element: {
+                target: currentEnd.id,
+                source: endCircle.id,
+                type: 'doWhileEnd'
+            }
+        })
+        currentLink.vertices([vertices[0]])
+    } else if (currentLink.attr('element/type') === 'doWhileEnd') {
+        currentLink.vertices([])
+        endLink.vertices([{
+            x: vertices[0].x,
+            y: vertices[0].y + 300
+        }])
+        currentLink.attr('element/type', null)
+        endLink.attr({
+            element: {
+                target: currentEnd.id,
+                source: endCircle.id,
+                type: 'doWhileEnd'
+            }
+        })
+    } else if (currentLink.attr('element/type') === 'if') {
         currentLink.attr({
             element: {
                 type: 'ifStart'
@@ -539,6 +855,8 @@ function addElementIf(currentLink, element, type) {
         }
     } else if (['while', 'whileStart'].includes(currentLink.attr('element/type'))) {
         startPosition.x += 225
+    } else if (['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))) {
+        startPosition.x += 187.5
     }
 
     // Set Current End of the link to IF element
@@ -552,8 +870,13 @@ function addElementIf(currentLink, element, type) {
         element.position(startPosition.x - 37.5, startPosition.y + 100)
         endCircle.position(startPosition.x, startPosition.y + 200)
     } else {
-        element.position(startPosition.x + 25, startPosition.y + 100)
-        endCircle.position(startPosition.x + 60, startPosition.y + 200)
+        if (startType === 'doWhileExpr') {
+            element.position(startPosition.x + 25, startPosition.y + 125)
+            endCircle.position(startPosition.x + 60, startPosition.y + 225)
+        } else {
+            element.position(startPosition.x + 25, startPosition.y + 100)
+            endCircle.position(startPosition.x + 60, startPosition.y + 200)
+        }
     }
 
     // Creating the invisible link
@@ -624,7 +947,43 @@ function addElementIf(currentLink, element, type) {
     link.source(endCircle)
     link.target(currentEnd)
     link.addTo(graph)
-    if (currentLink.attr('element/type') === 'if') {
+
+    if (currentLink.attr('element/type') === 'doWhile') {
+        currentLink.attr({
+            element: {
+                type: 'doWhileStart'
+            }
+        })
+        link.vertices([{
+            x: vertices[1].x,
+            y: vertices[1].y + 300
+        }])
+        link.attr({
+            element: {
+                target: currentEnd.id,
+                source: endCircle.id,
+                type: 'doWhileEnd'
+            }
+        })
+        currentLink.vertices([vertices[0]])
+        translateDown(currentEnd, null)
+    } else if (currentLink.attr('element/type') === 'doWhileEnd') {
+        currentLink.vertices([])
+        link.vertices([{
+            x: vertices[0].x,
+            y: vertices[0].y + 200
+        }])
+        currentLink.attr('element/type', null)
+        link.attr({
+            element: {
+                target: currentEnd.id,
+                source: endCircle.id,
+                type: 'doWhileEnd'
+            }
+        })
+        translateDown(currentEnd, null)
+        translateDown(currentEnd, null)
+    } else if (currentLink.attr('element/type') === 'if') {
         currentLink.attr({
             element: {
                 type: 'ifStart'
@@ -755,6 +1114,28 @@ function translateWhile(element) {
 }
 
 /**
+ * This translates the do-while block contents down as an entity by 100 units
+ * @param element
+ */
+function translateDoWhile(element) {
+    const nextLink = findModel(element.attr('outgoing_link/next'))
+    const invisibleLink = findModel(element.attr('outgoing_link/invisibleLink'))
+    if (invisibleLink.attr('element/target') === nextLink.attr('element/target')) {
+        const vertices = nextLink.vertices()
+        const newVertices = []
+        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
+        newVertices.push({x: vertices[1].x, y: vertices[1].y + 100})
+        nextLink.vertices(newVertices)
+    } else {
+        const vertices = nextLink.vertices()
+        const newVertices = []
+        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
+        nextLink.vertices(newVertices)
+        translateDown(findModel(nextLink.attr('element/target')), findModel(invisibleLink.attr('element/target')))
+    }
+}
+
+/**
  * This translates the IF block down as an entity by 100 units
  * @param {"The if element to be translated"} element
  */
@@ -792,14 +1173,6 @@ function translateIF(element) {
 }
 
 /**
- * Searches for the model in the graph, based on ID
- * @param id
- */
-function findModel(id) {
-    return graph.attributes.cells.models.find(x => x.id === id)
-}
-
-/**
  * Translates all objects down from nextElement to till by 100 units
  * @param nextElement - The element to start translation from nextElement
  * @param till - The element till which translation should happen
@@ -816,22 +1189,34 @@ function translateDown(nextElement, till) {
             )
         ) {
             nextElement.translate(0, 100)
-            if (nextElement.attr('element/type') === 'if') {
-                translateIF(nextElement)
+            const translateFuncMap = {
+                'if': translateIF,
+                'while': translateWhile,
+                'doWhile': translateDoWhile
             }
-            if (nextElement.attr('element/type') === 'while') {
-                translateWhile(nextElement)
+            const currentElementType = nextElement.attr('element/type')
+            const currentCircleType = nextElement.attr('element/circleType')
+            const specialTranslateFunc = translateFuncMap[currentElementType] || translateFuncMap[currentCircleType]
+            if (specialTranslateFunc) {
+                specialTranslateFunc(nextElement)
             }
         }
         if (nextElement.attr('outgoing_link')) {
-            link = findModel(nextElement.attr('outgoing_link/next'))
+            if (nextElement.attr('element/circleType') === 'doWhile') {
+                link = findModel(nextElement.attr('outgoing_link/invisibleLink'))
+            } else {
+                link = findModel(nextElement.attr('outgoing_link/next'))
+            }
             switch (link.attr('element/type')) {
                 case 'ifEnd' :
+                case 'doWhileEnd' :
                     const vertex = link.vertices()
-                    link.vertices([{
-                        x: vertex[0].x,
-                        y: vertex[0].y + 100
-                    }])
+                    link.vertices([
+                        {
+                            x: vertex[0].x,
+                            y: vertex[0].y + 100
+                        }
+                    ])
                     break
                 case 'whileEnd' :
                     const vertices = link.vertices()
@@ -846,6 +1231,14 @@ function translateDown(nextElement, till) {
             nextElement = null
         }
     }
+}
+
+/**
+ * Searches for the model in the graph, based on ID
+ * @param id
+ */
+function findModel(id) {
+    return graph.attributes.cells.models.find(x => x.id === id)
 }
 
 /**

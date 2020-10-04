@@ -85,6 +85,7 @@ function handleElementDoubleClick(elementView) {
         }
         case 'output':
         case 'if':
+        case 'doWhileExpr':
         case 'while': {
             if (currentElement.attr('element/loopType') !== 'for') {
                 modalBodyHtml = `

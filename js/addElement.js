@@ -8,7 +8,7 @@ paper.on('link:pointerdblclick', function (linkView) {
 let doubleClickedLink
 
 function handleDoubleClick(linkView) {
-    if (linkView.model.attr('element/type') === 'whileFalse') {
+    if (['whileFalse', 'doWhileTrue'].includes(linkView.model.attr('element/type'))) {
         return
     }
     const id = linkView.model.id
@@ -25,19 +25,20 @@ function handleDoubleClick(linkView) {
         interactive: false,
     });
     newElementPaper.on('element:pointerclick', function (elementView) {
+        $('#modal .modal-content').removeClass('modal-height')
+        $('.joint-element').removeClass('cursor-click')
+        $('#modal').modal('hide')
         const callBackMap = {
             'OUTPUT': addOutput,
             'INPUT': addInput,
             'WHILE': addWhile,
             'FOR': addForLoop,
+            'DO-WHILE': addDoWhileLoop,
             'ASSIGNMENT': addAssignment,
             'DECLARATION': addDeclaration,
             'IF': addIF
         }
         callBackMap[elementView.model.attr('label/text')]()
-        $('#modal .modal-content').removeClass('modal-height')
-        $('.joint-element').removeClass('cursor-click')
-        $('#modal').modal('hide')
     })
 
     populateAvailableElements(addElementGraph)
@@ -84,9 +85,15 @@ function populateAvailableElements(addElementGraph) {
     forElement.attr('label/text', 'FOR')
     forElement.addTo(addElementGraph)
 
+    const doWhile = getHexagon()
+    doWhile.resize(115, 63)
+    doWhile.position(whileElement.position().x, whileElement.position().y + 90)
+    doWhile.attr('label/text', 'DO-WHILE')
+    doWhile.addTo(addElementGraph)
+
     const ifElement = getDiamond()
     ifElement.resize(115, 63)
-    ifElement.position(whileElement.position().x, whileElement.position().y + 90)
+    ifElement.position(doWhile.position().x + 130, doWhile.position().y)
     ifElement.attr('label/text', 'IF')
     ifElement.addTo(addElementGraph)
 }
@@ -124,6 +131,13 @@ function addForLoop() {
     hexagon.attr('label/text', getWrapText('for'))
     hexagon.addTo(graph)
     addElementWhile(doubleClickedLink, hexagon, 'for')
+}
+
+function addDoWhileLoop() {
+    const hexagon = getHexagon()
+    hexagon.attr('label/text', getWrapText('do-while'))
+    hexagon.addTo(graph)
+    addElementDoWhile(doubleClickedLink, hexagon)
 }
 
 function addDeclaration() {

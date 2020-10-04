@@ -18,6 +18,7 @@ async function delayLoop(currentElement) {
                 await handleOutput(currentElement)
                 break
             case 'if' :
+            case 'doWhileExpr' :
                 expressionResult = await handleBooleanExpression(currentElement)
                 break
             case 'while' :
@@ -51,7 +52,7 @@ async function delayLoop(currentElement) {
             if (currentElement.attr('outgoing_link')) {
                 let currentLink
                 const currentElementType = currentElement.attr('element/type');
-                if (['if', 'while'].includes(currentElementType)) {
+                if (['if', 'while', 'doWhileExpr'].includes(currentElementType)) {
                     currentLink = getConditionalNextLink(currentElement, currentElementType, expressionResult)
                 } else {
                     currentLink = findModel(currentElement.attr('outgoing_link/next'))
@@ -70,7 +71,8 @@ async function delayLoop(currentElement) {
 function getConditionalNextLink(ele, elementType, expResult) {
     const links = {
         'if': ['outgoing_link/falseLink', 'outgoing_link/trueLink'],
-        'while': ['outgoing_link/next', 'outgoing_link/loopLink']
+        'while': ['outgoing_link/next', 'outgoing_link/loopLink'],
+        'doWhileExpr': ['outgoing_link/next', 'outgoing_link/loopLink']
     }
     return findModel(ele.attr(links[elementType][Number(expResult)]))
 }
