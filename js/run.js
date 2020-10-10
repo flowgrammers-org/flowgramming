@@ -16,7 +16,7 @@ const speedToDelayMapping = {
 async function delayLoop(currentElement) {
 
     // Let's get the delay in ms according to the speed stored in localStorage
-    const delay = speedToDelayMapping[localStorage.getItem('speedOfExecution')]
+    const delay = speedToDelayMapping[speedOfExecutionDropdown.val()]
 
     strokeLow = currentElement.attr('body/strokeWidth')
     currentElement.attr('body/strokeWidth', strokeHigh)
