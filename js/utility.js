@@ -1242,6 +1242,15 @@ function findModel(id) {
 }
 
 /**
+ * An utility function to escape quotes
+ * @param str
+ * @returns {string}
+ */
+function escapeQuotes(str) {
+    return String(str).replace(/"/g, '&quot;')
+}
+
+/**
  * This function sets custom listeners, on the given object
  * @param element The element to set listener
  * @param type The type of the element
