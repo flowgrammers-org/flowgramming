@@ -1,36 +1,37 @@
 {
-  "name": "flowgramming",
-  "version": "1.0.0",
-  "description": "a web app that will help novice programmers to understand and design problem solving strategy techniques in graphical design",
-  "main": "index.js",
-  "devDependencies": {
-    "express": "^4.17.1",
-    "nodemon": "^2.0.4",
-    "open": "^7.1.0",
-    "serve-index": "^1.9.1"
-  },
-  "nodemonConfig": {
-    "ext": "html,js,css",
-    "ignore": [
-      "assets",
-      "js/vendor",
-      "css/vendor",
-      "node_modules"
-    ],
-    "verbose": true
-  },
-  "scripts": {
-    "start": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pack": "build --dir",
-    "dist": "build"
-  },
-  "standard": {
-    "ignore": [
-      "/js/vendor",
-      "index.html"
-    ]
-  },
-  "author": "CORE Lab",
-  "license": "ISC"
+    "name": "flowgramming",
+    "version": "1.0.0",
+    "description": "a web app that will help novice programmers to understand and design problem solving strategy techniques in graphical design",
+    "main": "index.js",
+    "devDependencies": {
+        "express": "^4.17.1",
+        "husky": "^4.3.0",
+        "nodemon": "^2.0.4",
+        "prettier": "2.1.2",
+        "pretty-quick": "^3.0.2",
+        "serve-index": "^1.9.1"
+    },
+    "nodemonConfig": {
+        "ext": "html,js,css",
+        "ignore": [
+            "assets",
+            "js/vendor",
+            "css/vendor",
+            "node_modules"
+        ],
+        "verbose": true
+    },
+    "scripts": {
+        "start": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "pack": "build --dir",
+        "dist": "build"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged"
+        }
+    },
+    "author": "CORE Lab",
+    "license": "ISC"
 }
