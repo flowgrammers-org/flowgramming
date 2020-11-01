@@ -1,5 +1,11 @@
-let strokeLow = 0
-const strokeHigh = 5
+let strokeLow = {
+    width: 0,
+    color: 'black',
+}
+const strokeHigh = {
+    width: 5,
+    color: '#E74C3C',
+}
 const visitedItems = new Set()
 
 // The HashMap that sets the delay in milliseconds after processing each block
@@ -18,8 +24,11 @@ async function delayLoop(currentElement) {
     // Let's get the delay in ms according to the speed stored in localStorage
     const delay = speedToDelayMapping[speedOfExecutionDropdown.val()]
 
-    strokeLow = currentElement.attr('body/strokeWidth')
-    currentElement.attr('body/strokeWidth', strokeHigh)
+    strokeLow.width = currentElement.attr('body/strokeWidth')
+    currentElement.attr('body/strokeWidth', strokeHigh.width)
+    if (currentElement.attr('body/fill') !== strokeHigh.color) {
+        currentElement.attr('body/stroke', strokeHigh.color)
+    }
 
     let expressionResult = false
     try {
@@ -61,7 +70,8 @@ async function delayLoop(currentElement) {
         }
 
         setTimeout(function () {
-            currentElement.attr('body/strokeWidth', strokeLow)
+            currentElement.attr('body/strokeWidth', strokeLow.width)
+            currentElement.attr('body/stroke', strokeLow.color)
             if (currentElement.attr('outgoing_link')) {
                 let currentLink
                 const currentElementType = currentElement.attr('element/type');
@@ -76,7 +86,8 @@ async function delayLoop(currentElement) {
         }, delay)
     } catch (err) {
         alert(err.toString())
-        currentElement.attr('body/strokeWidth', strokeLow)
+        currentElement.attr('body/strokeWidth', strokeLow.width)
+        currentElement.attr('body/stroke', strokeLow.color)
         currentElement = null
     }
 }
