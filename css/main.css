@@ -73,7 +73,7 @@ html, body {
     padding-right: 57%;
 }
 
-#run-btn {
+#run-btn, .navbar-nav {
     padding-left: .5rem;
     margin-left: .5rem;
     margin-right: .25rem;
