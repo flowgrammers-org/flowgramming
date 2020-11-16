@@ -7,7 +7,7 @@ const strokeHigh = {
     color: '#E74C3C',
 }
 const visitedItems = new Set()
-
+const stringManipulationRegex = /(([a-zA-Z]+)|([a-zA-Z]+\.[a-zA-Z]+))\(([a-zA-Z0-9]|,|]|\[|')+\)/
 // The HashMap that sets the delay in milliseconds after processing each block
 // in the flowgram. However, in case the speed is not stored in localStorage,
 // we set the speed to 'medium' in the dropdown in index.html. To support that,
@@ -85,7 +85,7 @@ async function delayLoop(currentElement) {
             }
         }, delay)
     } catch (err) {
-        alert(err.toString())
+        alert(err.message || err.toString())
         currentElement.attr('body/strokeWidth', strokeLow.width)
         currentElement.attr('body/stroke', strokeLow.color)
         currentElement = null
@@ -101,26 +101,30 @@ function getConditionalNextLink(ele, elementType, expResult) {
     return findModel(ele.attr(links[elementType][Number(expResult)]))
 }
 
-async function handleForLoop(element) {
-    try {
-        if (!visitedItems.has(element.id)) {
-            const initExp = element.attr('element/forLoop/init')
-            if (!initExp) {
-                throw new Error('Enter the initialisation expression')
-            }
-            globalEval(initExp)
-        } else {
-            const incrExp = element.attr('element/forLoop/incr')
-            if (!incrExp) {
-                throw new Error('Enter the incrementation expression')
-            }
-            handleRuntimeErrors(incrExp)
-            globalEval(incrExp)
-        }
-    } catch (e) {
-        handleNotInitializedVariables(e)
+async function handleDeclaration(element) {
+    let types = {
+        'Integer': 'int',
+        'Float': 'float',
+        'Char': 'char',
+        'Integer array': 'int(array)',
+        'Float array': 'float(array)',
+        'Char array': 'char(array)'
     }
-    return handleBooleanExpression(element)
+    if (variables[element.attr('element/variableName')]) {
+        throw new Error('Variable with the same name is already declared')
+    }
+    const type = types[element.attr('element/variableType')]
+    if (type.includes('array')) {
+        variables [element.attr('element/variableName')] = {
+            type: type,
+            value: []
+        }
+    } else {
+        variables [element.attr('element/variableName')] = {
+            type: type,
+            value: null
+        }
+    }
 }
 
 async function handleAssignment(element) {
@@ -141,15 +145,23 @@ async function handleAssignment(element) {
     handleRuntimeErrors(variableValue)
     try {
         if (type === 'int') {
-            variableValue = parseInt(globalEval(variableValue))
-            globalEval(variableName + ' = ' + variableValue)
+            if(stringManipulationRegex.test(variableValue)) {
+                variableValue = parseInt(stringManipulations(variableName,variableValue))
+            } else {
+                variableValue = parseInt(globalEval(variableValue))
+                globalEval(variableName + ' = ' + variableValue)
+            }
         } else if (type === 'float') {
             variableValue = parseFloat(globalEval(variableValue))
             globalEval(variableName + ' = ' + variableValue)
-        } else if (type === 'char' && isChar(variableValue)) {
-            globalEval(variableName + ' = ' + '\'' + variableValue + '\'')
-        } else if (type === 'string') {
-            variableValue = handleArrays(variableValue, isChar, parseChar, variableName, 'string', false)
+        } else if (type === 'char') {
+            if(stringManipulationRegex.test(variableValue)) {
+                variableValue = stringManipulations(variableName,variableValue)
+            } else {
+                if(isChar(variableValue)) {
+                    globalEval(variableName + ' = ' + '\'' + variableValue + '\'')
+                }
+            }
         } else if (type === 'int(array)') {
             variableValue = handleArrays(variableValue, isInteger, parseInt, variableName, 'integer', false)
         } else if (type === 'float(array)') {
@@ -163,33 +175,6 @@ async function handleAssignment(element) {
     }
 
     return {status: "Ok"}
-}
-
-async function handleDeclaration(element) {
-    let types = {
-        'Integer': 'int',
-        'Float': 'float',
-        'Char': 'char',
-        'String': 'string',
-        'Integer array': 'int(array)',
-        'Float array': 'float(array)',
-        'Char array': 'char(array)'
-    }
-    if (variables[element.attr('element/variableName')]) {
-        throw new Error('Variable with the same name is already declared')
-    }
-    const type = types[element.attr('element/variableType')]
-    if (type.includes('array') || type.includes('string')) {
-        variables [element.attr('element/variableName')] = {
-            type: type,
-            value: []
-        }
-    } else {
-        variables [element.attr('element/variableName')] = {
-            type: type,
-            value: null
-        }
-    }
 }
 
 async function handleInput(element) {
@@ -214,8 +199,6 @@ async function handleInput(element) {
     } else if (type === 'char' && isChar(userInput)) {
         val = userInput
         globalEval(variableName + ' = \'' + userInput + '\'')
-    } else if (type === 'string') {
-        val = handleArrays(userInput, isChar, parseChar, variableName, 'string', true)
     } else if (type === 'int(array)') {
         val = handleArrays(userInput, isInteger, parseInt, variableName, 'integer', true)
     } else if (type === 'float(array)') {
@@ -241,6 +224,28 @@ async function handleOutput(element) {
         handleNotInitializedVariables(e)
     }
     return {status: 'Ok'}
+}
+
+async function handleForLoop(element) {
+    try {
+        if (!visitedItems.has(element.id)) {
+            const initExp = element.attr('element/forLoop/init')
+            if (!initExp) {
+                throw new Error('Enter the initialisation expression')
+            }
+            globalEval(initExp)
+        } else {
+            const incrExp = element.attr('element/forLoop/incr')
+            if (!incrExp) {
+                throw new Error('Enter the incrementation expression')
+            }
+            handleRuntimeErrors(incrExp)
+            globalEval(incrExp)
+        }
+    } catch (e) {
+        handleNotInitializedVariables(e)
+    }
+    return handleBooleanExpression(element)
 }
 
 async function handleBooleanExpression(element) {
@@ -321,7 +326,7 @@ function storeVariables(variableName, arrayNotation, variableValue, type) {
 
 function handleArrayAssignment(userInput, type) {
     try {
-        if (type === 'character' || type === 'string') {
+        if (type === 'character') {
             if (isArrayNotation(userInput)) {
                 return globalEval(userInput)
             } else {
@@ -339,12 +344,16 @@ function handleArrays(userInput, checkType, parsingType, variableName, type, isI
     let val
     try {
         if (isArrayNotation(variableName)) {
+            if(stringManipulationRegex.test(userInput)) {
+                val = stringManipulations(variableName, userInput)
+                return val
+            }
             let typeCheck
             if (isInput) {
                 typeCheck = checkType(userInput)
                 val = parsingType(userInput)
             } else {
-                typeCheck = checkType(handleArrayAssignment(userInput,type))
+                typeCheck = checkType(handleArrayAssignment(userInput, type))
                 val = parsingType(handleArrayAssignment(userInput, type))
             }
             if (typeCheck) {
@@ -353,16 +362,16 @@ function handleArrays(userInput, checkType, parsingType, variableName, type, isI
                 throw new Error('Data type mismatch\n\nDeclared array is of type ' + type)
             }
         } else {
-            if (type === 'string') {
-                val = userInput.split('')
-            } else {
-                val = userInput.split(',')
+            if (stringManipulationRegex.test(userInput)) {
+                val = stringManipulations(variableName, userInput)
+                return val
             }
+            val = userInput.split(',')
             for (let i = 0; i < val.length; i++) {
                 if (checkType(val[i])) {
                     val[i] = parsingType(val[i])
                 } else {
-                    throw new Error('Data type mismatch\n\nDeclared array is of type ' + type + ' but value at position '
+                    throw new Error('Data type mismatch\n\nDeclared array ' + variableName + ' is of type ' + type + ' but value at position '
                         + (i + 1) + ' in the array is not of type ' + type)
                 }
             }
@@ -385,12 +394,65 @@ function handleNotInitializedVariables(e) {
     } else if (e instanceof TypeError) {
         throw new Error('Undefined variable is used')
     }
-    throw e.message
+    throw msg || e.toString()
 }
 
 function handleRuntimeErrors(expression) {
     const regex = /[/][\s]*[0]/
     if (expression.search(regex) !== -1) {
         throw new Error('Variable divided by zero')
+    }
+}
+
+function stringManipulations(variableName, userInput) {
+    if (userInput.includes('strcat')) {
+        let parametersAsString = userInput.match(/(?<=\()(.*)(?=\))/g)
+        let parameters = parametersAsString[0].split(',')
+        let firstVariable = parameters[0]
+        let secondVariable = parameters[1]
+        return globalEval(variableName + '= ' + firstVariable + '.concat(' + secondVariable + ')')
+    } else if (userInput.includes('substr')) {
+        userInput = userInput.replace('substr', 'slice')
+        return globalEval(variableName + '=' + userInput)
+    } else if (userInput.includes('strcmp')) {
+        let parametersAsString = userInput.match(/(?<=\()(.*)(?=\))/g)
+        let parameters = parametersAsString[0].split(',')
+        let firstVariable = parameters[0]
+        let secondVariable = parameters[1]
+        if (JSON.stringify(globalEval(firstVariable)) === JSON.stringify(globalEval(secondVariable))) {
+            globalEval(variableName + '=' + 0)
+            return 0
+        }
+        globalEval(variableName + '=' + -1)
+        return -1
+    } else if (userInput.includes('strlen')) {
+        let parametersAsString = userInput.match(/(?<=\()(.*)(?=\))/g)
+        let variable = parametersAsString[0]
+        if (variableName === '') {
+            return globalEval(variable + '.length')
+        }
+        return globalEval(variableName + '=' + variable + '.length')
+    } else if (userInput.includes('toAscii')) {
+        let parametersAsString = userInput.match(/(?<=\()(.*)(?=\))/g)
+        let variable = parametersAsString[0]
+        return globalEval(variableName + '=' + variable + '.codePointAt(0)')
+    } else if (userInput.includes('toChar')) {
+        let parametersAsString = userInput.match(/(?<=\()(.*)(?=\))/g)
+        let variable = parametersAsString[0]
+        return globalEval(variableName + '= String.fromCharCode(' + variable + ')')
+    } else if (userInput.includes('toUpperCase')) {
+        let parametersAsString = userInput.match(/(?<=\()(.*)(?=\))/g)
+        let variable = parametersAsString[0]
+        if (isArrayNotation(variable) || variables[variable].type === 'char') {
+            return globalEval(variableName + '=' + variable + '.toUpperCase()')
+        }
+        return globalEval(variableName + '=' + variable + '.map(' + variable + ' => ' + variable + '.toUpperCase())')
+    } else if (userInput.includes('toLowerCase')) {
+        let parametersAsString = userInput.match(/(?<=\()(.*)(?=\))/g)
+        let variable = parametersAsString[0]
+        if (isArrayNotation(variable) || variables[variable].type === 'char') {
+            return globalEval(variableName + '=' + variable + '.toLowerCase()')
+        }
+        return globalEval(variableName + '=' + variable + '.map(' + variable + ' => ' + variable + '.toLowerCase())')
     }
 }
