@@ -1,18 +1,18 @@
 @font-face {
     font-family: 'inter', sans-serif;
-url('assets/fonts/inter.eot');
-url('assets/fonts/inter.woff2') format('woff2'),
-url('assets/fonts/inter.woff') format('woff'),
-url('assets/fonts/inter.ttf') format('truetype'),
-url('assets/fonts/inter.svg#inter') format('svg'),
-url('assets/fonts/inter.eot?#iefix') format('embedded-opentype');
+    src: url('assets/fonts/inter.eot');
+    src: url('assets/fonts/inter.woff2') format('woff2'),
+        url('assets/fonts/inter.woff') format('woff'),
+        url('assets/fonts/inter.ttf') format('truetype'),
+        url('assets/fonts/inter.svg#inter') format('svg'),
+        url('assets/fonts/inter.eot?#iefix') format('embedded-opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'merinda';
-url('assets/fonts/merinda.ttf')
+    src: url('/assets/fonts/merinda.ttf');
 }
 
 .navbar-brand {
@@ -20,7 +20,8 @@ url('assets/fonts/merinda.ttf')
     font-size: x-large;
 }
 
-html, body {
+html,
+body {
     overflow: hidden;
     height: 100%;
     width: 100%;
@@ -35,7 +36,7 @@ html, body {
     padding: 5px;
 }
 
-.btn-sq-sm:focus{
+.btn-sq-sm:focus {
     box-shadow: none !important;
 }
 
@@ -56,7 +57,7 @@ html, body {
 }
 
 .modal-height {
-    height: 500px;
+    height: 600px;
 }
 
 .cursor-click {
@@ -73,9 +74,16 @@ html, body {
     padding-right: 57%;
 }
 
-#run-btn, .navbar-nav {
-    padding-left: .5rem;
-    margin-left: .5rem;
-    margin-right: .25rem;
+#run-btn,
+.navbar-nav {
+    padding-left: 0.5rem;
+    margin-left: 0.5rem;
+    margin-right: 0.25rem;
     border-left: 1px solid white;
+}
+
+#zoomout {
+    margin-right: 0.25rem;
+    padding-right: 0.5rem;
+    border-right: 1px solid white;
 }

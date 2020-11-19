@@ -9,13 +9,13 @@
         <script src="js/vendor/bootstrap.js"></script>
         <script src="js/vendor/handlebars.min.js"></script>
         <link
-            href="css/vendor/bootstrap.min.css"
             rel="stylesheet"
             type="text/css"
+            href="css/vendor/bootstrap.min.css"
         />
-        <link href="css/vendor/joint.css" rel="stylesheet" type="text/css" />
-        <link href="css/main.css" rel="stylesheet" type="text/css" />
-        <link href="css/chat.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="css/vendor/joint.css" />
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+        <link rel="stylesheet" type="text/css" href="css/chat.css" />
     </head>
 
     <body>
@@ -170,6 +170,43 @@
                         />
                     </svg>
                 </a>
+                <a
+                    class="nav-item d-flex"
+                    href="#"
+                    id="functionManager"
+                    title="Manage functions"
+                >
+                    <svg
+                        class="mx-2 bi bi-list-task my-auto"
+                        fill="white"
+                        height="1.5em"
+                        viewBox="0 0 16 16"
+                        width="1.5em"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            fill-rule="evenodd"
+                            d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H2zM3 3H2v1h1V3z"
+                        />
+                        <path
+                            d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9z"
+                        />
+                        <path
+                            fill-rule="evenodd"
+                            d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V7zM2 7h1v1H2V7zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5H2zm1 .5H2v1h1v-1z"
+                        />
+                    </svg>
+                </a>
+                <span
+                    class="nav-item d-flex pr-3 mr-2 border-right"
+                    title="Currently focused function"
+                >
+                    <select
+                        class="custom-select custom-select-sm"
+                        id="currentContext"
+                        onchange="switchContext()"
+                    ></select>
+                </span>
             </div>
         </nav>
 
@@ -185,8 +222,8 @@
                     <!-- end chat-history -->
                     <div class="chat-message clearfix">
                         <textarea
-                            id="message-to-send"
                             name="message-to-send"
+                            id="message-to-send"
                             placeholder="Type your message"
                             rows="3"
                         ></textarea>
@@ -257,16 +294,18 @@
         </script>
     </body>
     <script src="js/chat.js"></script>
+    <script src="js/vendor/swal.js"></script>
+    <script src="js/swal.js"></script>
     <script src="js/vendor/lodash.js"></script>
     <script src="js/vendor/backbone.js"></script>
     <script src="js/vendor/cycle.js"></script>
     <script src="js/vendor/joint.js"></script>
     <script src="js/vendor/require.js"></script>
+    <script src="js/events.js"></script>
     <script src="js/main.js"></script>
     <script src="js/utility.js"></script>
     <script src="js/addElement.js"></script>
     <script src="js/run.js"></script>
-    <script src="js/events.js"></script>
     <script src="js/save.js"></script>
     <script>
         let element = $('#myHolder')
@@ -304,6 +343,30 @@
                 openFromFile(data)
             }
             fileReader.readAsText($('#open-file').prop('files')[0])
+        })
+
+        let functionManagerWindow
+        $('#functionManager').click(function () {
+            // If there's already a window open for the function manager,
+            // let's just focus that one for better UX.
+            if (functionManagerWindow) {
+                functionManagerWindow.focus()
+            }
+
+            // These are the params for a minimalistic window.
+            // Taken from https://javascript.info/popup-windows#example-a-minimalistic-window
+            let params =
+                `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,` +
+                `menubar=no,width=0,height=0,left=-1000,top=-1000`
+            functionManagerWindow = window.open(
+                '/functions.html',
+                'functionManager',
+                params
+            )
+            functionManagerWindow.onunload = function () {
+                toast('Functions updated successfully')
+                updateContextsDropdown()
+            }
         })
 
         // Let's get hold of the dropdown that controls the speed of flowgram execution

@@ -8,7 +8,11 @@ paper.on('link:pointerdblclick', function (linkView) {
 let doubleClickedLink
 
 function handleDoubleClick(linkView) {
-    if (['whileFalse', 'doWhileTrue'].includes(linkView.model.attr('element/type'))) {
+    if (
+        ['whileFalse', 'doWhileTrue'].includes(
+            linkView.model.attr('element/type')
+        )
+    ) {
         return
     }
     const id = linkView.model.id
@@ -23,20 +27,21 @@ function handleDoubleClick(linkView) {
         model: addElementGraph,
         gridSize: 1,
         interactive: false,
-    });
+    })
     newElementPaper.on('element:pointerclick', function (elementView) {
         $('#modal .modal-content').removeClass('modal-height')
         $('.joint-element').removeClass('cursor-click')
         $('#modal').modal('hide')
         const callBackMap = {
-            'OUTPUT': addOutput,
-            'INPUT': addInput,
-            'WHILE': addWhile,
-            'FOR': addForLoop,
+            OUTPUT: addOutput,
+            INPUT: addInput,
+            WHILE: addWhile,
+            FOR: addForLoop,
             'DO-WHILE': addDoWhileLoop,
-            'ASSIGNMENT': addAssignment,
-            'DECLARATION': addDeclaration,
-            'IF': addIF
+            ASSIGNMENT: addAssignment,
+            DECLARATION: addDeclaration,
+            IF: addIF,
+            FUNCTION: addFunction,
         }
         callBackMap[elementView.model.attr('label/text')]()
     })
@@ -81,7 +86,10 @@ function populateAvailableElements(addElementGraph) {
 
     const forElement = getHexagon()
     forElement.resize(115, 63)
-    forElement.position(whileElement.position().x + 130, whileElement.position().y)
+    forElement.position(
+        whileElement.position().x + 130,
+        whileElement.position().y
+    )
     forElement.attr('label/text', 'FOR')
     forElement.addTo(addElementGraph)
 
@@ -96,6 +104,12 @@ function populateAvailableElements(addElementGraph) {
     ifElement.position(doWhile.position().x + 130, doWhile.position().y)
     ifElement.attr('label/text', 'IF')
     ifElement.addTo(addElementGraph)
+
+    const functionElement = getRectangle()
+    functionElement.resize(115, 63)
+    functionElement.position(doWhile.position().x, doWhile.position().y + 90)
+    functionElement.attr('label/text', 'FUNCTION')
+    functionElement.addTo(addElementGraph)
 }
 
 function addOutput() {
@@ -117,6 +131,13 @@ function addAssignment() {
     Rectangle.attr('label/text', getWrapText('Statement'))
     Rectangle.addTo(graph)
     addElement(doubleClickedLink, Rectangle, 'assignment')
+}
+
+function addFunction() {
+    const Rectangle = getRectangle()
+    Rectangle.attr('label/text', getWrapText('Function'))
+    Rectangle.addTo(graph)
+    addElement(doubleClickedLink, Rectangle, 'function')
 }
 
 function addWhile() {

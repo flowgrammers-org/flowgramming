@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Function Manager - Flowgramming | CORE Lab</title>
+        <script src="js/vendor/jquery.js"></script>
+        <script src="js/vendor/popper.js"></script>
+        <script src="js/vendor/bootstrap.js"></script>
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="css/vendor/bootstrap.min.css"
+        />
+        <link rel="stylesheet" type="text/css" href="css/functions.css" />
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <p class="navbar-nav navbar-brand text-center align-items-center">
+                <span>
+                    <svg
+                        class="mx-2 bi bi-list-task my-auto"
+                        fill="white"
+                        height="1.5em"
+                        viewBox="0 0 16 16"
+                        width="1.5em"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            fill-rule="evenodd"
+                            d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5H2zM3 3H2v1h1V3z"
+                        />
+                        <path
+                            d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9z"
+                        />
+                        <path
+                            fill-rule="evenodd"
+                            d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V7zM2 7h1v1H2V7zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5H2zm1 .5H2v1h1v-1z"
+                        />
+                    </svg>
+                </span>
+                Function Manager
+            </p>
+            <a class="ml-auto navbar-brand float-right" href="#">
+                Flowgramming
+                <span>
+                    <svg
+                        class="bi bi-diagram-3-fill"
+                        fill="currentColor"
+                        height="1em"
+                        viewBox="0 0 16 16"
+                        width="1em"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"
+                            fill-rule="evenodd"
+                        />
+                    </svg>
+                </span>
+            </a>
+        </nav>
+        <div>
+            <div class="functions-table">
+                <table class="table text-center">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Function Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="functionsTable"></tbody>
+                </table>
+            </div>
+            <div class="add-edit-function">
+                <div class="container mt-2">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h4>Create / Edit a function</h4>
+                        </div>
+                        <div class="card-body">
+                            <form onsubmit="return saveFunction(this)">
+                                <div class="form-group">
+                                    <label for="functionName"
+                                        >Function Name</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="functionName"
+                                        placeholder="Enter a name adhering to standard naming conventions"
+                                    />
+                                </div>
+                                <hr />
+                                <div class="form-row mx-1">
+                                    <div class="form-group col-11">
+                                        <p>Parameters</p>
+                                    </div>
+                                    <div class="form-group col-1">
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-info d-flex align-items-center"
+                                            onclick="manageFunctionParams()"
+                                        >
+                                            <svg
+                                                class="mr-2 bi bi-list-task my-auto"
+                                                fill="white"
+                                                height="1em"
+                                                viewBox="0 0 16 16"
+                                                width="1em"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                                                />
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+                                                />
+                                            </svg>
+                                            Add
+                                        </button>
+                                    </div>
+                                </div>
+                                <table class="table table-sm text-center">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Variable Name</th>
+                                            <th>Variable Type</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="parametersTable"></tbody>
+                                </table>
+                                <hr />
+                                <div class="form-group">
+                                    <label for="returnVariable"
+                                        >Return Variable</label
+                                    >
+                                    <input
+                                        class="form-control"
+                                        id="returnVariable"
+                                        placeholder="Leave this field empty if the function doesn't return anything"
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    class="btn btn-info btn-block"
+                                >
+                                    Save the function
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal" role="dialog">
+            <div class="modal-dialog modal-sm vertical-align-center">
+                <div class="modal-content">
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button
+                            id="closeButton"
+                            type="button"
+                            class="btn btn-outline-danger mr-auto"
+                            data-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                        <button
+                            class="btn btn-outline-success"
+                            id="okButton"
+                            type="button"
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar fixed-bottom navbar-light bg-light">
+            <button
+                onclick="saveFunctions()"
+                type="button"
+                class="ml-auto btn btn-info btn-block"
+            >
+                Done
+            </button>
+        </nav>
+    </body>
+    <script>
+        // This is to prevent the function manager to be opened independently
+        // which might cause inconsistency in the main function
+        // However, localhost is excluded for dev purposes.
+        if (window.location.hostname !== 'localhost' && !window.opener) {
+            window.location.href = '/'
+        }
+    </script>
+    <script src="js/vendor/swal.js"></script>
+    <script src="js/swal.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/functions.js"></script>
+</html>

@@ -1,0 +1,21 @@
+@font-face {
+    font-family: 'merinda';
+    src: url('/assets/fonts/merinda.ttf');
+}
+
+.navbar-brand:nth-child(2) {
+    font-family: 'merinda', cursive !important;
+    font-size: x-large !important;
+}
+
+.functions-table > table {
+    float: left;
+    width: 35%;
+    height: 100%;
+}
+
+.add-edit-function {
+    width: 65%;
+    float: right;
+    height: 100%;
+}

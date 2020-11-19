@@ -4,38 +4,41 @@ const flowgorithmCacheName = 'flowgramming-v0.0.2'
 self.addEventListener('install', function (e) {
     e.waitUntil(
         caches.open(flowgorithmCacheName).then(function (cache) {
-            return cache.addAll(
-                [
-                    "/",
-                    "/js/vendor/jquery.js",
-                    "/js/vendor/popper.js",
-                    "/js/vendor/bootstrap.js",
-                    "/js/vendor/cycle.js",
-                    "/js/vendor/handlebars.min.js",
-                    "/js/chat.js",
-                    "/js/vendor/lodash.js",
-                    "/js/vendor/backbone.js",
-                    "/js/vendor/joint.js",
-                    "/js/vendor/require.js",
-                    "/js/main.js",
-                    "/js/utility.js",
-                    "/js/addElement.js",
-                    "/js/run.js",
-                    "/js/events.js",
-                    "/js/save.js",
-                    "/css/vendor/bootstrap.min.css",
-                    "/css/vendor/joint.css",
-                    "/css/main.css",
-                    "/css/chat.css",
-                    '/assets/fonts/inter.eot',
-                    '/assets/fonts/inter.woff2',
-                    '/assets/fonts/inter.woff',
-                    '/assets/fonts/inter.ttf',
-                    '/assets/fonts/inter.svg#inter',
-                    '/assets/fonts/inter.eot?#iefix',
-                    '/assets/fonts/merinda.ttf'
-                ]
-            )
+            return cache.addAll([
+                '/',
+                '/functions.html',
+                '/js/vendor/jquery.js',
+                '/js/vendor/popper.js',
+                '/js/vendor/bootstrap.js',
+                '/js/vendor/cycle.js',
+                '/js/vendor/handlebars.min.js',
+                '/js/chat.js',
+                '/js/vendor/lodash.js',
+                '/js/vendor/backbone.js',
+                '/js/vendor/joint.js',
+                '/js/vendor/require.js',
+                '/js/vendor/swal.js',
+                '/js/swal.js',
+                '/js/main.js',
+                '/js/utility.js',
+                '/js/addElement.js',
+                '/js/run.js',
+                '/js/events.js',
+                '/js/save.js',
+                '/js/functions.js',
+                '/css/vendor/bootstrap.min.css',
+                '/css/vendor/joint.css',
+                '/css/main.css',
+                '/css/chat.css',
+                '/css/functions.css',
+                '/assets/fonts/inter.eot',
+                '/assets/fonts/inter.woff2',
+                '/assets/fonts/inter.woff',
+                '/assets/fonts/inter.ttf',
+                '/assets/fonts/inter.svg#inter',
+                '/assets/fonts/inter.eot?#iefix',
+                '/assets/fonts/merinda.ttf',
+            ])
         })
     )
 })
@@ -56,10 +59,10 @@ self.addEventListener('activate', function (event) {
                 cacheNames.map(function (cacheName) {
                     if (cacheName !== flowgorithmCacheName) {
                         // If this cache name isn't the same as current version of cache, then delete it.
-                        return caches.delete(cacheName);
+                        return caches.delete(cacheName)
                     }
                 })
-            );
+            )
         })
-    );
-});
+    )
+})
