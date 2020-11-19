@@ -94,8 +94,12 @@ async function delayLoop(currentElement) {
                 previousContextStack.length
             ) {
                 currentElement = previousContextModelStack.pop()
-                const returnValue =
-                    variables[contexts[currentContextName].returnVariable].value
+                let returnValue
+                if (functionReturnVariablesStack.length) {
+                    returnValue =
+                        variables[contexts[currentContextName].returnVariable]
+                            .value
+                }
                 variables = {
                     ...variablesStack.pop(),
                 }
