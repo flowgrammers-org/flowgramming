@@ -97,7 +97,7 @@ function handleElementDoubleClick(elementView) {
                             <option value="Default" ${shouldSelectDataType(
                                 currentElementValue,
                                 'Default'
-                            )}>
+                            )} disabled>
                                 Type
                             </option>
                             <option value="Integer" ${shouldSelectDataType(

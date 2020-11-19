@@ -1,9 +1,9 @@
-const flowgorithmCacheName = 'flowgramming-v0.0.2'
+const latestCacheName = 'flowgramming-v0.0.3'
 
 /* Start the service worker and cache all of the app's content */
 self.addEventListener('install', function (e) {
     e.waitUntil(
-        caches.open(flowgorithmCacheName).then(function (cache) {
+        caches.open(latestCacheName).then(function (cache) {
             return cache.addAll([
                 '/',
                 '/functions.html',
@@ -57,7 +57,7 @@ self.addEventListener('activate', function (event) {
         caches.keys().then(function (cacheNames) {
             return Promise.all(
                 cacheNames.map(function (cacheName) {
-                    if (cacheName !== flowgorithmCacheName) {
+                    if (cacheName !== latestCacheName) {
                         // If this cache name isn't the same as current version of cache, then delete it.
                         return caches.delete(cacheName)
                     }
