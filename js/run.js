@@ -177,9 +177,7 @@ async function delayLoop(currentElement) {
                         )
                         handleAssignmentHelper(
                             it.variableName,
-                            prevVariablesCopy[
-                                actualToFormalParamsMap.get(it.variableName)
-                            ].value.toString()
+                            globalEval(actualToFormalParamsMap.get(it.variableName)).toString()
                         )
                     })
                 }
