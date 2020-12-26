@@ -5,27 +5,15 @@
     "main": "index.js",
     "devDependencies": {
         "express": "^4.17.1",
-        "husky": "^4.3.0",
-        "nodemon": "^2.0.4",
+        "husky": "^4.3.6",
         "prettier": "2.1.2",
-        "pretty-quick": "^3.0.2",
+        "pretty-quick": "^3.1.0",
         "serve-index": "^1.9.1"
     },
-    "nodemonConfig": {
-        "ext": "html,js,css",
-        "ignore": [
-            "assets",
-            "js/vendor",
-            "css/vendor",
-            "node_modules"
-        ],
-        "verbose": true
-    },
     "scripts": {
-        "start": "nodemon index.js",
+        "start": "gulp",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "pack": "build --dir",
-        "dist": "build"
+        "gulp": "gulp concat"
     },
     "husky": {
         "hooks": {
@@ -33,5 +21,10 @@
         }
     },
     "author": "CORE Lab",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "gulp": "^4.0.2",
+        "gulp-concat": "^2.6.1",
+        "gulp-nodemon": "^2.5.0"
+    }
 }
