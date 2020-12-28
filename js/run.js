@@ -177,7 +177,9 @@ async function delayLoop(currentElement) {
                         )
                         handleAssignmentHelper(
                             it.variableName,
-                            globalEval(actualToFormalParamsMap.get(it.variableName)).toString()
+                            globalEval(
+                                actualToFormalParamsMap.get(it.variableName)
+                            ).toString()
                         )
                     })
                 }
@@ -566,6 +568,15 @@ function handleArrays(
             if (stringManipulationRegex.test(userInput)) {
                 val = stringManipulations(variableName, userInput)
                 return val
+            }
+
+            if (type==='character' && userInput.search(',') === -1) {
+                let temp = [...userInput]
+                if((temp[0] == "\'" && temp[temp.length - 1] == "\'")||(temp[0] == "\"" && temp[temp.length - 1] == "\"")){
+                    temp.pop()
+                    temp.shift()
+                    userInput = temp.toString()
+                }
             }
             val = userInput.split(',')
             for (let i = 0; i < val.length; i++) {
