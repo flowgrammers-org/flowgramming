@@ -135,6 +135,33 @@
                                         placeholder="Leave this field empty if the function doesn't return anything"
                                     />
                                 </div>
+                                <div class="form-group">
+                                    <label for="returnType">Return Type</label>
+                                    <select
+                                        class="custom-select"
+                                        id="returnType"
+                                    >
+                                        <option
+                                            value="Default"
+                                            disabled
+                                            selected
+                                        >
+                                            Select
+                                        </option>
+                                        <option value="int">Integer</option>
+                                        <option value="float">Float</option>
+                                        <option value="char">Character</option>
+                                        <option value="int (array)">
+                                            Integer Array
+                                        </option>
+                                        <option value="float (array)">
+                                            Float Array
+                                        </option>
+                                        <option value="char (array)">
+                                            Character Array
+                                        </option>
+                                    </select>
+                                </div>
                                 <button
                                     type="submit"
                                     class="btn btn-info btn-block"

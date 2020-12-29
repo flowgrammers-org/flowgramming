@@ -98,9 +98,15 @@ async function delayLoop(currentElement) {
                 currentElement = previousContextModelStack.pop()
                 let returnValue
                 if (functionReturnVariablesStack.length) {
-                    returnValue =
-                        variables[contexts[currentContextName].returnVariable]
-                            .value
+                    const { value, type } = variables[
+                        contexts[currentContextName].returnVariable
+                    ]
+                    returnValue = value
+                    if (type !== contexts[currentContextName].returnType) {
+                        throw new Error(
+                            "Return type does not match the returned variable's type"
+                        )
+                    }
                 }
                 variables = {
                     ...variablesStack.pop(),
@@ -572,9 +578,12 @@ function handleArrays(
                 return val
             }
 
-            if (type==='character' && userInput.search(',') === -1) {
+            if (type === 'character' && userInput.search(',') === -1) {
                 let temp = [...userInput]
-                if((temp[0] == "\'" && temp[temp.length - 1] == "\'")||(temp[0] == "\"" && temp[temp.length - 1] == "\"")){
+                if (
+                    (temp[0] == "'" && temp[temp.length - 1] == "'") ||
+                    (temp[0] == '"' && temp[temp.length - 1] == '"')
+                ) {
                     temp.pop()
                     temp.shift()
                     userInput = temp.toString()

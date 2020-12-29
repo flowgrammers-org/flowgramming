@@ -33,6 +33,9 @@ function manageFunctionProps(anchorObj, name) {
             </div>`
     )
     $('#returnVariable').val(currFunction.returnVariable)
+    if (currFunction.returnType) {
+        $('#returnType').val(currFunction.returnType)
+    }
     $('#parametersTable tr').remove()
     if (currFunction.parameters && currFunction.parameters.length > 0) {
         currFunction.parameters.forEach((item) => {
@@ -91,8 +94,15 @@ function saveFunction(form) {
     const functionNameObject = $('#functionName')
     const functionName = functionNameObject.val()
     const returnVariable = $('#returnVariable').val()
+    const returnType = $('#returnType').val()
     if (!functionName) {
         swal('Function name cannot be empty')
+        return false
+    }
+    if (returnVariable && (!returnType || returnType === 'Default')) {
+        swal(
+            'Return type of the function need to be selected, when you are returning a variable'
+        )
         return false
     }
     if (!handleNamingConvention(functionName, 'Function')) {
@@ -114,6 +124,7 @@ function saveFunction(form) {
     parentWindowContexts[functionName] = {
         ...(parentWindowContexts[functionName] || {}),
         returnVariable,
+        returnType,
         parameters,
     }
     form.reset()
