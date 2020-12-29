@@ -67,7 +67,15 @@ body {
 .chatcol {
     width: 35%;
     float: right;
-    height: 100%;
+    height: 60%;
+    border-bottom: 1px solid gray;
+}
+
+.variable-watch {
+    width: 35%;
+    float: right;
+    height: 40%;
+    overflow: scroll;
 }
 
 #arrayTypeButton {

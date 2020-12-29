@@ -15,6 +15,7 @@ let indexMain = [
     'js/events.js',
     'js/main.js',
     'js/utility.js',
+    'js/variable-watch.js',
     'js/!(functions)*.js',
 ]
 let indexVendor = [

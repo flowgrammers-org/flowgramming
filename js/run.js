@@ -85,6 +85,8 @@ async function delayLoop(currentElement) {
                 visitedItems.delete(currentElement.id)
             }
 
+            updateVariablesInWatchWindow()
+
             await sleep(delay)
             currentElement.attr('body/strokeWidth', strokeLow.width)
             currentElement.attr('body/stroke', strokeLow.color)
