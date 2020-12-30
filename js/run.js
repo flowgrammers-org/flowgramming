@@ -237,11 +237,12 @@ function getConditionalNextLink(ele, elementType, expResult) {
 async function handleDeclaration(element) {
     handleDeclarationHelper(
         element.attr('element/variableName'),
-        element.attr('element/variableType')
+        element.attr('element/variableType'),
+        element.attr('element/arrayLength')
     )
 }
 
-function handleDeclarationHelper(variableName, variableType) {
+function handleDeclarationHelper(variableName, variableType, arrayLength) {
     let types = {
         Integer: 'int',
         Float: 'float',
@@ -258,6 +259,7 @@ function handleDeclarationHelper(variableName, variableType) {
         variables[variableName] = {
             type: type,
             value: [],
+            arrayLength,
         }
     } else {
         variables[variableName] = {
@@ -275,7 +277,7 @@ async function handleAssignment(element) {
 }
 
 function handleAssignmentHelper(variableName, variableValue) {
-    let type, obj, arrayNotation
+    let arrayNotation
     if (!variableName) {
         throw new Error('Assign a variable name')
     }
@@ -285,8 +287,7 @@ function handleAssignmentHelper(variableName, variableValue) {
     if (isArrayNotation(variableName)) {
         arrayNotation = variableName.split('[')
     }
-    obj = getDeclaredVariable(variableName, arrayNotation)
-    type = obj.type
+    let { type, arrayLength } = getDeclaredVariable(variableName, arrayNotation)
     handleRuntimeErrors(variableValue)
     try {
         if (type === 'int') {
@@ -316,7 +317,8 @@ function handleAssignmentHelper(variableName, variableValue) {
                 parseInt,
                 variableName,
                 'integer',
-                false
+                false,
+                arrayLength
             )
         } else if (type === 'float(array)') {
             variableValue = handleArrays(
@@ -325,7 +327,8 @@ function handleAssignmentHelper(variableName, variableValue) {
                 parseFloat,
                 variableName,
                 'float',
-                false
+                false,
+                arrayLength
             )
         } else if (type === 'char(array)') {
             variableValue = handleArrays(
@@ -334,7 +337,8 @@ function handleAssignmentHelper(variableName, variableValue) {
                 parseChar,
                 variableName,
                 'character',
-                false
+                false,
+                arrayLength
             )
         }
         storeVariables(variableName, arrayNotation, variableValue, type)
@@ -344,7 +348,7 @@ function handleAssignmentHelper(variableName, variableValue) {
 }
 
 async function handleInput(element) {
-    let type, val, obj, arrayNotation
+    let val, arrayNotation
     const variableName = element.attr('element/variableName')
     if (!variableName) {
         throw new Error('Assign a variable name to take input')
@@ -353,8 +357,7 @@ async function handleInput(element) {
     if (isArrayNotation(variableName)) {
         arrayNotation = variableName.split('[')
     }
-    obj = getDeclaredVariable(variableName, arrayNotation)
-    type = obj.type
+    let { type, arrayLength } = getDeclaredVariable(variableName, arrayNotation)
     const userInput = await allowUser()
     if (type === 'int' && isInteger(userInput) === true) {
         val = parseInt(userInput)
@@ -372,7 +375,8 @@ async function handleInput(element) {
             parseInt,
             variableName,
             'integer',
-            true
+            true,
+            arrayLength
         )
     } else if (type === 'float(array)') {
         val = handleArrays(
@@ -381,7 +385,8 @@ async function handleInput(element) {
             parseFloat,
             variableName,
             'float',
-            true
+            true,
+            arrayLength
         )
     } else if (type === 'char(array)') {
         val = handleArrays(
@@ -390,7 +395,8 @@ async function handleInput(element) {
             parseChar,
             variableName,
             'character',
-            true
+            true,
+            arrayLength
         )
     } else {
         throw new Error(
@@ -548,7 +554,8 @@ function handleArrays(
     parsingType,
     variableName,
     type,
-    isInput
+    isInput,
+    arrayLength
 ) {
     let val
     try {
@@ -607,6 +614,11 @@ function handleArrays(
                 }
             }
             globalEval(variableName + '=[' + val + ']')
+        }
+        if (val.length !== parseInt(arrayLength)) {
+            throw new Error(
+                ' Length of array doesnt match with the given inputs '
+            )
         }
         return val
     } catch (e) {

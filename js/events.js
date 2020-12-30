@@ -74,6 +74,11 @@ function shouldMarkArrayCheckbox(currentElementValue) {
         : ''
 }
 
+function onArrayCheckboxChanged() {
+    if ($('#isArray').is(':checked')) $('#arrayLength').show()
+    else $('#arrayLength').hide()
+}
+
 function handleElementDoubleClick(elementView) {
     const currentElement = findModel(elementView.model.id)
     const currentElementType = currentElement.attr('element/type')
@@ -123,35 +128,54 @@ function handleElementDoubleClick(elementView) {
                     <hr>
                     <div class="form-check ml-1 mt-1">
                       <input class="form-check-input" type="checkbox" id="isArray" 
-                            ${shouldMarkArrayCheckbox(currentElementValue)}>
+                            ${shouldMarkArrayCheckbox(
+                                currentElementValue
+                            )} onclick="onArrayCheckboxChanged()">
                       <label class="form-check-label" for="isArray">
                         Is an array
                       </label>
                     </div>
+                    <div class="input-group mt-2" >
+                        <input id="arrayLength" type="number" class="form-control" placeholder="Array length"
+                                    value="${
+                                        currentElementValue.arrayLength || ''
+                                    }" min="1">
+                    </div>    
             `
+
             handlerFunction = function () {
                 const variableName = $('#variable').val()
                 let variableType = $('#variableType option:selected').val()
+                let arrayLength = $('#arrayLength').val()
 
                 $('#modal').modal('hide')
                 if (variableName.length <= 0) {
                     swal('Enter the variable name before declaring it')
                 } else if (variableType === 'Default') {
                     swal('Enter the variable type before declaring it')
+                } else if (
+                    $('#isArray').is(':checked') &&
+                    parseInt(arrayLength) === 0
+                ) {
+                    swal('The array length should be declared')
                 } else {
+                    const isArrayChecked = $('#isArray').is(':checked')
                     // We need to add the array suffix to the data type if the checkbox is checked
-                    variableType += $('#isArray').is(':checked') ? ' array' : ''
+                    variableType += isArrayChecked ? ' array' : ''
 
                     if (handleNamingConvention()) {
+                        let variableLabel = `${variableType} ${variableName}`
+                        if (isArrayChecked) {
+                            variableLabel += `[${arrayLength}]`
+                        }
                         currentElement.attr({
                             label: {
-                                text: getWrapText(
-                                    variableType + ' ' + variableName
-                                ),
+                                text: getWrapText(variableLabel),
                             },
                             element: {
                                 variableName,
                                 variableType,
+                                arrayLength,
                             },
                         })
                     }
@@ -381,6 +405,7 @@ function handleElementDoubleClick(elementView) {
     $('#modal .modal-body').html(modalBodyHtml)
     $('#modal').modal('show')
     $('#okButton').one('click', handlerFunction)
+    $('#isArray').ready(onArrayCheckboxChanged)
 }
 
 function handleNamingConvention(variableName, type = 'Variable') {
