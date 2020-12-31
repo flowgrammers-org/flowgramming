@@ -1,6 +1,7 @@
 let graph = new joint.dia.Graph()
 let variables = []
 const globalEval = eval
+const disabledBlocks = ['start', 'end', 'circle']
 
 let currentContextName = 'main'
 
@@ -15,7 +16,11 @@ let paper = new joint.dia.Paper({
 })
 
 paper.on('element:pointerdblclick', function (elementView) {
-    handleElementDoubleClick(elementView)
+    const currentElement = findModel(elementView.model.id)
+    const currentElementType = currentElement.attr('element/type')
+    if (!disabledBlocks.includes(currentElementType)) {
+        handleElementDoubleClick(elementView)
+    }
 })
 
 graph.on('change:position', function () {
