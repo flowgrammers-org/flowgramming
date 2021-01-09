@@ -98,6 +98,72 @@
                         />
                     </svg>
                 </a>
+                <a
+                    class="nav-item d-flex hidden"
+                    href="#"
+                    id="pause-btn"
+                    title="Pause the flowgram"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.5em"
+                        height="1.5em"
+                        fill="white"
+                        class="bi bi-pause-btn my-auto mx-2"
+                        viewBox="0 0 16 16"
+                    >
+                        <path
+                            d="M6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C7.5 5.56 6.94 5 6.25 5zm3.5 0c-.69 0-1.25.56-1.25 1.25v3.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5z"
+                        />
+                        <path
+                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"
+                        />
+                    </svg>
+                </a>
+                <a
+                    class="nav-item d-flex hidden"
+                    href="#"
+                    id="play-btn"
+                    title="Play the flowgram"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.5em"
+                        height="1.5em"
+                        fill="white"
+                        class="bi bi-play-btn mx-2 my-auto"
+                        viewBox="0 0 16 16"
+                    >
+                        <path
+                            d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"
+                        />
+                        <path
+                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"
+                        />
+                    </svg>
+                </a>
+                <a
+                    class="nav-item d-flex hidden"
+                    href="#"
+                    id="stop-btn"
+                    title="Stop the flowgram"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.5em"
+                        height="1.5em"
+                        fill="white"
+                        class="bi bi-stop-btn mx-2 my-auto"
+                        viewBox="0 0 16 16"
+                    >
+                        <path
+                            d="M6.5 5A1.5 1.5 0 0 0 5 6.5v3A1.5 1.5 0 0 0 6.5 11h3A1.5 1.5 0 0 0 11 9.5v-3A1.5 1.5 0 0 0 9.5 5h-3z"
+                        />
+                        <path
+                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"
+                        />
+                    </svg>
+                </a>
                 <span
                     class="nav-item d-flex pr-3 mr-2 border-right"
                     title="Control speed of execution"
@@ -344,9 +410,21 @@
         })
 
         $('#run-btn').on('click', function () {
+            $('#stop-btn').removeClass('hidden')
+            $('#pause-btn').removeClass('hidden')
+            $('#run-btn').addClass('hidden')
             run()
         })
+        $('#pause-btn').on('click', function () {
+            pause()
+        })
 
+        $('#play-btn').on('click', function () {
+            play()
+        })
+        $('#stop-btn').on('click', function () {
+            stopRun()
+        })
         $('#save-btn').on('click', function () {
             saveFlowChart()
         })

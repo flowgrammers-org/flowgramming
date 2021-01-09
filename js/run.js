@@ -18,6 +18,8 @@ const speedToDelayMapping = {
     undefined: 1000,
     fast: 500,
 }
+let paused = false,
+    stopped = false
 
 let variablesStack = [],
     previousContextStack = [],
@@ -33,13 +35,11 @@ async function delayLoop(currentElement) {
     while (true) {
         // Let's get the delay in ms according to the speed stored in localStorage
         const delay = speedToDelayMapping[speedOfExecutionDropdown.val()]
-
         strokeLow.width = currentElement.attr('body/strokeWidth')
         currentElement.attr('body/strokeWidth', strokeHigh.width)
         if (currentElement.attr('body/fill') !== strokeHigh.color) {
             currentElement.attr('body/stroke', strokeHigh.color)
         }
-
         let expressionResult = false
         try {
             switch (currentElement.attr('element/type')) {
@@ -88,9 +88,16 @@ async function delayLoop(currentElement) {
             updateVariablesInWatchWindow()
 
             await sleep(delay)
+            while (paused) {
+                if (currentElement.attr('body/fill') !== strokeHigh.color) {
+                    currentElement.attr('body/stroke', strokeHigh.color)
+                }
+                if (stopped) break
+                await sleep(10)
+            }
             currentElement.attr('body/strokeWidth', strokeLow.width)
             currentElement.attr('body/stroke', strokeLow.color)
-
+            if (stopped) break
             if (
                 currentElement.attr('element/type') === 'end' &&
                 previousContextStack.length
@@ -387,6 +394,7 @@ async function handleInput(element) {
         arrayNotation
     )
     const userInput = await allowUser()
+    if (userInput === 'Stopped') return
     if (type === 'int' && isInteger(userInput) === true) {
         val = parseInt(userInput)
         globalEval(variableName + ' = ' + val)
@@ -494,7 +502,7 @@ async function handleBooleanExpression(element) {
     }
 }
 
-async function run() {
+function clearAll() {
     visitedItems.clear()
     variables = []
     variablesStack = []
@@ -507,7 +515,38 @@ async function run() {
     }
     start = findModel(contexts[currentContextName].start.id)
     clearChat()
+}
+
+async function run() {
+    clearAll()
+    stopped = false
+    paused = false
     await delayLoop(start)
+    $('#stop-btn').addClass('hidden')
+    $('#pause-btn').addClass('hidden')
+    $('#run-btn').removeClass('hidden')
+}
+
+async function pause() {
+    paused = true
+    $('#pause-btn').addClass('hidden')
+    $('#play-btn').removeClass('hidden')
+}
+
+async function play() {
+    paused = false
+    $('#play-btn').addClass('hidden')
+    $('#pause-btn').removeClass('hidden')
+}
+
+async function stopRun() {
+    stopped = true
+    clearAll()
+    updateVariablesInWatchWindow()
+    $('#stop-btn').addClass('hidden')
+    $('#pause-btn').addClass('hidden')
+    $('#play-btn').addClass('hidden')
+    $('#run-btn').removeClass('hidden')
 }
 
 function isFloat(n) {

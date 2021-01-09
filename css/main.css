@@ -83,6 +83,8 @@ body {
 }
 
 #run-btn,
+#pause-btn,
+#play-btn,
 .navbar-nav {
     padding-left: 0.5rem;
     margin-left: 0.5rem;
@@ -94,4 +96,8 @@ body {
     margin-right: 0.25rem;
     padding-right: 0.5rem;
     border-right: 1px solid white;
+}
+
+.hidden {
+    display: none !important;
 }
