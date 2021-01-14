@@ -75,8 +75,29 @@ function shouldMarkArrayCheckbox(currentElementValue) {
 }
 
 function onArrayCheckboxChanged() {
-    if ($('#isArray').is(':checked')) $('#arrayLength').show()
-    else $('#arrayLength').hide()
+    if ($('#isArray').is(':checked')) {
+        $('#arrayDimension').show()
+        onArrayDimensionChanged()
+    } else $('#arrayDimension').hide()
+}
+
+function shouldMarkArray2D(currentElementValue) {
+    return currentElementValue.is2DArray ? 'checked' : ''
+}
+
+function shouldMarkArray1D(currentElementValue) {
+    return !currentElementValue.is2DArray ? 'checked' : ''
+}
+
+function onArrayDimensionChanged() {
+    let val = $("input[name='dimension']:checked").val()
+    if (val === '1D') {
+        $('#arrayLength').show()
+        $('#array2D').hide()
+    } else {
+        $('#arrayLength').hide()
+        $('#array2D').show()
+    }
 }
 
 function handleElementDoubleClick(elementView) {
@@ -135,18 +156,47 @@ function handleElementDoubleClick(elementView) {
                         Is an array
                       </label>
                     </div>
-                    <div class="input-group mt-2" >
-                        <input id="arrayLength" type="number" class="form-control" placeholder="Array length"
-                                    value="${
-                                        currentElementValue.arrayLength || ''
-                                    }" min="1">
-                    </div>    
+                    <div id='arrayDimension'>
+                        <div class="form-check" >
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" id="1D" value='1D' name='dimension' ${shouldMarkArray1D(
+                                  currentElementValue
+                              )} onchange="onArrayDimensionChanged()">
+                              <label class="form-check-label" for="1D">1D</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name='dimension' value='2D' id="2D" ${shouldMarkArray2D(
+                                  currentElementValue
+                              )} onchange='onArrayDimensionChanged()'>
+                              <label class="form-check-label" for="2D">2D</label>
+                            </div>
+                        </div>
+                        <div class="input-group mt-2" >
+                            <input id="arrayLength" type="number" class="form-control" placeholder="Array length"
+                                        value="${
+                                            currentElementValue.arrayLength ||
+                                            ''
+                                        }" min="1">
+                        </div>  
+                        <div class="input-group mt-2" id='array2D'>
+                            <input id="arrayRow" type="number" class="form-control" placeholder="Rows"
+                                        value="${
+                                            currentElementValue.rowLen || ''
+                                        }" min="1">
+                            <input id="arrayCol" type="number" class="form-control" placeholder="Columns"
+                                        value="${
+                                            currentElementValue.colLen || ''
+                                        }" min="1">
+                        </div>   
+                    </div> 
             `
 
             handlerFunction = function () {
                 const variableName = $('#variable').val()
                 let variableType = $('#variableType option:selected').val()
                 let arrayLength = $('#arrayLength').val()
+                let rowLen = $('#arrayRow').val()
+                let colLen = $('#arrayCol').val()
 
                 $('#modal').modal('hide')
                 if (variableName.length <= 0) {
@@ -155,19 +205,36 @@ function handleElementDoubleClick(elementView) {
                     swal('Enter the variable type before declaring it')
                 } else if (
                     $('#isArray').is(':checked') &&
+                    $("input[name='dimension']:checked").val() === '1D' &&
                     parseInt(arrayLength) === 0
                 ) {
                     swal('The array length should be declared')
+                } else if (
+                    ($('#isArray').is(':checked') &&
+                        $("input[name='dimension']:checked").val() === '2D' &&
+                        parseInt(rowLen) === 0) ||
+                    parseInt(colLen) === 0
+                ) {
+                    swal('The number of rows and columns should be declared')
                 } else {
                     const isArrayChecked = $('#isArray').is(':checked')
+                    const is2DArray =
+                        $("input[name='dimension']:checked").val() === '2D'
                     // We need to add the array suffix to the data type if the checkbox is checked
                     variableType += isArrayChecked ? ' array' : ''
-
                     if (handleNamingConvention()) {
                         let variableLabel = `${variableType} ${variableName}`
+
                         if (isArrayChecked) {
-                            variableLabel += `[${arrayLength}]`
+                            if (is2DArray) {
+                                variableLabel += `[${rowLen}][${colLen}]`
+                                arrayLength = ''
+                            } else {
+                                variableLabel += `[${arrayLength}]`
+                                rowLen = colLen = ''
+                            }
                         }
+
                         currentElement.attr({
                             label: {
                                 text: getWrapText(variableLabel),
@@ -175,6 +242,9 @@ function handleElementDoubleClick(elementView) {
                             element: {
                                 variableName,
                                 variableType,
+                                is2DArray,
+                                rowLen,
+                                colLen,
                                 arrayLength,
                             },
                         })
