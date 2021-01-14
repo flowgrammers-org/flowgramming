@@ -9,15 +9,7 @@ function stopScripts() {
     watchTask()
     nodemonTask()
 }
-let indexMain = [
-    'js/chat.js',
-    'js/swal.js',
-    'js/events.js',
-    'js/main.js',
-    'js/utility.js',
-    'js/variable-watch.js',
-    'js/!(functions)*.js',
-]
+let indexMain = ['js/main.js', 'js/!(functions)*.js']
 let indexVendor = [
     'js/vendor/jquery.js',
     'js/vendor/popper.js',
@@ -38,7 +30,12 @@ let functionVendor = [
     'js/vendor/swal.js',
 ]
 
-let functionMain = ['js/swal.js', 'js/events.js', 'js/functions.js']
+let functionMain = [
+    'js/swal.js',
+    'js/events.js',
+    'js/tab.js',
+    'js/functions.js',
+]
 
 let mainCss = [
     'css/vendor/bootstrap.min.css',
@@ -47,7 +44,10 @@ let mainCss = [
     'css/chat.css',
 ]
 let functionCss = ['css/vendor/bootstrap.min.css', 'css/functions.css']
+let codeCss = ['css/vendor/bootstrap.min.css', 'css/code.css', 'css/vendor/prism.css']
 
+let codeVendor = [ 'js/vendor/jquery.js', 'js/vendor/bootstrap.js', 'js/vendor/prism.js']
+let codeMain = ['js/tab.js', 'js/save.js']
 gulp.task('concat', function () {
     gulp.src(indexVendor)
         .pipe(concat('indexVendor.js'))
@@ -55,6 +55,14 @@ gulp.task('concat', function () {
         .pipe(gulp.dest('js/build'))
     gulp.src(indexMain)
         .pipe(concat('indexMain.js'))
+        .pipe(uglify({ keep_fnames: true }))
+        .pipe(gulp.dest('js/build'))
+    gulp.src(codeMain)
+        .pipe(concat('codeMain.js'))
+        .pipe(uglify({ keep_fnames: true }))
+        .pipe(gulp.dest('js/build'))
+    gulp.src(codeVendor)
+        .pipe(concat('codeVendor.js'))
         .pipe(uglify({ keep_fnames: true }))
         .pipe(gulp.dest('js/build'))
     gulp.src(functionVendor)
@@ -67,6 +75,15 @@ gulp.task('concat', function () {
         .pipe(gulp.dest('js/build'))
     gulp.src(mainCss)
         .pipe(concat('main.css'))
+        .pipe(
+            uglifyCss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(gulp.dest('css/build'))
+    gulp.src(codeCss)
+        .pipe(concat('code.css'))
         .pipe(
             uglifyCss({
                 maxLineLen: 80,

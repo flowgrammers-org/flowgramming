@@ -615,10 +615,8 @@ function handleArrays(
             }
             globalEval(variableName + '=[' + val + ']')
         }
-        if (val.length !== parseInt(arrayLength)) {
-            throw new Error(
-                ' Length of array doesnt match with the given inputs '
-            )
+        if (val.length > parseInt(arrayLength)) {
+            throw new Error('The specified length of array cannot hold these many values')
         }
         return val
     } catch (e) {

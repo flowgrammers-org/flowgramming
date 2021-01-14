@@ -1,0 +1,51 @@
+@font-face {
+    font-family: 'merinda';
+    src: url('/assets/fonts/merinda.ttf');
+}
+
+.navbar-brand:nth-child(2) {
+    font-family: 'merinda', cursive !important;
+    font-size: x-large !important;
+}
+
+.code-area {
+    white-space: pre;
+}
+
+.code-div {
+    width: 70%;
+    margin: 0 auto;
+    padding-bottom: 5%;
+}
+
+#code-area {
+    font-size: 1.2em;
+}
+
+.code-keyword {
+    color: #00bb22;
+}
+
+.code-head {
+    margin: 1% 5%;
+}
+
+#download,
+#download:hover {
+    text-decoration: none;
+    color: white;
+    width: 40%;
+    display: inline-block;
+    padding: 0 10%;
+}
+
+.code-lang {
+    float: right;
+    margin-right: 10%;
+}
+
+.code-lang p {
+    color: #343a40;
+    font-size: 1.4em;
+    display: inline;
+}

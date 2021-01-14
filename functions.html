@@ -208,14 +208,9 @@
             </button>
         </nav>
     </body>
-    <script>
-        // This is to prevent the function manager to be opened independently
-        // which might cause inconsistency in the main function
-        // However, localhost is excluded for dev purposes.
-        if (window.location.hostname !== 'localhost' && !window.opener) {
-            window.location.href = '/'
-        }
-    </script>
     <script src="js/build/functionVendor.js"></script>
     <script src="js/build/functionMain.js"></script>
+    <script>
+        preventIndependentOpen()
+    </script>
 </html>
