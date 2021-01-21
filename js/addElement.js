@@ -3,10 +3,10 @@
  */
 
 const blockColors = {
-    input: '#ffd6a5',
-    output: '#ffadad',
+    input: '#ffadad',
+    output: '#caffbf',
     assignment: '#fdffb6',
-    declaration: '#caffbf',
+    declaration: '#ffd6a5',
     while: '#9bf6ff',
     for: '#a0c4ff',
     doWhile: '#bdb2ff',
