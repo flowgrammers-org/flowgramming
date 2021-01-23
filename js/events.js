@@ -206,16 +206,25 @@ function handleElementDoubleClick(elementView) {
                 } else if (
                     $('#isArray').is(':checked') &&
                     $("input[name='dimension']:checked").val() === '1D' &&
-                    parseInt(arrayLength) === 0
+                    (parseInt(arrayLength) === 0 ||
+                        isNaN(parseInt(arrayLength)))
                 ) {
                     swal('The array length should be declared')
                 } else if (
-                    ($('#isArray').is(':checked') &&
-                        $("input[name='dimension']:checked").val() === '2D' &&
-                        parseInt(rowLen) === 0) ||
-                    parseInt(colLen) === 0
+                    $('#isArray').is(':checked') &&
+                    $("input[name='dimension']:checked").val() === '2D' &&
+                    (parseInt(rowLen) === 0 ||
+                        isNaN(parseInt(rowLen)) ||
+                        isNaN(parseInt(colLen)) ||
+                        parseInt(colLen) === 0)
                 ) {
                     swal('The number of rows and columns should be declared')
+                } else if (
+                    rowLen.includes('.') ||
+                    colLen.includes('.') ||
+                    arrayLength.includes('.')
+                ) {
+                    swal('Array sizes must only be natural numbers')
                 } else {
                     const isArrayChecked = $('#isArray').is(':checked')
                     const is2DArray =

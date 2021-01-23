@@ -6,11 +6,15 @@ function updateVariablesInWatchWindow() {
 function getHTMLForVariableWatchWindow() {
     let htmlOutput = ''
     Object.keys(variables).forEach((variableName) => {
-        const variableValue = variables[variableName].value
+        let variableValue = variables[variableName].value
         const variableType = variables[variableName].type
+        if (variables[variableName].is2DArray) {
+            variableValue = twoDArrayToString(variableValue)
+        }
+        if (variableValue !== 0) variableValue = variableValue || 'N/A'
         htmlOutput += `<tr class="${getTableRowClassForVariableType(
             variableType
-        )}"><td>${variableName}</td><td>${variableValue || 'N/A'}</td></tr>`
+        )}"><td>${variableName}</td><td>${variableValue}</td></tr>`
     })
     return htmlOutput
 }

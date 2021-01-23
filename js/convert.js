@@ -2,7 +2,7 @@ let code
 let indent = ''
 let originalIndent = ''
 let language = ''
-
+let error = false
 /**
  * Each language plugin must implement the functions:
  *      langHeaders: The header files to be added at the top of the code
@@ -88,7 +88,16 @@ function assignmentHelper(element) {
         name,
         value: element.attr('element/variableValue'),
     }
-    if (varArray[name]) {
+    if (isArrayNotation(name)) {
+        let arrayNotation = name.split('[')
+        if (varArray[arrayNotation[0]]) {
+            obj = {
+                ...varArray[arrayNotation[0]],
+                ...obj,
+                arrayNotation,
+            }
+        }
+    } else if (varArray[name]) {
         obj = { ...obj, ...varArray[name] }
     }
     return obj
@@ -156,9 +165,30 @@ function doWhileLoopStartHelper(element) {
     indent += window[`${language}DoWhileLoopStart`]().indent
 }
 
+function checkIfEmpty(element) {
+    let op = element.attr('element/type')
+    switch (op) {
+        case 'input':
+        case 'declare':
+        case 'assignment':
+            if (!element.attr('element/variableName'))
+                throw new Error("Variable name can't be empty")
+            break
+        case 'output':
+        case 'while':
+        case 'doWhileExpr':
+        case 'if':
+            if (!element.attr('element/expression'))
+                throw new Error("Expression can't be empty")
+            break
+    }
+}
+
 function convertLoop(currentElement, end = null) {
+    error = false
     while (true) {
         try {
+            checkIfEmpty(currentElement)
             switch (currentElement.attr('element/type')) {
                 case 'input':
                     code +=
@@ -238,6 +268,7 @@ function convertLoop(currentElement, end = null) {
                 break
             }
         } catch (err) {
+            error = true
             swal(err.message || err.toString())
             break
         }
@@ -293,5 +324,5 @@ function convert(language) {
     start = findModel(contexts[currentContextName].start.id)
     convertLoop(start, language)
     code += window[`${language}FunctionClose`](0)
-    openNewTab('/code.html', 'CodeConverter')
+    if (!error) openNewTab('/code.html', 'CodeConverter')
 }

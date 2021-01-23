@@ -252,6 +252,14 @@ async function handleDeclaration(element) {
     )
 }
 
+function initializeArray(len) {
+    let value = []
+    for (let i = 0; i < len; i++) {
+        value.push('N/A')
+    }
+    return value
+}
+
 function handleDeclarationHelper(
     variableName,
     variableType,
@@ -273,9 +281,18 @@ function handleDeclarationHelper(
     }
     const type = types[variableType]
     if (type.includes('array')) {
+        let value = []
+        if (is2DArray) {
+            for (let i = 0; i < rowLen; i++) {
+                let row = initializeArray(colLen)
+                value.push(row)
+            }
+        } else {
+            value = initializeArray(arrayLength)
+        }
         variables[variableName] = {
             type: type,
-            value: [],
+            value,
             arrayLength,
             rowLen,
             colLen,
@@ -393,6 +410,7 @@ async function handleInput(element) {
         variableName,
         arrayNotation
     )
+
     const userInput = await allowUser()
     if (userInput === 'Stopped') return
     if (type === 'int' && isInteger(userInput) === true) {
@@ -452,16 +470,46 @@ async function handleInput(element) {
     return { status: 'Ok' }
 }
 
+function twoDArrayToString(a) {
+    let row = ''
+    for (let i = 0; i < a.length; i++) {
+        row += '[' + a[i] + '],'
+    }
+    return row.slice(0, -1)
+}
+
 async function handleOutput(element) {
     if (!element.attr('element/expression')) {
         throw new Error('Assign a Expression')
     }
     handleRuntimeErrors(element.attr('element/expression'))
     try {
-        let exp = JSON.stringify(globalEval(element.attr('element/expression')))
-        if (exp[0] === '[' && exp[exp.length - 1] === ']')
-            exp = exp.slice(1, -1)
-        renderProgram(exp)
+        let exp = element.attr('element/expression')
+        if (isArrayNotation(exp)) {
+            let arrayNotation = exp.split('[')
+            let i = arrayNotation[1].split(']')[0]
+            if (i >= variables[arrayNotation[0]].rowLen)
+                throw new Error("The specified row doesn't exist in the array")
+            let expr = variables[arrayNotation[0]].value[i]
+            if (arrayNotation.length > 2) {
+                let j = arrayNotation[2].split(']')[0]
+                if (j >= variables[arrayNotation[0]].colLen)
+                    throw new Error(
+                        "The specified column doesn't exist in the array"
+                    )
+                expr = variables[arrayNotation[0]].value[i][j]
+            }
+            renderProgram(expr || 'N/A')
+        } else {
+            if (exp in variables) {
+                exp = variables[exp]
+                let val = exp.value
+                if (exp.is2DArray) val = twoDArrayToString(val)
+                renderProgram(val)
+            } else {
+                renderProgram(globalEval(exp))
+            }
+        }
     } catch (e) {
         handleNotInitializedVariables(e)
     }
@@ -470,19 +518,26 @@ async function handleOutput(element) {
 
 async function handleForLoop(element) {
     try {
+        const incrExp = element.attr('element/forLoop/incr')
         if (!visitedItems.has(element.id)) {
             const initExp = element.attr('element/forLoop/init')
             if (!initExp) {
                 throw new Error('Enter the initialisation expression')
             }
-            globalEval(initExp)
+            let vn = initExp.split('=')[0].trim()
+            if (vn in variables) {
+                variables[vn].value = globalEval(initExp)
+            }
         } else {
-            const incrExp = element.attr('element/forLoop/incr')
             if (!incrExp) {
                 throw new Error('Enter the incrementation expression')
             }
             handleRuntimeErrors(incrExp)
-            globalEval(incrExp)
+            let vn = incrExp.match(/[a-zA-z]*/)[0]
+            if (vn in variables) {
+                globalEval(incrExp)
+                variables[vn].value = globalEval(vn)
+            }
         }
     } catch (e) {
         handleNotInitializedVariables(e)
@@ -558,7 +613,7 @@ function isFloat(n) {
 
 function isInteger(n) {
     if (!isNaN(parseFloat(n)) && isFinite(n)) {
-        return !n.includes('.')
+        return !n.toString().includes('.')
     }
     return false
 }
@@ -568,6 +623,7 @@ function isChar(n) {
 }
 
 function parseChar(n) {
+    if (n[0] === '"' && n[n.length - 1] === '"') n = n.slice(1, -1)
     return "'" + n + "'"
 }
 
@@ -598,19 +654,21 @@ function getDeclaredVariable(variableName, arrayNotation) {
 function storeVariables(variableName, arrayNotation, variableValue, type) {
     if (isArrayNotation(variableName)) {
         variables[arrayNotation[0]].type = type
-        const indexPosition = arrayNotation[1].split(']')
+        let indexPosition = arrayNotation[1].split(']')[0]
+        if (!isInteger(indexPosition)) {
+            indexPosition = globalEval(indexPosition)
+        }
         //Extracting the index position from the array notation
         if (arrayNotation.length > 2) {
-            const indexJ = arrayNotation[2].split(']')
-            let x = JSON.parse(
-                variables[arrayNotation[0]].value[parseInt(indexPosition[0])]
-            )
-            x[parseInt(indexJ[0])] = variableValue
-            variableValue = JSON.stringify(x)
-        }
-        variables[arrayNotation[0]].value[
-            parseInt(indexPosition[0])
-        ] = variableValue
+            let indexJ = arrayNotation[2].split(']')[0]
+            if (!isInteger(indexJ)) indexJ = globalEval(indexJ)
+            variables[arrayNotation[0]].value[parseInt(indexPosition)][
+                parseInt(indexJ)
+            ] = variableValue
+        } else
+            variables[arrayNotation[0]].value[
+                parseInt(indexPosition)
+            ] = variableValue
     } else {
         variables[variableName] = {
             ...variables[variableName],
@@ -629,7 +687,19 @@ function handleArrayAssignment(userInput, type) {
                 return userInput
             }
         } else {
-            return globalEval(userInput).toString()
+            if (
+                isArrayNotation(userInput) &&
+                userInput.split('[')[0] in variables
+            ) {
+                let arrayNotation = userInput.split('[')
+                let i = globalEval(arrayNotation[1].split(']')[0])
+                let val = variables[arrayNotation[0]].value[i]
+                if (arrayNotation.length > 2) {
+                    let j = globalEval(arrayNotation[2].split(']')[0])
+                    val = variables[arrayNotation[0]].value[i][j]
+                }
+                return val
+            } else return globalEval(userInput).toString()
         }
     } catch (e) {
         handleNotInitializedVariables(e)
@@ -648,6 +718,7 @@ function handle1Darrays(type, userInput, checkType, variableName, parsingType) {
             userInput = temp.toString()
         }
     }
+
     let val = userInput.split(',')
     for (let i = 0; i < val.length; i++) {
         if (checkType(val[i])) {
@@ -690,24 +761,21 @@ function handleArrays(
                 return val
             }
             let typeCheck
-            if (is2DArray && arrayNotation.length < 3) {
-                if (
-                    parseInt(arrayNotation[1].split(']')[0]) >= parseInt(rowLen)
+            if (
+                is2DArray &&
+                parseInt(arrayNotation[1].split(']')[0]) >= parseInt(rowLen)
+            )
+                throw new Error(
+                    'The specified length of array cannot hold these many values'
                 )
-                    throw new Error(
-                        'The specified length of array cannot hold these many values'
-                    )
-                val =
-                    '[' +
-                    handle1Darrays(
-                        type,
-                        userInput,
-                        checkType,
-                        variableName,
-                        parsingType
-                    ) +
-                    ']'
-                globalEval(variableName + '=' + val)
+            if (is2DArray && arrayNotation.length < 3) {
+                val = handle1Darrays(
+                    type,
+                    userInput,
+                    checkType,
+                    variableName,
+                    parsingType
+                )
             } else {
                 if (is2DArray && userInput.includes(','))
                     throw new Error(
@@ -724,13 +792,12 @@ function handleArrays(
                     typeCheck = checkType(userInput)
                     val = parsingType(userInput)
                 } else {
-                    typeCheck = checkType(
-                        handleArrayAssignment(userInput, type)
-                    )
+                    let v = handleArrayAssignment(userInput, type)
+                    typeCheck = checkType(v)
                     val = parsingType(handleArrayAssignment(userInput, type))
                 }
                 if (typeCheck) {
-                    globalEval(variableName + '=' + val)
+                    globalEval(arrayNotation[0] + '=' + val)
                 } else {
                     throw new Error(
                         'Data type mismatch\n\nDeclared array is of type ' +
@@ -744,7 +811,7 @@ function handleArrays(
                 return val
             }
             if (is2DArray && !userInput.includes(';')) {
-                userInput = userInput.replace('],', '];')
+                userInput = userInput.replaceAll('],', '];')
             }
             val = userInput.split(';')
             if (is2DArray) {
@@ -769,7 +836,7 @@ function handleArrays(
                             'The specified number of columns of the array cannot hold these many values'
                         )
                     }
-                    val[i] = '[' + x + ']'
+                    val[i] = x
                 }
             } else {
                 val = handle1Darrays(
@@ -785,7 +852,9 @@ function handleArrays(
 
         if (
             (!is2DArray && val.length > parseInt(arrayLength)) ||
-            (is2DArray && val.length > parseInt(rowLen))
+            (is2DArray &&
+                val.length > parseInt(rowLen) &&
+                !isArrayNotation(variableName))
         ) {
             throw new Error(
                 ' The specified length of array cannot hold these many values'

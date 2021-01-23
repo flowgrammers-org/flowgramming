@@ -1,7 +1,5 @@
 function cppIfBlock(expression) {
-    if (expression !== undefined && expression.name !== undefined)
-        return { statement: '\tif (' + expression.name + ') {\n', indent: '\t' }
-    return ''
+    return { statement: '\tif (' + expression.name + ') {\n', indent: '\t' }
 }
 
 function cppElseBlock() {
@@ -9,12 +7,10 @@ function cppElseBlock() {
 }
 
 function cppWhileLoop(expression) {
-    if (expression !== undefined && expression.name !== undefined)
-        return {
-            statement: '\twhile (' + expression.name + ') {\n',
-            indent: '\t',
-        }
-    return ''
+    return {
+        statement: '\twhile (' + expression.name + ') {\n',
+        indent: '\t',
+    }
 }
 
 function cppDoWhileLoopStart() {
@@ -120,38 +116,37 @@ function cppOutput(expression, indent) {
     return ''
 }
 
+function addQuotes(x, quotes = "'") {
+    let val = x
+    if (x.charAt(0) !== '"' || x.charAt(0) !== "'") val = quotes + x
+    if (x.charAt(x.length - 1) !== '"' || x.charAt(x.length - 1) !== "'")
+        val += quotes
+    if (x.charAt(0) !== x.charAt(x.length - 1))
+        val[0] = val[x.length - 1] = quotes
+    return val
+}
+
 function cppAssignment(assignment, indent) {
     if (assignment.value !== undefined) {
         let values = assignment.value.split(',')
         if (assignment.type === 'Char' || assignment.type === undefined) {
-            if (values.length === 1) {
-                if (
-                    values[0].charAt(0) !==
-                        values[0].charAt(values[0].length - 1) ||
-                    values[0].charAt(0) !== '"'
-                )
-                    values[0] = '"' + values[0] + '"'
-
-                assignment.value = values[0]
+            if (assignment.arrayNotation !== undefined)
+                assignment.value = addQuotes(assignment.value)
+            else {
+                if (values.length === 1)
+                    assignment.value = addQuotes(values[0], '"')
+                else
+                    values.map((x, i) => {
+                        values[i] = addQuotes(x)
+                    })
             }
-            values.map((x, i) => {
-                if (x.charAt(0) !== '"' || x.charAt(0) !== "'")
-                    values[i] = "'" + x
-                if (
-                    x.charAt(x.length - 1) !== '"' ||
-                    x.charAt(x.length - 1) !== "'"
-                )
-                    values[i] += "'"
-                if (x.charAt(0) !== x.charAt(x.length - 1))
-                    values[i][0] = values[i][x.length - 1] = "'"
-            })
         }
         if (assignment.name !== undefined)
             if (
-                (assignment.type === 'Char' &&
-                    values.length > 1 &&
-                    assignment.isArray) ||
-                (assignment.type !== 'Char' && assignment.isArray)
+                assignment.arrayNotation === undefined &&
+                assignment.isArray &&
+                ((assignment.type === 'Char' && values.length > 1) ||
+                    assignment.type !== 'Char')
             ) {
                 let code = ''
                 indent += '\t'
