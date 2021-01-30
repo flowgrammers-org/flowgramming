@@ -231,9 +231,18 @@ function handleElementDoubleClick(elementView) {
                         $("input[name='dimension']:checked").val() === '2D'
                     // We need to add the array suffix to the data type if the checkbox is checked
                     variableType += isArrayChecked ? ' array' : ''
-                    if (handleNamingConvention()) {
-                        let variableLabel = `${variableType} ${variableName}`
-
+                    let variableLabel = `${variableType} ${variableName}`
+                    variableArray = variableName.split(',')
+                    let namingConventionTest = true
+                    for (let i = 0; i < variableArray.length; i++) {
+                        namingConventionTest =
+                            namingConventionTest &&
+                            handleNamingConvention(variableArray[i])
+                        if (!namingConventionTest) {
+                            break
+                        }
+                    }
+                    if (namingConventionTest) {
                         if (isArrayChecked) {
                             if (is2DArray) {
                                 variableLabel += `[${rowLen}][${colLen}]`
@@ -250,11 +259,13 @@ function handleElementDoubleClick(elementView) {
                             },
                             element: {
                                 variableName,
+                                variableArray,
                                 variableType,
                                 is2DArray,
                                 rowLen,
                                 colLen,
                                 arrayLength,
+                                isArrayChecked,
                             },
                         })
                     }

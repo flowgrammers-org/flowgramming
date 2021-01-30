@@ -242,14 +242,33 @@ function getConditionalNextLink(ele, elementType, expResult) {
 }
 
 async function handleDeclaration(element) {
-    handleDeclarationHelper(
-        element.attr('element/variableName'),
-        element.attr('element/variableType'),
-        element.attr('element/arrayLength'),
-        element.attr('element/rowLen'),
-        element.attr('element/colLen'),
-        element.attr('element/is2DArray')
-    )
+    let variableArray = element.attr('element/variableArray')
+    let variableType = element.attr('element/variableType')
+    let arrayLength = element.attr('element/arrayLength')
+    let rowLen = element.attr('element/rowLen')
+    let colLen = element.attr('element/colLen')
+    let is2DArray = element.attr('element/is2DArray')
+    if (variableArray.length > 1) {
+        for (let i = 0; i < variableArray.length; i++) {
+            handleDeclarationHelper(
+                variableArray[i],
+                variableType,
+                arrayLength,
+                rowLen,
+                colLen,
+                is2DArray
+            )
+        }
+    } else {
+        handleDeclarationHelper(
+            element.attr('element/variableName'),
+            variableType,
+            arrayLength,
+            rowLen,
+            colLen,
+            is2DArray
+        )
+    }
 }
 
 function initializeArray(len) {
