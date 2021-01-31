@@ -70,7 +70,7 @@ function switchContext() {
             start,
         }
     } else {
-        graph.fromJSON(toContext.graph)
+        updateContextAttributes()
     }
     paper.fitToContent({
         padding: 20,
@@ -79,6 +79,20 @@ function switchContext() {
         gridWidth: 10,
         gridHeight: 10,
     })
+}
+
+function updateContextAttributes() {
+    const toContext = contexts[currentContextName]
+    let { startText, endText } = getFunctionAttributes(currentContextName)
+    let resizeX =
+        currentContextName !== 'main'
+            ? Math.max(startText.length, endText.length) * 5 + 150
+            : 150
+    toContext.graph.cells[0].size.width = resizeX
+    toContext.graph.cells[1].size.width = resizeX
+    toContext.graph.cells[0].attrs.label.text = startText
+    toContext.graph.cells[1].attrs.label.text = endText
+    graph.fromJSON(toContext.graph)
 }
 
 /**
@@ -94,6 +108,14 @@ function updateCurrentContexts(localContexts) {
         main: contexts.main,
         ...(localContexts || {}),
     }
+    updateContextAttributes()
+    paper.fitToContent({
+        padding: 20,
+        minWidth: paperColumn.width(),
+        minHeight: paperColumn.height(),
+        gridWidth: 10,
+        gridHeight: 10,
+    })
 }
 
 /**
@@ -134,7 +156,10 @@ function addStartAndEndBlock(context) {
 
     let start = new joint.shapes.standard.Rectangle()
     start.position(350, 30)
-    start.resize(150, 60)
+    let { startText, endText } = getFunctionAttributes(context)
+    let resizeX =
+        context !== 'main' ? Math.max(startText.length, endText.length) * 5 : 0
+    start.resize(150 + resizeX, 60)
     start.attr({
         element: {
             type: 'start',
@@ -149,17 +174,16 @@ function addStartAndEndBlock(context) {
             strokeWidth: 0,
         },
         label: {
-            text: `Start ${context}()`,
+            text: startText,
             fill: '#ECF0F1',
         },
     })
     start.addTo(graph)
 
     const end = start.clone()
-
     end.attr({
         label: {
-            text: `End ${context}()`,
+            text: endText,
         },
         element: {
             type: 'end',
@@ -191,5 +215,29 @@ window.onload = () => {
 
     if (location.hostname !== 'localhost' && 'serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
+    }
+}
+
+/**
+ * Get function parameters, return variable and type of
+ * current context
+ */
+function getFunctionAttributes(context) {
+    let parameters = ''
+    let endText = 'End main()',
+        startText = 'Start main()',
+        returnType = ''
+    if (context !== 'main') {
+        contexts[context].parameters.map((x) => {
+            parameters += x.variableType + ' ' + x.variableName + ', '
+        })
+        if (contexts[context].returnType)
+            returnType = contexts[context].returnType + ' '
+        endText = 'return ' + returnType + contexts[context].returnVariable
+        startText = `${context} (${parameters.slice(0, -2)})`
+    }
+    return {
+        startText,
+        endText,
     }
 }
