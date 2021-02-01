@@ -101,3 +101,9 @@ body {
 .hidden {
     display: none !important;
 }
+
+button.close {
+    width: 10%;
+    margin-left: auto;
+    margin-bottom: -3px;
+}

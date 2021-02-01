@@ -101,6 +101,11 @@ function onArrayDimensionChanged() {
 
 function handleElementDoubleClick(elementView) {
     const currentElement = findModel(elementView.model.id)
+    $('#delbtn').text('Delete').attr('onclick', 'handleDelete()')
+    $('#modal .modal-content').attr(
+        'data-element',
+        JSON.stringify(currentElement)
+    )
     const currentElementType = currentElement.attr('element/type')
     const currentElementValue = getCurrentElementValue(
         currentElement,
@@ -564,4 +569,23 @@ function handleNamingConvention(variableName, type = 'Variable') {
         return false
     }
     return true
+}
+
+function handleDelete() {
+    try {
+        let currentElement = $('#modal .modal-content').attr('data-element')
+        if (currentElement)
+            currentElement = findModel(JSON.parse(currentElement).id)
+        if (currentElement.attr('element/type') === 'if') {
+            deleteIF(currentElement)
+        } else if (currentElement.attr('element/type') === 'while') {
+            deleteWhile(currentElement)
+        } else if (currentElement.attr('element/type') === 'doWhileExpr') {
+            throw new Error("DoWhile Block can't be deleted")
+        } else {
+            deleteBlock(currentElement)
+        }
+    } catch (e) {
+        swal(e.toString())
+    }
 }

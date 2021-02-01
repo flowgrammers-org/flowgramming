@@ -44,9 +44,17 @@ let mainCss = [
     'css/chat.css',
 ]
 let functionCss = ['css/vendor/bootstrap.min.css', 'css/functions.css']
-let codeCss = ['css/vendor/bootstrap.min.css', 'css/code.css', 'css/vendor/prism.css']
+let codeCss = [
+    'css/vendor/bootstrap.min.css',
+    'css/code.css',
+    'css/vendor/prism.css',
+]
 
-let codeVendor = [ 'js/vendor/jquery.js', 'js/vendor/bootstrap.js', 'js/vendor/prism.js']
+let codeVendor = [
+    'js/vendor/jquery.js',
+    'js/vendor/bootstrap.js',
+    'js/vendor/prism.js',
+]
 let codeMain = ['js/tab.js', 'js/save.js']
 gulp.task('concat', function () {
     gulp.src(indexVendor)

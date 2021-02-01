@@ -26,7 +26,10 @@ function getDiamond() {
 function getHexagon() {
     const hexagon = new joint.shapes.standard.Path()
     hexagon.resize(150, 75)
-    hexagon.attr('body/refD', 'M 100 30 L 0 30 L -25 67 L 0 105 L 100 105 L 125 67 L 100 30 Z')
+    hexagon.attr(
+        'body/refD',
+        'M 100 30 L 0 30 L -25 67 L 0 105 L 100 105 L 125 67 L 100 30 Z'
+    )
     return hexagon
 }
 
@@ -44,10 +47,14 @@ function getRectangle() {
  */
 
 function getWrapText(text) {
-    return joint.util.breakText(text, {
-        width: 120,
-        height: 70
-    }, {ellipsis: true})
+    return joint.util.breakText(
+        text,
+        {
+            width: 120,
+            height: 70,
+        },
+        { ellipsis: true }
+    )
 }
 
 function getCircle() {
@@ -83,16 +90,16 @@ function addElement(currentLink, element, type) {
         } else {
             element.position(startPosition.x, startPosition.y + 100)
         }
-        currentLink.set({target: element})
+        currentLink.set({ target: element })
 
         currentLink.attr('element/target', element.id)
         link = new joint.shapes.standard.Link()
 
         element.attr({
-            element: {type},
+            element: { type },
             outgoing_link: {
-                next: link.id
-            }
+                next: link.id,
+            },
         })
         link.source(element)
         link.target(currentEnd)
@@ -101,7 +108,7 @@ function addElement(currentLink, element, type) {
             element: {
                 target: currentEnd.id,
                 source: element.id,
-            }
+            },
         })
         translateDown(currentEnd, null)
     } else if (currentLink.attr('element/type') === 'if') {
@@ -120,18 +127,20 @@ function addElement(currentLink, element, type) {
             startPosition.x -= 175
         }
         element.position(startPosition.x, startPosition.y + 100)
-        currentLink.set({target: element})
+        currentLink.set({ target: element })
         currentLink.attr('element/target', element.id)
         link = new joint.shapes.standard.Link()
-        link.vertices([{
-            x: vertices[1].x,
-            y: vertices[1].y + 100
-        }])
+        link.vertices([
+            {
+                x: vertices[1].x,
+                y: vertices[1].y + 100,
+            },
+        ])
         element.attr({
-            element: {type},
+            element: { type },
             outgoing_link: {
-                next: link.id
-            }
+                next: link.id,
+            },
         })
         link.source(element)
         link.target(currentEnd)
@@ -140,8 +149,8 @@ function addElement(currentLink, element, type) {
             element: {
                 target: currentEnd.id,
                 source: element.id,
-                type: 'ifEnd'
-            }
+                type: 'ifEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
         translateDown(currentEnd, null)
@@ -162,18 +171,20 @@ function addElement(currentLink, element, type) {
             startPosition.x -= 175
         }
         element.position(startPosition.x, startPosition.y + 100)
-        currentLink.set({target: element})
+        currentLink.set({ target: element })
         currentLink.attr('element/target', element.id)
         link = new joint.shapes.standard.Link()
-        link.vertices([{
-            x: vertices[1].x,
-            y: vertices[1].y + 100
-        }])
+        link.vertices([
+            {
+                x: vertices[1].x,
+                y: vertices[1].y + 100,
+            },
+        ])
         element.attr({
-            element: {type},
+            element: { type },
             outgoing_link: {
-                next: link.id
-            }
+                next: link.id,
+            },
         })
         link.source(element)
         link.target(currentEnd)
@@ -182,8 +193,8 @@ function addElement(currentLink, element, type) {
             element: {
                 target: currentEnd.id,
                 source: element.id,
-                type: 'doWhileEnd'
-            }
+                type: 'doWhileEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
         translateDown(currentEnd, null)
@@ -207,39 +218,50 @@ function addElement(currentLink, element, type) {
         } else {
             element.position(startPosition.x, startPosition.y + 100)
         }
-        currentLink.set({target: element})
+        currentLink.set({ target: element })
         currentLink.attr('element/target', element.id)
         link = new joint.shapes.standard.Link()
         link.vertices([
-            {x: vertices[1].x, y: vertices[1].y + 100},
-            {x: vertices[1].x - 200, y: vertices[1].y + 100}
+            { x: vertices[1].x, y: vertices[1].y + 100 },
+            { x: vertices[1].x - 200, y: vertices[1].y + 100 },
         ])
         element.attr({
-            element: {type},
+            element: { type },
             outgoing_link: {
-                next: link.id
-            }
+                next: link.id,
+            },
         })
         link.source(element)
         link.target(currentEnd, {
             anchor: {
                 name: 'bottomRight',
                 args: {
-                    dx: -50
-                }
-            }
+                    dx: -50,
+                },
+            },
         })
         link.addTo(graph)
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: element.id,
-                type: 'whileEnd'
-            }
+                type: 'whileEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-    } else if (['ifStart', 'whileStart', 'doWhileStart'].includes(currentLink.attr('element/type'))) {
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
+    } else if (
+        ['ifStart', 'whileStart', 'doWhileStart'].includes(
+            currentLink.attr('element/type')
+        )
+    ) {
         currentEnd = findModel(currentLink.attr('element/target'))
         currentStart = findModel(currentLink.attr('element/source'))
         const startPosition = currentStart.position()
@@ -256,7 +278,7 @@ function addElement(currentLink, element, type) {
         }
 
         element.position(startPosition.x, startPosition.y + 100)
-        currentLink.set({target: element})
+        currentLink.set({ target: element })
         currentLink.attr('element/target', element.id)
         link = new joint.shapes.standard.Link()
         element.attr({
@@ -264,8 +286,8 @@ function addElement(currentLink, element, type) {
                 type,
             },
             outgoing_link: {
-                next: link.id
-            }
+                next: link.id,
+            },
         })
         link.source(element)
         link.target(currentEnd)
@@ -274,16 +296,20 @@ function addElement(currentLink, element, type) {
             element: {
                 target: currentEnd.id,
                 source: element.id,
-            }
+            },
         })
         translateDown(currentEnd, null)
-    } else if (['ifEnd', 'whileEnd', 'doWhileEnd'].includes(currentLink.attr('element/type'))) {
+    } else if (
+        ['ifEnd', 'whileEnd', 'doWhileEnd'].includes(
+            currentLink.attr('element/type')
+        )
+    ) {
         currentLink.vertices([])
         currentEnd = findModel(currentLink.attr('element/target'))
         currentStart = findModel(currentLink.attr('element/source'))
         const startPosition = currentStart.position()
         element.position(startPosition.x, startPosition.y + 100)
-        currentLink.set({target: element})
+        currentLink.set({ target: element })
         currentLink.attr('element/target', element.id)
         link = new joint.shapes.standard.Link()
         link.source(element)
@@ -296,59 +322,70 @@ function addElement(currentLink, element, type) {
         }
         if (currentLink.attr('element/type') === 'whileEnd') {
             link.vertices([
-                {x: vertices[0].x, y: vertices[0].y + 100},
-                {x: vertices[1].x, y: vertices[1].y + 100},
+                { x: vertices[0].x, y: vertices[0].y + 100 },
+                { x: vertices[1].x, y: vertices[1].y + 100 },
             ])
             link.target(currentEnd, {
                 anchor: {
                     name: 'bottomRight',
                     args: {
-                        dx: -50
-                    }
-                }
+                        dx: -50,
+                    },
+                },
             })
             element.attr({
-                element: {type},
+                element: { type },
                 outgoing_link: {
-                    next: link.id
-                }
+                    next: link.id,
+                },
             })
             link.addTo(graph)
             link.attr({
                 element: {
                     target: currentEnd.id,
                     source: element.id,
-                    type: currentLink.attr('element/type')
-                }
+                    type: currentLink.attr('element/type'),
+                },
             })
             currentLink.attr('element/type', null)
-            translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+            translateDown(
+                findModel(
+                    findModel(currentEnd.attr('outgoing_link/next')).attr(
+                        'element/target'
+                    )
+                ),
+                null
+            )
         } else {
             if (currentLink.attr('element/type') === 'doWhileEnd') {
-                link.vertices([{
-                    x: element.position().x + 75,
-                    y: element.position().y + 187.5
-                }])
+                link.vertices([
+                    {
+                        x: element.position().x + 75,
+                        y: element.position().y + 187.5,
+                    },
+                ])
             } else {
-                link.vertices([{
-                    x: element.position().x,
-                    y: element.position().y + 100
-                }])
+                link.vertices([
+                    {
+                        x: element.position().x,
+                        y: element.position().y + 100,
+                    },
+                ])
             }
             link.target(currentEnd)
             element.attr({
-                element: {type},
+                element: { type },
                 outgoing_link: {
-                    next: link.id
-                }
+                    next: link.id,
+                },
             })
             link.addTo(graph)
             link.attr({
                 element: {
                     target: currentEnd.id,
                     source: element.id,
-                    type: currentLink.attr('element/type')
-                }
+                    type: currentLink.attr('element/type'),
+                },
             })
             currentLink.attr('element/type', null)
             translateDown(currentEnd, null)
@@ -374,12 +411,15 @@ function addElementDoWhile(currentLink, element) {
         } else {
             startPosition.x -= 175
         }
-    } else if (['while', 'whileStart'].includes(currentLink.attr('element/type'))) {
+    } else if (
+        ['while', 'whileStart'].includes(currentLink.attr('element/type'))
+    ) {
         startPosition.x += 225
-    } else if (['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))) {
+    } else if (
+        ['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))
+    ) {
         startPosition.x += 187.5
     }
-
 
     // Make a new circle
     const doWhileStartCircle = getCircle()
@@ -392,7 +432,7 @@ function addElementDoWhile(currentLink, element) {
         element.position(startPosition.x, startPosition.y + 250)
     }
 
-    currentLink.set({target: doWhileStartCircle})
+    currentLink.set({ target: doWhileStartCircle })
     currentLink.attr('element/target', doWhileStartCircle.id)
 
     // Creating the invisible link
@@ -401,15 +441,16 @@ function addElementDoWhile(currentLink, element) {
     trueLink.target(doWhileStartCircle)
     trueLink.addTo(graph)
     trueLink.appendLabel({
-        attrs: {text: {text: 'True'}},
-        position: {distance: 0.2}
+        attrs: { text: { text: 'True' } },
+        position: { distance: 0.2 },
+        trueLink: 'True',
     })
     trueLink.attr({
         element: {
             target: doWhileStartCircle.id,
             source: element.id,
-            type: 'doWhileTrue'
-        }
+            type: 'doWhileTrue',
+        },
     })
 
     const endCirclePosition = doWhileStartCircle.position()
@@ -417,8 +458,9 @@ function addElementDoWhile(currentLink, element) {
     // Creating True Link
     const loopLink = new joint.shapes.standard.Link()
     loopLink.vertices([
-        {x: endCirclePosition.x + 200, y: endCirclePosition.y + 25},
-        {x: endCirclePosition.x + 200, y: element.position().y + 38.5}])
+        { x: endCirclePosition.x + 200, y: endCirclePosition.y + 25 },
+        { x: endCirclePosition.x + 200, y: element.position().y + 38.5 },
+    ])
     loopLink.source(doWhileStartCircle)
     loopLink.target(element)
     loopLink.addTo(graph)
@@ -426,8 +468,8 @@ function addElementDoWhile(currentLink, element) {
         element: {
             target: element.id,
             source: doWhileStartCircle.id,
-            type: 'doWhile'
-        }
+            type: 'doWhile',
+        },
     })
 
     // Creating the endLink
@@ -435,19 +477,19 @@ function addElementDoWhile(currentLink, element) {
     link.source(element)
     link.target(currentEnd)
     link.appendLabel({
-        attrs: {text: {text: 'False'}},
-        position: {distance: 0.18}
+        attrs: { text: { text: 'False' } },
+        position: { distance: 0.18 },
     })
     link.addTo(graph)
 
     element.attr({
         element: {
-            type: 'doWhileExpr'
+            type: 'doWhileExpr',
         },
         outgoing_link: {
             next: link.id,
-            loopLink: trueLink.id
-        }
+            loopLink: trueLink.id,
+        },
     })
 
     // Creating the invisible link for helping in translating down
@@ -460,33 +502,37 @@ function addElementDoWhile(currentLink, element) {
         element: {
             target: element.id,
             source: doWhileStartCircle.id,
-        }
+        },
     })
 
     const currentLinkType = currentLink.attr('element/type')
     if (['if', 'doWhile'].includes(currentLinkType)) {
         currentLink.attr({
             element: {
-                type: `${currentLinkType}Start`
-            }
+                type: `${currentLinkType}Start`,
+            },
         })
         if (currentLinkType === 'doWhile') {
-            link.vertices([{
-                x: element.position().x + 75,
-                y: vertices[1].y + 300
-            }])
+            link.vertices([
+                {
+                    x: element.position().x + 75,
+                    y: vertices[1].y + 300,
+                },
+            ])
         } else {
-            link.vertices([{
-                x: vertices[1].x,
-                y: vertices[1].y + 100
-            }])
+            link.vertices([
+                {
+                    x: vertices[1].x,
+                    y: vertices[1].y + 100,
+                },
+            ])
         }
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: element.id,
-                type: `${currentLinkType}End`
-            }
+                type: `${currentLinkType}End`,
+            },
         })
         currentLink.vertices([vertices[0]])
         translateDown(currentEnd, null)
@@ -494,17 +540,21 @@ function addElementDoWhile(currentLink, element) {
         translateDown(currentEnd, null)
     } else if (['ifEnd', 'doWhileEnd'].includes(currentLinkType)) {
         currentLink.vertices([])
-        link.vertices([{
-            x: vertices[0].x,
-            y: vertices[0].y + (currentLinkType === 'doWhileEnd' ? 300 : 100)
-        }])
+        link.vertices([
+            {
+                x: vertices[0].x,
+                y:
+                    vertices[0].y +
+                    (currentLinkType === 'doWhileEnd' ? 300 : 100),
+            },
+        ])
         currentLink.attr('element/type', null)
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: element.id,
-                type: currentLinkType
-            }
+                type: currentLinkType,
+            },
         })
         translateDown(currentEnd, null)
         translateDown(currentEnd, null)
@@ -512,62 +562,97 @@ function addElementDoWhile(currentLink, element) {
     } else if (currentLinkType === 'whileEnd') {
         currentLink.vertices([])
         link.vertices([
-            {x: vertices[0].x, y: element.position().y + 175},
-            {x: vertices[1].x, y: element.position().y + 175},
+            { x: vertices[0].x, y: element.position().y + 175 },
+            { x: vertices[1].x, y: element.position().y + 175 },
         ])
         link.target(currentEnd, {
             anchor: {
                 name: 'bottomRight',
                 args: {
-                    dx: -50
-                }
-            }
+                    dx: -50,
+                },
+            },
         })
         currentLink.attr('element/type', null)
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: element.id,
-                type: 'whileEnd'
-            }
+                type: 'whileEnd',
+            },
         })
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
     } else if (currentLinkType === 'while') {
         link.target(currentEnd, {
             anchor: {
                 name: 'bottomRight',
                 args: {
-                    dx: -50
-                }
-            }
+                    dx: -50,
+                },
+            },
         })
         currentLink.attr({
             element: {
-                type: 'whileStart'
-            }
+                type: 'whileStart',
+            },
         })
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: element.id,
-                type: 'whileEnd'
-            }
+                type: 'whileEnd',
+            },
         })
         link.vertices([
-            {x: vertices[1].x, y: element.position().y + 100},
-            {x: vertices[2].x, y: element.position().y + 100},
+            { x: vertices[1].x, y: element.position().y + 100 },
+            { x: vertices[2].x, y: element.position().y + 100 },
         ])
         currentLink.vertices([vertices[0]])
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
     } else {
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: element.id,
-            }
+            },
         })
         translateDown(currentEnd, null)
         translateDown(currentEnd, null)
@@ -576,12 +661,12 @@ function addElementDoWhile(currentLink, element) {
     doWhileStartCircle.attr({
         element: {
             type: 'circle',
-            circleType: 'doWhile'
+            circleType: 'doWhile',
         },
         outgoing_link: {
             next: loopLink.id,
-            invisibleLink: invisibleLink.id
-        }
+            invisibleLink: invisibleLink.id,
+        },
     })
 }
 
@@ -597,14 +682,18 @@ function addElementWhile(currentLink, element, type) {
         } else {
             startPosition.x -= 175
         }
-    } else if (['while', 'whileStart'].includes(currentLink.attr('element/type'))) {
+    } else if (
+        ['while', 'whileStart'].includes(currentLink.attr('element/type'))
+    ) {
         startPosition.x += 225
-    } else if (['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))) {
+    } else if (
+        ['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))
+    ) {
         startPosition.x += 187.5
     }
 
     // Set Current End of the link to while element
-    currentLink.set({target: element})
+    currentLink.set({ target: element })
     currentLink.attr('element/target', element.id)
 
     // Make a new circle
@@ -624,29 +713,29 @@ function addElementWhile(currentLink, element, type) {
     // Creating True Link
     const loopLink = new joint.shapes.standard.Link()
     loopLink.vertices([
-        {x: whilePosition.x + 300, y: whilePosition.y + 37.5},
-        {x: whilePosition.x + 300, y: whilePosition.y + 120},
-        {x: whilePosition.x + 100, y: whilePosition.y + 120}
+        { x: whilePosition.x + 300, y: whilePosition.y + 37.5 },
+        { x: whilePosition.x + 300, y: whilePosition.y + 120 },
+        { x: whilePosition.x + 100, y: whilePosition.y + 120 },
     ])
     loopLink.source(element)
     loopLink.target(element, {
         anchor: {
             name: 'bottomRight',
             args: {
-                dx: -50
-            }
-        }
+                dx: -50,
+            },
+        },
     })
     loopLink.addTo(graph)
     loopLink.appendLabel({
-        attrs: {text: {text: 'True'}},
-        position: {distance: 0.1}
+        attrs: { text: { text: 'True' } },
+        position: { distance: 0.1 },
     })
     loopLink.attr({
         element: {
             target: element.id,
             source: element.id,
-            type: 'while'
+            type: 'while',
         },
     })
 
@@ -660,8 +749,8 @@ function addElementWhile(currentLink, element, type) {
     nextLink.addTo(graph)
 
     nextLink.appendLabel({
-        attrs: {text: {text: 'False'}},
-        position: {distance: 0.2}
+        attrs: { text: { text: 'False' } },
+        position: { distance: 0.2 },
     })
 
     endLink.source(endCircle)
@@ -673,88 +762,96 @@ function addElementWhile(currentLink, element, type) {
     if (currentLink.attr('element/type') === 'doWhile') {
         currentLink.attr({
             element: {
-                type: 'doWhileStart'
-            }
+                type: 'doWhileStart',
+            },
         })
-        endLink.vertices([{
-            x: vertices[1].x,
-            y: vertices[1].y + 300
-        }])
+        endLink.vertices([
+            {
+                x: vertices[1].x,
+                y: vertices[1].y + 300,
+            },
+        ])
         endLink.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'doWhileEnd'
-            }
+                type: 'doWhileEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
     } else if (currentLink.attr('element/type') === 'doWhileEnd') {
         currentLink.vertices([])
-        endLink.vertices([{
-            x: vertices[0].x,
-            y: vertices[0].y + 300
-        }])
+        endLink.vertices([
+            {
+                x: vertices[0].x,
+                y: vertices[0].y + 300,
+            },
+        ])
         currentLink.attr('element/type', null)
         endLink.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'doWhileEnd'
-            }
+                type: 'doWhileEnd',
+            },
         })
     } else if (currentLink.attr('element/type') === 'if') {
         currentLink.attr({
             element: {
-                type: 'ifStart'
-            }
+                type: 'ifStart',
+            },
         })
-        endLink.vertices([{
-            x: vertices[1].x,
-            y: vertices[1].y + 175
-        }])
+        endLink.vertices([
+            {
+                x: vertices[1].x,
+                y: vertices[1].y + 175,
+            },
+        ])
         endLink.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'ifEnd'
-            }
+                type: 'ifEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
     } else if (currentLink.attr('element/type') === 'ifEnd') {
         currentLink.vertices([])
-        endLink.vertices([{
-            x: vertices[0].x,
-            y: vertices[0].y + 175
-        }])
+        endLink.vertices([
+            {
+                x: vertices[0].x,
+                y: vertices[0].y + 175,
+            },
+        ])
         currentLink.attr('element/type', null)
         endLink.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'ifEnd'
-            }
+                type: 'ifEnd',
+            },
         })
     } else if (currentLink.attr('element/type') === 'whileEnd') {
         currentLink.vertices([])
         endLink.vertices([
-            {x: vertices[0].x, y: endCircle.position().y + 100},
-            {x: vertices[1].x, y: endCircle.position().y + 100},
+            { x: vertices[0].x, y: endCircle.position().y + 100 },
+            { x: vertices[1].x, y: endCircle.position().y + 100 },
         ])
         endLink.target(currentEnd, {
             anchor: {
                 name: 'bottomRight',
                 args: {
-                    dx: -50
-                }
-            }
+                    dx: -50,
+                },
+            },
         })
         currentLink.attr('element/type', null)
         endLink.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'whileEnd'
-            }
+                type: 'whileEnd',
+            },
         })
         whileFlag = true
     } else if (currentLink.attr('element/type') === 'while') {
@@ -762,25 +859,25 @@ function addElementWhile(currentLink, element, type) {
             anchor: {
                 name: 'bottomRight',
                 args: {
-                    dx: -50
-                }
-            }
+                    dx: -50,
+                },
+            },
         })
         currentLink.attr({
             element: {
-                type: 'whileStart'
-            }
+                type: 'whileStart',
+            },
         })
         endLink.vertices([
-            {x: vertices[1].x, y: endCircle.position().y + 100},
-            {x: vertices[2].x, y: endCircle.position().y + 100},
+            { x: vertices[1].x, y: endCircle.position().y + 100 },
+            { x: vertices[2].x, y: endCircle.position().y + 100 },
         ])
         endLink.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'whileEnd'
-            }
+                type: 'whileEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
         whileFlag = true
@@ -789,38 +886,59 @@ function addElementWhile(currentLink, element, type) {
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-            }
+            },
         })
     }
     nextLink.attr({
         element: {
             target: endCircle.id,
             source: element.id,
-            type: 'whileFalse'
-        }
+            type: 'whileFalse',
+        },
     })
     endCircle.attr({
         element: {
             type: 'circle',
         },
         outgoing_link: {
-            next: endLink.id
-        }
+            next: endLink.id,
+        },
     })
     element.attr({
         element: {
             type: 'while',
-            loopType: type
+            loopType: type,
         },
         outgoing_link: {
             next: nextLink.id,
-            loopLink: loopLink.id
-        }
+            loopLink: loopLink.id,
+        },
     })
     if (whileFlag) {
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
     } else {
         translateDown(currentEnd, null)
         translateDown(currentEnd, null)
@@ -853,14 +971,18 @@ function addElementIf(currentLink, element, type) {
         } else {
             startPosition.x -= 175
         }
-    } else if (['while', 'whileStart'].includes(currentLink.attr('element/type'))) {
+    } else if (
+        ['while', 'whileStart'].includes(currentLink.attr('element/type'))
+    ) {
         startPosition.x += 225
-    } else if (['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))) {
+    } else if (
+        ['doWhile', 'doWhileStart'].includes(currentLink.attr('element/type'))
+    ) {
         startPosition.x += 187.5
     }
 
     // Set Current End of the link to IF element
-    currentLink.set({target: element})
+    currentLink.set({ target: element })
     currentLink.attr('element/target', element.id)
 
     // Make a new circle
@@ -889,7 +1011,7 @@ function addElementIf(currentLink, element, type) {
         element: {
             target: endCircle.id,
             source: element.id,
-        }
+        },
     })
 
     const ifPosition = element.position()
@@ -897,49 +1019,53 @@ function addElementIf(currentLink, element, type) {
     // Creating True Link
     const trueLink = new joint.shapes.standard.Link()
     trueLink.vertices([
-        {x: ifPosition.x + 200, y: ifPosition.y + 50},
-        {x: ifPosition.x + 200, y: endCircle.position().y + 25}])
+        { x: ifPosition.x + 200, y: ifPosition.y + 50 },
+        { x: ifPosition.x + 200, y: endCircle.position().y + 25 },
+    ])
     trueLink.source(element)
     trueLink.target(endCircle)
     trueLink.addTo(graph)
     trueLink.appendLabel({
-        attrs: {text: {text: 'True'}},
-        position: {distance: 0.1}
+        attrs: { text: { text: 'True' } },
+        position: { distance: 0.1 },
     })
     trueLink.attr({
         element: {
             target: endCircle.id,
             source: element.id,
-            type: 'if'
-        }
+            type: 'if',
+            trueLink: 'true',
+        },
     })
 
     // Creating False Link
     const falseLink = new joint.shapes.standard.Link()
     falseLink.vertices([
-        {x: ifPosition.x - 100, y: ifPosition.y + 50},
-        {x: ifPosition.x - 100, y: endCircle.position().y + 25}])
+        { x: ifPosition.x - 100, y: ifPosition.y + 50 },
+        { x: ifPosition.x - 100, y: endCircle.position().y + 25 },
+    ])
     falseLink.source(element)
     falseLink.target(endCircle)
     falseLink.addTo(graph)
     falseLink.appendLabel({
-        attrs: {text: {text: 'False'}},
-        position: {distance: 0.1}
+        attrs: { text: { text: 'False' } },
+        position: { distance: 0.1 },
     })
     falseLink.attr({
         element: {
             target: endCircle.id,
             source: element.id,
-            type: 'if'
-        }
+            type: 'if',
+            falselink: 'true',
+        },
     })
     element.attr({
-        element: {type},
+        element: { type },
         outgoing_link: {
             next: invisibleLink.id,
             trueLink: trueLink.id,
-            falseLink: falseLink.id
-        }
+            falseLink: falseLink.id,
+        },
     })
 
     // Creating the endLink
@@ -951,132 +1077,168 @@ function addElementIf(currentLink, element, type) {
     if (currentLink.attr('element/type') === 'doWhile') {
         currentLink.attr({
             element: {
-                type: 'doWhileStart'
-            }
+                type: 'doWhileStart',
+            },
         })
-        link.vertices([{
-            x: vertices[1].x,
-            y: vertices[1].y + 300
-        }])
+        link.vertices([
+            {
+                x: vertices[1].x,
+                y: vertices[1].y + 300,
+            },
+        ])
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'doWhileEnd'
-            }
+                type: 'doWhileEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
         translateDown(currentEnd, null)
     } else if (currentLink.attr('element/type') === 'doWhileEnd') {
         currentLink.vertices([])
-        link.vertices([{
-            x: vertices[0].x,
-            y: vertices[0].y + 200
-        }])
+        link.vertices([
+            {
+                x: vertices[0].x,
+                y: vertices[0].y + 200,
+            },
+        ])
         currentLink.attr('element/type', null)
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'doWhileEnd'
-            }
+                type: 'doWhileEnd',
+            },
         })
         translateDown(currentEnd, null)
         translateDown(currentEnd, null)
     } else if (currentLink.attr('element/type') === 'if') {
         currentLink.attr({
             element: {
-                type: 'ifStart'
-            }
+                type: 'ifStart',
+            },
         })
-        link.vertices([{
-            x: vertices[1].x,
-            y: vertices[1].y + 100
-        }])
+        link.vertices([
+            {
+                x: vertices[1].x,
+                y: vertices[1].y + 100,
+            },
+        ])
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'ifEnd'
-            }
+                type: 'ifEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
         translateDown(currentEnd, null)
         translateDown(currentEnd, null)
     } else if (currentLink.attr('element/type') === 'ifEnd') {
         currentLink.vertices([])
-        link.vertices([{
-            x: vertices[0].x,
-            y: vertices[0].y + 100
-        }])
+        link.vertices([
+            {
+                x: vertices[0].x,
+                y: vertices[0].y + 100,
+            },
+        ])
         currentLink.attr('element/type', null)
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'ifEnd'
-            }
+                type: 'ifEnd',
+            },
         })
         translateDown(currentEnd, null)
         translateDown(currentEnd, null)
     } else if (currentLink.attr('element/type') === 'whileEnd') {
         currentLink.vertices([])
         link.vertices([
-            {x: vertices[0].x, y: vertices[0].y + 175},
-            {x: vertices[1].x, y: vertices[1].y + 175},
+            { x: vertices[0].x, y: vertices[0].y + 175 },
+            { x: vertices[1].x, y: vertices[1].y + 175 },
         ])
         link.target(currentEnd, {
             anchor: {
                 name: 'bottomRight',
                 args: {
-                    dx: -50
-                }
-            }
+                    dx: -50,
+                },
+            },
         })
         currentLink.attr('element/type', null)
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'whileEnd'
-            }
+                type: 'whileEnd',
+            },
         })
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
     } else if (currentLink.attr('element/type') === 'while') {
         link.target(currentEnd, {
             anchor: {
                 name: 'bottomRight',
                 args: {
-                    dx: -50
-                }
-            }
+                    dx: -50,
+                },
+            },
         })
         currentLink.attr({
             element: {
-                type: 'whileStart'
-            }
+                type: 'whileStart',
+            },
         })
         link.vertices([
-            {x: vertices[1].x, y: vertices[1].y + 175},
-            {x: vertices[2].x, y: vertices[2].y + 175},
+            { x: vertices[1].x, y: vertices[1].y + 175 },
+            { x: vertices[2].x, y: vertices[2].y + 175 },
         ])
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-                type: 'whileEnd'
-            }
+                type: 'whileEnd',
+            },
         })
         currentLink.vertices([vertices[0]])
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
-        translateDown(findModel(findModel(currentEnd.attr('outgoing_link/next')).attr('element/target')), null)
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
+        translateDown(
+            findModel(
+                findModel(currentEnd.attr('outgoing_link/next')).attr(
+                    'element/target'
+                )
+            ),
+            null
+        )
     } else {
         link.attr({
             element: {
                 target: currentEnd.id,
                 source: endCircle.id,
-            }
+            },
         })
         translateDown(currentEnd, null)
         translateDown(currentEnd, null)
@@ -1086,8 +1248,8 @@ function addElementIf(currentLink, element, type) {
             type: 'circle',
         },
         outgoing_link: {
-            next: link.id
-        }
+            next: link.id,
+        },
     })
     setListener(endCircle, 'circle')
     setListener(element, 'if')
@@ -1102,12 +1264,12 @@ function translateWhile(element) {
     const vertices = loopLink.vertices()
     const newVertices = []
     if (element.id === loopLink.attr('element/target')) {
-        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
-        newVertices.push({x: vertices[1].x, y: vertices[1].y + 100})
-        newVertices.push({x: vertices[2].x, y: vertices[2].y + 100})
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
+        newVertices.push({ x: vertices[1].x, y: vertices[1].y + 100 })
+        newVertices.push({ x: vertices[2].x, y: vertices[2].y + 100 })
         loopLink.vertices(newVertices)
     } else {
-        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
         loopLink.vertices(newVertices)
         translateDown(findModel(loopLink.attr('element/target')), element)
     }
@@ -1120,18 +1282,23 @@ function translateWhile(element) {
 function translateDoWhile(element) {
     const nextLink = findModel(element.attr('outgoing_link/next'))
     const invisibleLink = findModel(element.attr('outgoing_link/invisibleLink'))
-    if (invisibleLink.attr('element/target') === nextLink.attr('element/target')) {
+    if (
+        invisibleLink.attr('element/target') === nextLink.attr('element/target')
+    ) {
         const vertices = nextLink.vertices()
         const newVertices = []
-        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
-        newVertices.push({x: vertices[1].x, y: vertices[1].y + 100})
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
+        newVertices.push({ x: vertices[1].x, y: vertices[1].y + 100 })
         nextLink.vertices(newVertices)
     } else {
         const vertices = nextLink.vertices()
         const newVertices = []
-        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
         nextLink.vertices(newVertices)
-        translateDown(findModel(nextLink.attr('element/target')), findModel(invisibleLink.attr('element/target')))
+        translateDown(
+            findModel(nextLink.attr('element/target')),
+            findModel(invisibleLink.attr('element/target'))
+        )
     }
 }
 
@@ -1146,29 +1313,35 @@ function translateIF(element) {
     if (nextLink.attr('element/target') === trueLink.attr('element/target')) {
         const vertices = trueLink.vertices()
         const newVertices = []
-        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
-        newVertices.push({x: vertices[1].x, y: vertices[1].y + 100})
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
+        newVertices.push({ x: vertices[1].x, y: vertices[1].y + 100 })
         trueLink.vertices(newVertices)
     } else {
         const vertices = trueLink.vertices()
         const newVertices = []
-        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
         trueLink.vertices(newVertices)
-        translateDown(findModel(trueLink.attr('element/target')), findModel(nextLink.attr('element/target')))
+        translateDown(
+            findModel(trueLink.attr('element/target')),
+            findModel(nextLink.attr('element/target'))
+        )
     }
 
     if (nextLink.attr('element/target') === falseLink.attr('element/target')) {
         const vertices = falseLink.vertices()
         const newVertices = []
-        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
-        newVertices.push({x: vertices[1].x, y: vertices[1].y + 100})
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
+        newVertices.push({ x: vertices[1].x, y: vertices[1].y + 100 })
         falseLink.vertices(newVertices)
     } else {
         const vertices = falseLink.vertices()
         const newVertices = []
-        newVertices.push({x: vertices[0].x, y: vertices[0].y + 100})
+        newVertices.push({ x: vertices[0].x, y: vertices[0].y + 100 })
         falseLink.vertices(newVertices)
-        translateDown(findModel(falseLink.attr('element/target')), findModel(nextLink.attr('element/target')))
+        translateDown(
+            findModel(falseLink.attr('element/target')),
+            findModel(nextLink.attr('element/target'))
+        )
     }
 }
 
@@ -1182,47 +1355,50 @@ function translateDown(nextElement, till) {
     while (nextElement !== till) {
         if (
             !(
-                nextElement.attr('element/type') === 'while'
-                && (
-                    link && ['while', 'whileEnd'].includes(link.attr('element/type'))
-                )
+                nextElement.attr('element/type') === 'while' &&
+                link &&
+                ['while', 'whileEnd'].includes(link.attr('element/type'))
             )
         ) {
             nextElement.translate(0, 100)
             const translateFuncMap = {
-                'if': translateIF,
-                'while': translateWhile,
-                'doWhile': translateDoWhile
+                if: translateIF,
+                while: translateWhile,
+                doWhile: translateDoWhile,
             }
             const currentElementType = nextElement.attr('element/type')
             const currentCircleType = nextElement.attr('element/circleType')
-            const specialTranslateFunc = translateFuncMap[currentElementType] || translateFuncMap[currentCircleType]
+            const specialTranslateFunc =
+                translateFuncMap[currentElementType] ||
+                translateFuncMap[currentCircleType]
             if (specialTranslateFunc) {
                 specialTranslateFunc(nextElement)
             }
         }
         if (nextElement.attr('outgoing_link')) {
             if (nextElement.attr('element/circleType') === 'doWhile') {
-                link = findModel(nextElement.attr('outgoing_link/invisibleLink'))
+                link = findModel(
+                    nextElement.attr('outgoing_link/invisibleLink')
+                )
             } else {
                 link = findModel(nextElement.attr('outgoing_link/next'))
             }
             switch (link.attr('element/type')) {
-                case 'ifEnd' :
-                case 'doWhileEnd' :
+                case 'ifEnd':
+                case 'doWhileEnd':
                     const vertex = link.vertices()
                     link.vertices([
                         {
                             x: vertex[0].x,
-                            y: vertex[0].y + 100
-                        }
+                            y: vertex[0].y + 100,
+                        },
                     ])
                     break
-                case 'whileEnd' :
+                case 'whileEnd':
                     const vertices = link.vertices()
                     link.vertices([
-                        {x: vertices[0].x, y: vertices[0].y + 100},
-                        {x: vertices[1].x, y: vertices[1].y + 100}
+                        { x: vertices[0].x, y: vertices[0].y + 100 },
+                        { x: vertices[1].x, y: vertices[1].y + 100 },
                     ])
                     break
             }
@@ -1238,7 +1414,7 @@ function translateDown(nextElement, till) {
  * @param id
  */
 function findModel(id) {
-    return graph.attributes.cells.models.find(x => x.id === id)
+    return graph.attributes.cells.models.find((x) => x.id === id)
 }
 
 /**
@@ -1258,8 +1434,10 @@ function escapeQuotes(str) {
 function setListener(element, type) {
     if (type === 'circle') {
         element.on('change:position', function (endCircle, position) {
-            const links1 = graph.attributes.cells.models.filter(x => x.attr('element/target') === endCircle.id)
-            links1.forEach(link => {
+            const links1 = graph.attributes.cells.models.filter(
+                (x) => x.attr('element/target') === endCircle.id
+            )
+            links1.forEach((link) => {
                 if (link.attr('element/type')) {
                     const vertices = link.vertices()
                     if (vertices.length === 2) {
@@ -1272,7 +1450,7 @@ function setListener(element, type) {
                         } else {
                             vertices[1].x = position.x + 160
                         }
-                    } else {
+                    } else if (vertices.length > 0) {
                         if (position.x > vertices[0].x) {
                             vertices[0].x = position.x - 140
                         } else {
@@ -1280,6 +1458,7 @@ function setListener(element, type) {
                         }
                         vertices[0].y = position.y + 25
                     }
+
                     link.vertices(vertices)
                 }
             })
