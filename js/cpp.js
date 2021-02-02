@@ -86,17 +86,14 @@ function cppGetType(varType) {
 function cppDeclaration(variable) {
     let type = cppGetType(variable.type)
     if (type !== '' && variable.name !== undefined)
-        if (variable.isArray)
-            return (
-                '\t' +
-                type +
-                ' ' +
-                variable.name +
-                '[' +
-                variable.length +
-                '];\n'
-            )
-        else return '\t' + type + ' ' + variable.name + ';\n'
+        if (variable.isArray) {
+            let variables = variable.name.split(',')
+            let code = '\t' + type + ' '
+            variables.map((x) => {
+                code += x + '[' + variable.length + '], '
+            })
+            return code.slice(0, -2) + ';\n'
+        } else return '\t' + type + ' ' + variable.name + ';\n'
     return ''
 }
 

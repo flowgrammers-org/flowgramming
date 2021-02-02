@@ -30,8 +30,9 @@ function isArray(element) {
     }
 }
 
-function variableHelper(element, declare = false) {
+function variableHelper(element, declare = false, varName = '') {
     let name = element.attr('element/variableName')
+    if (varName !== '') name = varName
     if (declare || varArray[name] === undefined) {
         let type = isArray(element.attr('element/variableType'))
             ? element.attr('element/variableType').split(' ')[0]
@@ -49,6 +50,13 @@ function variableHelper(element, declare = false) {
             : null
     }
     return varArray[name]
+}
+
+function declarationHelper(element) {
+    element.attr('element/variableArray').map((x) => {
+        variableHelper(element, true, x)
+    })
+    return window[`${language}Declaration`](variableHelper(element, true))
 }
 
 function functionCallHelper(element) {
@@ -207,11 +215,7 @@ function convertLoop(currentElement, end = null) {
                         )
                     break
                 case 'declare':
-                    code +=
-                        indent +
-                        window[`${language}Declaration`](
-                            variableHelper(currentElement, true)
-                        )
+                    code += indent + declarationHelper(currentElement)
                     break
                 case 'assignment':
                     code +=
