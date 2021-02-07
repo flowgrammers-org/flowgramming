@@ -10,7 +10,7 @@
 
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="#" id="refreshPage">
                 Flowgramming
                 <span>
                     <svg
@@ -484,7 +484,13 @@
                 updateContextsDropdown()
             }
         })
-
+        $('#refreshPage').click(() => {
+            callback = () => location.reload()
+            confirm(
+                'You are about to refresh the page. All your changes will be lost!',
+                callback
+            )
+        })
         // Let's get hold of the dropdown that controls the speed of flowgram execution
         const speedOfExecutionDropdown = $('#speedOfExecution')
 

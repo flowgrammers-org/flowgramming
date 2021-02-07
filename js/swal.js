@@ -3,7 +3,29 @@ const capitalize = (text) => {
 }
 
 window.swal = (msg, type = 'error') => {
-    Swal.fire(capitalize(type), msg, type)
+    Swal.fire({
+        title: capitalize(type),
+        text: msg,
+        icon: type,
+        heightAuto: false,
+    })
+}
+
+window.confirm = (msg, callback) => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: msg,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, do it!',
+        heightAuto: false,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback()
+        }
+    })
 }
 
 window.toast = (title) => {
