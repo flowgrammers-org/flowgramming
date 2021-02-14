@@ -249,12 +249,12 @@ function handleElementDoubleClick(elementView) {
                     if (namingConventionTest) {
                         if (isArrayChecked) {
                             if (is2DArray) {
-                                variableArray.map((x) => {
+                                variableArray.forEach((x) => {
                                     variableLabel += `${x}[${rowLen}][${colLen}], `
                                 })
                                 arrayLength = ''
                             } else {
-                                variableArray.map((x) => {
+                                variableArray.forEach((x) => {
                                     variableLabel += `${x}[${arrayLength}], `
                                 })
                                 rowLen = colLen = ''

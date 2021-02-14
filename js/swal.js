@@ -11,7 +11,7 @@ window.swal = (msg, type = 'error') => {
     })
 }
 
-window.confirm = (msg, callback) => {
+window.swalConfirm = (msg, callback) => {
     Swal.fire({
         title: 'Are you sure?',
         text: msg,
@@ -42,4 +42,25 @@ window.toast = (title) => {
             toast.addEventListener('mouseleave', Swal.resumeTimer)
         },
     }).fire()
+}
+
+let loadingToast = null
+window.showLoader = (title, text) => {
+    loadingToast = Swal.fire({
+        heightAuto: false,
+        html: `
+            <div class="p-4">
+                <div class="loader"></div>
+                <h2><b>${title}</b></h2>
+                <p>${text}</p>
+            </div>`,
+        showConfirmButton: false,
+    })
+}
+
+window.hideLoader = () => {
+    if (loadingToast) {
+        loadingToast.close()
+        loadingToast = null
+    }
 }

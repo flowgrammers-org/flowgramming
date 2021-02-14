@@ -41,7 +41,7 @@ self.addEventListener('activate', function (event) {
     event.waitUntil(
         caches.keys().then(function (cacheNames) {
             return Promise.all(
-                cacheNames.map(function (cacheName) {
+                cacheNames.forEach(function (cacheName) {
                     if (cacheName !== latestCacheName) {
                         // If this cache name isn't the same as current version of cache, then delete it.
                         return caches.delete(cacheName)

@@ -53,9 +53,14 @@ function variableHelper(element, declare = false, varName = '') {
 }
 
 function declarationHelper(element) {
-    element.attr('element/variableArray').map((x) => {
-        variableHelper(element, true, x)
-    })
+    const variableArray = element.attr('element/variableArray')
+    if (variableArray) {
+        variableArray.forEach((x) => {
+            variableHelper(element, true, x)
+        })
+    } else {
+        variableHelper(element, true, element.attr('element/variableName'))
+    }
     return window[`${language}Declaration`](variableHelper(element, true))
 }
 
@@ -282,9 +287,9 @@ function convertLoop(currentElement, end = null) {
 function functionDefinitions(lang) {
     language = lang
     let functions = Object.keys(contexts).filter((x) => x !== 'main')
-    functions.map(async (x) => {
+    functions.forEach(async (x) => {
         let params = contexts[x].parameters.slice()
-        params.map((x, i) => {
+        params.forEach((x, i) => {
             params[i] = {
                 ...x,
                 isArray: isArray(x.variableType),
@@ -328,5 +333,8 @@ function convert(language) {
     start = findModel(contexts[currentContextName].start.id)
     convertLoop(start, language)
     code += window[`${language}FunctionClose`](0)
-    if (!error) openNewTab('/code.html', 'CodeConverter')
+    if (!error) {
+        openNewTab('/code.html', 'CodeConverter')
+        hideLoader()
+    }
 }

@@ -43,12 +43,12 @@ function importFlowGram(file) {
     } finally {
         clearChat()
         renderProgram('Start Flowgramming!')
+        hideLoader()
     }
 }
 
 function openFromFile(file) {
-    clearChat()
-    renderProgram('Please wait while your file is getting imported..')
+    showLoader('Importing', 'Please wait while your flowgram is imported')
     setTimeout(() => {
         importFlowGram(file)
     }, 1000)

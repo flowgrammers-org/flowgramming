@@ -228,7 +228,7 @@ function getFunctionAttributes(context) {
         startText = 'Start main()',
         returnType = ''
     if (context !== 'main') {
-        contexts[context].parameters.map((x) => {
+        contexts[context].parameters.forEach((x) => {
             parameters += x.variableType + ' ' + x.variableName + ', '
         })
         if (contexts[context].returnType)

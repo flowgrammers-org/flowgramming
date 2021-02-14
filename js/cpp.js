@@ -89,7 +89,7 @@ function cppDeclaration(variable) {
         if (variable.isArray) {
             let variables = variable.name.split(',')
             let code = '\t' + type + ' '
-            variables.map((x) => {
+            variables.forEach((x) => {
                 code += x + '[' + variable.length + '], '
             })
             return code.slice(0, -2) + ';\n'
@@ -133,7 +133,7 @@ function cppAssignment(assignment, indent) {
                 if (values.length === 1)
                     assignment.value = addQuotes(values[0], '"')
                 else
-                    values.map((x, i) => {
+                    values.forEach((x, i) => {
                         values[i] = addQuotes(x)
                     })
             }
@@ -147,7 +147,7 @@ function cppAssignment(assignment, indent) {
             ) {
                 let code = ''
                 indent += '\t'
-                values.map(
+                values.forEach(
                     (x, i) =>
                         (code +=
                             indent +
@@ -228,7 +228,7 @@ function cppFunctionClose(ret) {
 
 function cppFunctionDefinition(fn) {
     let params = ''
-    fn.params.map((x) => {
+    fn.params.forEach((x) => {
         params += cppGetType(x.variableType) + ' ' + x.variableName
         x.isArray ? (params += '[], ') : (params += ', ')
     })

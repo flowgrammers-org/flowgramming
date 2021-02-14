@@ -385,6 +385,7 @@
                 </div>
             </div>
         </div>
+
         <script id="message-template" type="text/x-handlebars-template">
             <li class='clearfix'>
                 <div class='message-data align-right'>
@@ -470,8 +471,14 @@
             }
             fileReader.readAsText($('#open-file').prop('files')[0])
         })
-        $('#code-convert').on('click', function () {
-            convert($('#languageSelected').val())
+        $('#code-convert').on('click', async function () {
+            showLoader(
+                'Converting to code',
+                'Please wait while your flowgram is converted'
+            )
+            setTimeout(() => {
+                convert($('#languageSelected').val())
+            }, 1000)
         })
         let functionManagerWindow
         $('#functionManager').click(function () {
@@ -485,8 +492,8 @@
             }
         })
         $('#refreshPage').click(() => {
-            callback = () => location.reload()
-            confirm(
+            let callback = () => location.reload()
+            swalConfirm(
                 'You are about to refresh the page. All your changes will be lost!',
                 callback
             )
