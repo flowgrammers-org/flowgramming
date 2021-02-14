@@ -41,13 +41,27 @@ self.addEventListener('activate', function (event) {
     event.waitUntil(
         caches.keys().then(function (cacheNames) {
             return Promise.all(
-                cacheNames.forEach(function (cacheName) {
+                cacheNames.map(function (cacheName) {
                     if (cacheName !== latestCacheName) {
-                        // If this cache name isn't the same as current version of cache, then delete it.
+                        // If this cache name isn't the same
+                        // as current version of cache, then delete it.
                         return caches.delete(cacheName)
                     }
                 })
             )
         })
     )
+})
+
+self.addEventListener('waiting', () => {
+    Swal.fire({
+        title: 'Software Update',
+        text: 'A new version of the web application is available',
+        allowOutsideClick: false,
+        icon: 'info',
+        heightAuto: false,
+        confirmButtonText: 'Update now',
+    }).then(() => {
+        window.location.reload()
+    })
 })
