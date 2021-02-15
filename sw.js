@@ -52,16 +52,3 @@ self.addEventListener('activate', function (event) {
         })
     )
 })
-
-self.addEventListener('waiting', () => {
-    Swal.fire({
-        title: 'Software Update',
-        text: 'A new version of the web application is available',
-        allowOutsideClick: false,
-        icon: 'info',
-        heightAuto: false,
-        confirmButtonText: 'Update now',
-    }).then(() => {
-        window.location.reload()
-    })
-})

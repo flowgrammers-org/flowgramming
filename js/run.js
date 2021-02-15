@@ -964,7 +964,7 @@ function stringManipulations(variableName, userInput) {
             variableName +
                 '=' +
                 variable +
-                '.forEach(' +
+                '.map(' +
                 variable +
                 ' => ' +
                 variable +
@@ -979,7 +979,7 @@ function stringManipulations(variableName, userInput) {
             variableName +
                 '=' +
                 variable +
-                '.forEach(' +
+                '.map(' +
                 variable +
                 ' => ' +
                 variable +
