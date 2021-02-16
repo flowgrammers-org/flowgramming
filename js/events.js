@@ -259,6 +259,10 @@ function handleElementDoubleClick(elementView) {
                                 })
                                 rowLen = colLen = ''
                             }
+                        } else {
+                            variableArray.forEach((x) => {
+                                variableLabel += `${x}, `
+                            })
                         }
 
                         currentElement.attr({
