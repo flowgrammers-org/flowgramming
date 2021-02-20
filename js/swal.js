@@ -5,7 +5,7 @@ const capitalize = (text) => {
 window.swal = (msg, type = 'error') => {
     Swal.fire({
         title: capitalize(type),
-        text: msg,
+        html: msg,
         icon: type,
         heightAuto: false,
     })
@@ -14,7 +14,7 @@ window.swal = (msg, type = 'error') => {
 window.swalConfirm = (msg, callback) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: msg,
+        html: msg,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
