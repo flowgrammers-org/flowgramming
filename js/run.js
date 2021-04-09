@@ -118,6 +118,14 @@ async function delayLoop(currentElement) {
                 variables = {
                     ...variablesStack.pop(),
                 }
+                Object.keys(variables).forEach((varName) => {
+                    const varValue = variables[varName].value
+                    if (varValue) {
+                        handleAssignmentHelper(varName, varValue.toString())
+                    } else {
+                        handleNullAssignment(varName, variables[varName].type)
+                    }
+                })
                 visitedItems = new Set(visitedItemsStack.pop())
                 if (
                     previousContextStack[previousContextStack.length - 1] !==
@@ -330,6 +338,13 @@ async function handleAssignment(element) {
     let variableValue = element.attr('element/variableValue')
     handleAssignmentHelper(variableName, variableValue)
     return { status: 'Ok' }
+}
+
+function handleNullAssignment(variableName, type) {
+    variables[variableName] = {
+        type,
+        value: null,
+    }
 }
 
 function handleAssignmentHelper(variableName, variableValue) {
