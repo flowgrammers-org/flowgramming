@@ -12,6 +12,7 @@ const blockColors = {
     doWhile: '#bdb2ff',
     if: '#ffc6ff',
     function: '#e0fbfc',
+    comment: '#ffffff',
 }
 
 paper.on('link:pointerdblclick', function (linkView) {
@@ -55,6 +56,7 @@ function handleDoubleClick(linkView) {
             DECLARATION: addDeclaration,
             IF: addIF,
             FUNCTION: addFunction,
+            COMMENT: addComment,
         }
         callBackMap[elementView.model.attr('label/text')]()
     })
@@ -190,6 +192,22 @@ function populateAvailableElements(addElementGraph) {
         },
     })
     functionElement.addTo(addElementGraph)
+
+    const commentElement = getRectangle()
+    commentElement.resize(115, 63)
+    commentElement.position(
+        functionElement.position().x + 130,
+        functionElement.position().y
+    )
+    commentElement.attr({
+        label: {
+            text: 'COMMENT',
+        },
+        body: {
+            fill: blockColors.comment,
+        },
+    })
+    commentElement.addTo(addElementGraph)
 }
 
 function addOutput() {
@@ -246,6 +264,23 @@ function addFunction() {
     })
     Rectangle.addTo(graph)
     addElement(doubleClickedLink, Rectangle, 'function')
+}
+
+function addComment() {
+    const Rectangle = getRectangle()
+    Rectangle.attr({
+        label: {
+            text: getWrapText('Comment'),
+        },
+        body: {
+            fill: blockColors.comment,
+            strokeWidth: 1,
+            stroke: '#959595',
+            strokeDasharray: '2,2',
+        },
+    })
+    Rectangle.addTo(graph)
+    addElement(doubleClickedLink, Rectangle, 'comment')
 }
 
 function addWhile() {

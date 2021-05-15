@@ -13,6 +13,7 @@ function getCurrentElementValue(currentElement, type) {
             currentValue = currentElement.attr('element/variableName')
             break
         case 'output':
+        case 'comment':
         case 'if':
         case 'doWhileExpr':
         case 'while': {
@@ -309,6 +310,33 @@ function handleElementDoubleClick(elementView) {
             }
             break
         }
+        case 'comment':
+            {
+                modalBodyHtml = `
+                    <p>Enter the comment</p>
+                    <div class="input-group">
+                        <input id="exp" type="text" class="form-control"
+                                value="${escapeQuotes(currentElementValue)}">
+                    </div>
+                `
+                handlerFunction = function () {
+                    const expression = $('#exp').val()
+                    $('#modal').modal('hide')
+                    if (expression.length > 0) {
+                        currentElement.attr({
+                            label: {
+                                text: getWrapText(expression),
+                            },
+                            element: {
+                                expression,
+                            },
+                        })
+                    } else {
+                        swal('Enter the comment')
+                    }
+                }
+            }
+            break
         case 'output':
         case 'if':
         case 'doWhileExpr':
