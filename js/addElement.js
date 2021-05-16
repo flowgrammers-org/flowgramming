@@ -67,7 +67,13 @@ function handleDoubleClick(linkView) {
     $('#delbtn')
         .text('Close')
         .attr('data-dismiss', 'modal')
+        .on('click', function (e) {
+            $('#modal .modal-content').removeClass('modal-height')
+        })
         .removeAttr('onclick')
+    $('#xbtn').on('click', function (e) {
+        $('#modal .modal-content').removeClass('modal-height')
+    })
     $('.joint-element').addClass('cursor-click')
     $('#modal').modal('show')
 }

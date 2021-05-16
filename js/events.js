@@ -535,6 +535,9 @@ function handleElementDoubleClick(elementView) {
     $('#modal .modal-body').html(modalBodyHtml)
     $('#modal').modal('show')
     $('#okButton').one('click', handlerFunction)
+    $('#xbtn').on('click', function () {
+        $('#okButton').off('click')
+    })
     $('#isArray').ready(onArrayCheckboxChanged)
 }
 
