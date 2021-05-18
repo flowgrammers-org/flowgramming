@@ -8,6 +8,7 @@
  */
 function getCurrentElementValue(currentElement, type) {
     let currentValue = undefined
+
     switch (type) {
         case 'input':
             currentValue = currentElement.attr('element/variableName')
