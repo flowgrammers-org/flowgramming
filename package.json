@@ -13,7 +13,8 @@
     "scripts": {
         "start": "gulp",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "gulp": "gulp concat"
+        "gulp": "gulp concat",
+        "clean": "rm js/*.js && rm -rf js/vendor && rm css/*.css && rm -rf css/vendor && sed -i.bak 's/flowgramming-v0\\.0\\.4/'\"`date +\"%s\"`\"'/' sw.js"
     },
     "husky": {
         "hooks": {
