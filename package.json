@@ -1,6 +1,5 @@
 {
     "name": "flowgramming",
-    "version": "1.0.0",
     "description": "a web app that will help novice programmers to understand and design problem solving strategy techniques in graphical design",
     "main": "index.js",
     "devDependencies": {
@@ -21,8 +20,6 @@
             "pre-commit": "pretty-quick --staged"
         }
     },
-    "author": "CORE Lab",
-    "license": "ISC",
     "dependencies": {
         "gulp": "^4.0.2",
         "gulp-concat": "^2.6.1",

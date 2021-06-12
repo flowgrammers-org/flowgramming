@@ -1,4 +1,4 @@
-const signingKey = 'Flowgramming | CORE Lab | v2'
+const signingKey = 'Flowgramming'
 
 function saveFlowChart() {
     // Usually, the contexts object will not have the latest graph of the current context.
