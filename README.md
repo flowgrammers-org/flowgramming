@@ -1,6 +1,22 @@
 # Flowgramming
+A platform-independent graphical authoring tool which allows users to draw and execute programs using flowcharts.
 
-An open-source project to draw valid flowcharts and convert it into code/pseudocode. Extension includes writing python, C, C++ and Java code which gets converted to the corresponding flowchart.
+## Why Flowgramming?
+
+For the novice programmer, it is usually difficult to de-link the programming logic from the syntax of the programming language. This often leads to students memorizing code rather than understanding the logic and designing solutions. Flowgramming was built in an effort for beginner and novice programmers to understand programming logic and develop algorithmic thinking & problem solving skills without the hassle of learning the code syntax.
+
+## Features
+
+1. Easy and intuitive to understand and use
+2. Platform independent
+3. Programming logic support (Condition,Loops,etc.)
+4. Chat based input and output window
+5. Arrays (1D and 2D)
+6. Flexible expressions and all data types (including strings) supported
+7. Dedicated variable watch window to see all variable changes
+8. Specialized string Functions
+9. Function manager allows custom definition of multiple functions
+10. Can save and load all developed flowgrams (saved with extension ".fgmin")
 
 ## Setting up development environment
 
