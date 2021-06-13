@@ -1,0 +1,141 @@
+/*
+ # *************************************************************************************
+ # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Sanjana G
+ # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
+ #
+ # Flowgramming is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Flowgramming is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Flowgramming.  If not, see <http://www.gnu.org/licenses/>.
+ # *************************************************************************************
+ */
+
+.chat {
+    width: 100%;
+    height: 100%;
+    float: right;
+    background: #f2f5f8;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    color: #434651;
+    overflow: auto;
+    /*overflow-y: scroll;*/
+    /*overflow-x: scroll;*/
+}
+.chat .chat-history {
+    padding: 30px 30px 20px;
+    border-bottom: 2px solid white;
+    /*overflow-y: scroll;*/
+    /*height: 575px;*/
+}
+.chat .chat-history .message-data {
+    margin-bottom: 15px;
+}
+.chat .chat-history .message-data-time {
+    color: #a8aab1;
+    padding-left: 6px;
+}
+.chat .chat-history .message {
+    color: white;
+    padding: 18px 20px;
+    line-height: 26px;
+    font-size: 16px;
+    border-radius: 7px;
+    margin-bottom: 30px;
+    width: 90%;
+    position: relative;
+}
+.chat .chat-history .message:after {
+    bottom: 100%;
+    left: 7%;
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-bottom-color: #86bb71;
+    border-width: 10px;
+    margin-left: -10px;
+}
+.chat .chat-history .my-message {
+    background: #86bb71;
+}
+.chat .chat-history .other-message {
+    background: #94c2ed;
+}
+.chat .chat-history .other-message:after {
+    border-bottom-color: #94c2ed;
+    left: 93%;
+}
+.chat .chat-message {
+    padding: 30px;
+}
+.chat .chat-message textarea {
+    width: 100%;
+    border: none;
+    padding: 10px 20px;
+    font: 14px/22px 'Lato', Arial, sans-serif;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    resize: none;
+}
+.chat .chat-message .fa-file-o,
+.chat .chat-message .fa-file-image-o {
+    font-size: 16px;
+    color: gray;
+    cursor: pointer;
+}
+.chat .chat-message button {
+    float: right;
+    color: #94c2ed;
+    font-size: 16px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background: #f2f5f8;
+}
+.chat .chat-message button:hover {
+    color: #75b1e8;
+}
+.online,
+.offline,
+.me {
+    margin-right: 3px;
+    font-size: 10px;
+}
+.online {
+    color: #86bb71;
+}
+.offline {
+    color: #e38968;
+}
+.me {
+    color: #94c2ed;
+}
+.align-left {
+    text-align: left;
+}
+.align-right {
+    text-align: right;
+}
+.float-right {
+    float: right;
+}
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: ' ';
+    clear: both;
+    height: 0;
+}
