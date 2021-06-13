@@ -14,7 +14,7 @@
         "start": "gulp",
         "test": "echo \"Error: no test specified\" && exit 1",
         "gulp": "gulp concat",
-        "clean": "rm js/*.js && rm -rf js/vendor && rm css/*.css && rm -rf css/vendor && sed 's/flowgramming-v0\\.0\\.4/'\"`date +\"%s\"`\"'/' sw.js",
+        "clean": "rm js/*.js && rm -rf js/vendor && rm css/*.css && rm -rf css/vendor && sed 's/flowgramming-v0\\.0\\.4/'\"`date +\"%s\"`\"'/' sw.js && git rm .gitignore",
         "copyright-header": "copyright-header -f license-header.js -i \"*.html *.js js/*.js css/*.css\""
     },
     "husky": {
