@@ -354,7 +354,7 @@ function convert(language) {
     convertLoop(start, language)
     code += window[`${language}FunctionClose`](0)
     if (!error) {
-        openNewTab('/code.html', 'CodeConverter')
+        openNewTab('code.html', 'CodeConverter')
         hideLoader()
     }
 }
