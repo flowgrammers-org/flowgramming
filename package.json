@@ -3,6 +3,7 @@
     "description": "a web app that will help novice programmers to understand and design problem solving strategy techniques in graphical design",
     "main": "index.js",
     "devDependencies": {
+        "@quintype/copyright-header": "^1.3.3",
         "express": "^4.17.1",
         "husky": "^4.3.6",
         "prettier": "2.1.2",
@@ -13,11 +14,12 @@
         "start": "gulp",
         "test": "echo \"Error: no test specified\" && exit 1",
         "gulp": "gulp concat",
-        "clean": "rm js/*.js && rm -rf js/vendor && rm css/*.css && rm -rf css/vendor && sed -i.bak 's/flowgramming-v0\\.0\\.4/'\"`date +\"%s\"`\"'/' sw.js"
+        "clean": "rm js/*.js && rm -rf js/vendor && rm css/*.css && rm -rf css/vendor && sed -i.bak 's/flowgramming-v0\\.0\\.4/'\"`date +\"%s\"`\"'/' sw.js",
+        "copyright-header": "copyright-header -f license-header.js -i \"*.html *.js js/*.js css/*.css\""
     },
     "husky": {
         "hooks": {
-            "pre-commit": "pretty-quick --staged"
+            "pre-commit": "npm run copyright-header && pretty-quick --staged"
         }
     },
     "dependencies": {
