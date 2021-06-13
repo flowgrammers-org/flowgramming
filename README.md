@@ -19,6 +19,10 @@ For novice programmer, it is usually difficult to de-link the programming logic 
 9. Function manager allows the custom definition of multiple functions
 10. Can save and load all developed flowgrams (saved with extension ".fgmin")
 
+## How to use?
+
+Have a look at the user manual [here](https://flowgrammers-org.github.io/flowgramming-manual/).
+
 ## Setting up the development environment
 
 -   Clone this repository
