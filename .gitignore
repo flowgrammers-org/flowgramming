@@ -1,6 +1,7 @@
 node_modules/
 .vscode/*
 .idea/*
-js/build/*
-css/build/*
+js/build
+css/build
 *.log
+*.bak
