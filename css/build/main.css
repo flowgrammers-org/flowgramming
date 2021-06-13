@@ -1202,10 +1202,10 @@ h2,h3{page-break-after:avoid}@page{size:a3}body{min-width:992px !important}.cont
 .joint-link.joint-theme-modern .link-tools .tool-remove path{fill:#fff}.joint-link.joint-theme-modern .marker-vertex{fill:#1abc9c}
 .joint-link.joint-theme-modern .marker-vertex:hover{fill:#34495e;stroke:none}.joint-link.joint-theme-modern .marker-arrowhead{fill:#1abc9c}
 .joint-link.joint-theme-modern .marker-arrowhead:hover{fill:#f39c12;stroke:none}.joint-link.joint-theme-modern .marker-vertex-remove{fill:white}
-@font-face{font-family:'inter',sans-serif;src:url('assets/fonts/inter.eot');src:url('assets/fonts/inter.woff2') format('woff2'),url('assets/fonts/inter.woff') format('woff'),url('assets/fonts/inter.ttf') format('truetype'),url('assets/fonts/inter.svg#inter') format('svg'),url('assets/fonts/inter.eot?#iefix') format('embedded-opentype');font-weight:normal;font-style:normal}
-@font-face{font-family:'merinda';src:url('assets/fonts/merinda.ttf')}
-.navbar-brand{font-family:merinda,cursive;font-size:x-large}html,body{overflow:hidden;height:100%;width:100%;margin:0;font-family:inter,sans-serif !important}
-.btn-sq-sm{width:40px !important;height:40px !important;font-size:10px;padding:5px}
+@font-face{font-family:'inter';src:url('../../assets/fonts/inter.eot');src:url('../../assets/fonts/inter.woff2') format('woff2'),url('../../assets/fonts/inter.woff') format('woff'),url('../../assets/fonts/inter.ttf') format('truetype'),url('../../assets/fonts/inter.svg#inter') format('svg'),url('../../assets/fonts/inter.eot?#iefix') format('embedded-opentype');font-weight:normal;font-style:normal}
+@font-face{font-family:'merinda';src:url('../../assets/fonts/merinda.ttf')}
+.navbar-brand{font-family:merinda,cursive !important;font-size:x-large}html,body{overflow:hidden;height:100%;width:100%;margin:0}
+*{font-family:'inter',sans-serif}.btn-sq-sm{width:40px !important;height:40px !important;font-size:10px;padding:5px}
 .btn-sq-sm:focus{box-shadow:none !important}.myrow{height:90%}#myHolder{height:85%;zoom:1}
 .paperColumn{float:left;width:65%;height:100%;overflow:scroll}.modal-height{height:600px}
 .cursor-click{cursor:pointer !important}.chatcol{width:35%;float:right;height:60%;border-bottom:1px solid gray}

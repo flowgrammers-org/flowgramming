@@ -1162,7 +1162,7 @@ h2,h3{page-break-after:avoid}@page{size:a3}body{min-width:992px !important}.cont
 .navbar{display:none}.badge{border:1px solid #000}.table{border-collapse:collapse !important}
 .table td,.table th{background-color:#fff !important}.table-bordered td,.table-bordered th{border:1px solid #dee2e6 !important}
 .table-dark{color:inherit}.table-dark tbody+tbody,.table-dark td,.table-dark th,.table-dark thead th{border-color:#dee2e6}
-.table .thead-dark th{color:inherit;border-color:#dee2e6}}@font-face{font-family:'merinda';src:url('assets/fonts/merinda.ttf')}
+.table .thead-dark th{color:inherit;border-color:#dee2e6}}@font-face{font-family:'merinda';src:url('../../assets/fonts/merinda.ttf')}
 .navbar-brand:nth-child(2){font-family:'merinda',cursive !important;font-size:x-large !important}
 .code-area{white-space:pre}.code-div{width:70%;margin:0 auto;padding-bottom:5%}#code-area{font-size:1.2em}
 .code-keyword{color:#0b2}.code-head{margin:1% 5%}#download,#download:hover{text-decoration:none;color:white;width:40%;display:inline-block;padding:0 10%}
