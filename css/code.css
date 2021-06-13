@@ -20,7 +20,7 @@
 
 @font-face {
     font-family: 'merinda';
-    src: url('/assets/fonts/merinda.ttf');
+    src: url('../../assets/fonts/merinda.ttf');
 }
 
 .navbar-brand:nth-child(2) {

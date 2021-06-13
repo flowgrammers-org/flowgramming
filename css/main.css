@@ -19,24 +19,24 @@
  */
 
 @font-face {
-    font-family: 'inter', sans-serif;
-    src: url('assets/fonts/inter.eot');
-    src: url('assets/fonts/inter.woff2') format('woff2'),
-        url('assets/fonts/inter.woff') format('woff'),
-        url('assets/fonts/inter.ttf') format('truetype'),
-        url('assets/fonts/inter.svg#inter') format('svg'),
-        url('assets/fonts/inter.eot?#iefix') format('embedded-opentype');
+    font-family: 'inter';
+    src: url('../../assets/fonts/inter.eot');
+    src: url('../../assets/fonts/inter.woff2') format('woff2'),
+        url('../../assets/fonts/inter.woff') format('woff'),
+        url('../../assets/fonts/inter.ttf') format('truetype'),
+        url('../../assets/fonts/inter.svg#inter') format('svg'),
+        url('../../assets/fonts/inter.eot?#iefix') format('embedded-opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'merinda';
-    src: url('/assets/fonts/merinda.ttf');
+    src: url('../../assets/fonts/merinda.ttf');
 }
 
 .navbar-brand {
-    font-family: merinda, cursive;
+    font-family: merinda, cursive !important;
     font-size: x-large;
 }
 
@@ -46,7 +46,10 @@ body {
     height: 100%;
     width: 100%;
     margin: 0;
-    font-family: inter, sans-serif !important;
+}
+
+* {
+    font-family: 'inter', sans-serif;
 }
 
 .btn-sq-sm {
