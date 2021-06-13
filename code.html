@@ -1,0 +1,128 @@
+<!--
+ # *************************************************************************************
+ # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Sanjana G
+ # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
+ #
+ # Flowgramming is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Flowgramming is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Flowgramming.  If not, see <http://www.gnu.org/licenses/>.
+ # *************************************************************************************
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Code Converter - Flowgramming</title>
+        <link rel="stylesheet" type="text/css" href="css/build/code.css" />
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <p class="navbar-nav navbar-brand text-center align-items-center">
+                <span>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.5em"
+                        height="1.5em"
+                        fill="white"
+                        class="mx-2 bi bi-code-slash my-auto"
+                        viewBox="0 0 16 16"
+                    >
+                        <path
+                            d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"
+                        />
+                    </svg>
+                </span>
+                Code Converter
+            </p>
+            <a class="ml-auto navbar-brand float-right" href="#">
+                Flowgramming
+                <span>
+                    <svg
+                        class="bi bi-diagram-3-fill"
+                        fill="currentColor"
+                        height="1em"
+                        viewBox="0 0 16 16"
+                        width="1em"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5v-1zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5v-1zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5v-1zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5v-1z"
+                            fill-rule="evenodd"
+                        />
+                    </svg>
+                </span>
+            </a>
+        </nav>
+
+        <div class="code-head">
+            <a href="#" id="download">
+                <button
+                    type="button"
+                    class="ml-auto btn btn-dark btn-block bg-dark"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.3em"
+                        height="1.3em"
+                        fill="currentColor"
+                        class="bi bi-download my-auto"
+                    >
+                        <path
+                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"
+                        />
+                        <path
+                            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"
+                        />
+                    </svg>
+                    Download Code
+                </button>
+            </a>
+            <div class="code-lang">
+                <p id="language"></p>
+            </div>
+        </div>
+        <div class="code-div">
+            <pre> <code class="code-area" id="code-area"></code></pre>
+        </div>
+        <nav class="navbar fixed-bottom navbar-light bg-light">
+            <button
+                onclick="window.close()"
+                type="button"
+                class="ml-auto btn btn-info btn-block"
+            >
+                Close Code Converter
+            </button>
+        </nav>
+        <script src="js/build/codeVendor.js"></script>
+        <script src="js/build/codeMain.js"></script>
+        <script>
+            preventIndependentOpen()
+            let { code, language } = window.opener.getCode()
+            $('#code-area').addClass('language-' + language)
+            let lang = {
+                cpp: 'C++',
+            }
+            $('#language').text('Language: ' + lang[language])
+            $('#code-area').text('\n' + code)
+            $('#download').attr(
+                'href',
+                'data:text/plain;charset=utf-8,' + encodeURIComponent(code)
+            )
+            $('#download').attr(
+                'download',
+                'code.' + window.opener.getLanguageExtension()
+            )
+        </script>
+    </body>
+</html>
