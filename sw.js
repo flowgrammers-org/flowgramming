@@ -17,7 +17,8 @@
  # along with Flowgramming.  If not, see <http://www.gnu.org/licenses/>.
  # *************************************************************************************
  */
-const latestCacheName = 'flowgramming-v1623575171'
+
+const latestCacheName = 'flowgramming-v1623581230'
 
 /* Start the service worker and cache all of the app's content */
 self.addEventListener('install', function (e) {
