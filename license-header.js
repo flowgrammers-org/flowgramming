@@ -1,5 +1,5 @@
 // # *************************************************************************************
-// # Copyright (C) ${new Date().getFullYear()} Ritwik Murali, Harshit Agarwal, Rajkumar S, Sanjana G
+// # Copyright (C) ${new Date().getFullYear()} Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana
 // # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
 // #
 // # Flowgramming is free software: you can redistribute it and/or modify

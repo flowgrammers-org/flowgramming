@@ -1,6 +1,6 @@
 /*
  # *************************************************************************************
- # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Sanjana G
+ # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana
  # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
  #
  # Flowgramming is free software: you can redistribute it and/or modify
@@ -17,6 +17,7 @@
  # along with Flowgramming.  If not, see <http://www.gnu.org/licenses/>.
  # *************************************************************************************
  */
+
 const gulp = require('gulp')
 const concat = require('gulp-concat')
 const nodemon = require('gulp-nodemon')
