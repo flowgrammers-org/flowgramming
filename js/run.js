@@ -402,6 +402,8 @@ function handleAssignmentHelper(variableName, variableValue) {
             } else {
                 if (isChar(variableValue)) {
                     globalEval(variableName + ' = ' + "'" + variableValue + "'")
+                } else{
+                    throw new Error('Datatype mismatch')
                 }
             }
         } else if (type === 'int(array)') {
@@ -947,9 +949,12 @@ function handleRuntimeErrors(expression) {
 }
 
 function stringManipulations(variableName, userInput) {
-    let parametersAsString = userInput.match(/\((.*?)\)/g)
+    let regExp = /\(([^)]+)\)/;
+    let parametersAsString = regExp.exec(userInput);
+   // let parametersAsString = userInput.match(/\(([^)]+)\)/)
+   //let parametersAsString = userInput.match(/\((.*?)\)/g)
     if (userInput.includes('strcat')) {
-        let parameters = parametersAsString[0].split(',')
+        let parameters = parametersAsString[1].split(',')
         let firstVariable = parameters[0]
         let secondVariable = parameters[1]
         return globalEval(
@@ -964,7 +969,7 @@ function stringManipulations(variableName, userInput) {
         userInput = userInput.replace('substr', 'slice')
         return globalEval(variableName + '=' + userInput)
     } else if (userInput.includes('strcmp')) {
-        let parameters = parametersAsString[0].split(',')
+        let parameters = parametersAsString[1].split(',')
         let firstVariable = parameters[0]
         let secondVariable = parameters[1]
         if (
@@ -977,23 +982,23 @@ function stringManipulations(variableName, userInput) {
         globalEval(variableName + '=' + -1)
         return -1
     } else if (userInput.includes('strlen')) {
-        let variable = parametersAsString[0]
+        let variable = parametersAsString[1]
         if (variableName === '') {
             return globalEval(variable + '.length')
         }
         return globalEval(variableName + '=' + variable + '.length')
     } else if (userInput.includes('toAscii')) {
-        let variable = parametersAsString[0]
+        let variable = parametersAsString[1]
         return globalEval(variableName + '=' + variable + '.codePointAt(0)')
     } else if (userInput.includes('toChar')) {
-        let variable = parametersAsString[0]
+        let variable = parametersAsString[1]
         return globalEval(
             variableName + '= String.fromCharCode(' + variable + ')'
         )
     } else if (userInput.includes('toUpperCase')) {
-        let variable = parametersAsString[0]
+        let variable = parametersAsString[1]
         if (isArrayNotation(variable) || variables[variable].type === 'char') {
-            return globalEval(variableName + '=' + variable + '.toUpperCase()')
+            return globalEval(variableName + '='+ variable+'.toUpperCase()')
         }
         return globalEval(
             variableName +
@@ -1006,7 +1011,7 @@ function stringManipulations(variableName, userInput) {
                 '.toUpperCase())'
         )
     } else if (userInput.includes('toLowerCase')) {
-        let variable = parametersAsString[0]
+        let variable = parametersAsString[1]
         if (isArrayNotation(variable) || variables[variable].type === 'char') {
             return globalEval(variableName + '=' + variable + '.toLowerCase()')
         }
