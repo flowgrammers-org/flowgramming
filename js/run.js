@@ -951,8 +951,6 @@ function handleRuntimeErrors(expression) {
 function stringManipulations(variableName, userInput) {
     let regExp = /\(([^)]+)\)/;
     let parametersAsString = regExp.exec(userInput);
-   // let parametersAsString = userInput.match(/\(([^)]+)\)/)
-   //let parametersAsString = userInput.match(/\((.*?)\)/g)
     if (userInput.includes('strcat')) {
         let parameters = parametersAsString[1].split(',')
         let firstVariable = parameters[0]
