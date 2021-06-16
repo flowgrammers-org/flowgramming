@@ -231,6 +231,9 @@ function populateAvailableElements(addElementGraph) {
         },
         body: {
             fill: blockColors.comment,
+            strokeWidth: 1,
+            stroke: '#959595',
+            strokeDasharray: '2,2',
         },
     })
     commentElement.addTo(addElementGraph)
