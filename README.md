@@ -8,16 +8,17 @@ For novice programmer, it is usually difficult to de-link the programming logic 
 
 ## Features
 
-1. Easy and intuitive to understand and use
-2. Platform independent
-3. Programming logic support (Condition, Loops, etc.)
-4. Chat-based input and output window
-5. Arrays (1D and 2D)
-6. Flexible expressions and all data types (including strings) supported
-7. Dedicated variable watch window to see all variable changes
-8. Specialized string Functions
-9. Function manager allows the custom definition of multiple functions
-10. Can save and load all developed flowgrams (saved with extension ".fgmin")
+1. Easy and intuitive to understand and use.
+2. Platform independent.
+3. Programming logic support (Condition, Loops, etc.).
+4. Chat-based input and output console.
+5. Arrays (1D and 2D).
+6. Flexible expressions and all data types (including strings) supported.
+7. Dedicated variable watch window to see all variable changes.
+8. Specialized string Functions.
+9. Function manager allows the custom definition of multiple functions.
+10. Can save and load all developed flowgrams (saved with extension ".fgmin").
+11. Progressive Web Application - Allows Flowgramming to be run with minimal computation cost.
 
 ## How to use?
 
