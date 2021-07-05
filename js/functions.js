@@ -47,7 +47,7 @@ function manageFunctionProps(anchorObj, name) {
     functionNameObject.val(name).prop('disabled', true)
     functionNameObject.parent().prev().remove()
     functionNameObject.parent().before(
-        `<div class="alert alert-warning" role="alert">
+        `<div class='alert alert-warning' role='alert'>
                 Function names are not editable. 
                 In case you want to edit, kindly delete and create a new function.
             </div>`
@@ -70,25 +70,25 @@ function getHTMLForFunctionTableRow(functionName) {
     return `<tr>
                 <td>${functionName}</td>
                 <td>
-                    <a class="nav-item d-inline-flex" href="#" role="button" onclick="manageFunctionProps(this, '${functionName}')" title="Edit Function">
-                        <svg class="mx-2 bi bi-list-task my-auto" fill="cornflowerblue" height="1.25em"
-                             viewBox="0 0 16 16"
-                             width="1.25em"
-                             xmlns="http://www.w3.org/2000/svg">
+                    <a class='nav-item d-inline-flex' href='#' role='button' onclick="manageFunctionProps(this, '${functionName}')" title='Edit Function'>
+                        <svg class='mx-2 bi bi-list-task my-auto' fill='cornflowerblue' height='1.25em'
+                             viewBox='0 0 16 16'
+                             width='1.25em'
+                             xmlns='http://www.w3.org/2000/svg'>
                             <path
-                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                            <path fill-rule="evenodd"
-                                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z' />
+                            <path fill-rule='evenodd'
+                                  d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z' />
                         </svg>
                     </a>
-                    <a class="nav-item d-inline-flex" href="#" role="button" onclick="deleteFunction(this, '${functionName}')" title="Delete Function">
-                        <svg class="mx-2 bi bi-list-task my-auto" fill="maroon" height="1.25em" viewBox="0 0 16 16"
-                             width="1.25em"
-                             xmlns="http://www.w3.org/2000/svg">
+                    <a class='nav-item d-inline-flex' href='#' role='button' onclick="deleteFunction(this, '${functionName}')" title='Delete Function'>
+                        <svg class='mx-2 bi bi-list-task my-auto' fill='maroon' height='1.25em' viewBox='0 0 16 16'
+                             width='1.25em'
+                             xmlns='http://www.w3.org/2000/svg'>
                             <path
-                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                            <path fill-rule="evenodd"
-                                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                d='M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z' />
+                            <path fill-rule='evenodd'
+                                  d='M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z' />
                         </svg>
                     </a>
                 </td>
@@ -186,25 +186,25 @@ function getHTMLForParameterRow(paramName, paramType) {
                 <td>${paramName}</td>
                 <td>${paramType}</td>
                 <td>
-                    <a class="nav-item d-inline-flex" href="#" role="button" onclick="manageFunctionParams(this, '${paramName}','${paramType}')" title="Edit parameter">
-                        <svg class="mx-2 bi bi-list-task my-auto" fill="cornflowerblue" height="1.25em"
-                             viewBox="0 0 16 16"
-                             width="1.25em"
-                             xmlns="http://www.w3.org/2000/svg">
+                    <a class='nav-item d-inline-flex' href='#' role='button' onclick="manageFunctionParams(this, '${paramName}','${paramType}')" title='Edit parameter'>
+                        <svg class='mx-2 bi bi-list-task my-auto' fill='cornflowerblue' height='1.25em'
+                             viewBox='0 0 16 16'
+                             width='1.25em'
+                             xmlns='http://www.w3.org/2000/svg'>
                             <path
-                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                            <path fill-rule="evenodd"
-                                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z' />
+                            <path fill-rule='evenodd'
+                                  d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z' />
                         </svg>
                     </a>
-                    <a class="nav-item d-inline-flex" href="#" role="button" onclick="deleteParameter(this, '${paramName}')" title="Delete parameter">
-                        <svg class="mx-2 bi bi-list-task my-auto" fill="maroon" height="1.25em" viewBox="0 0 16 16"
-                             width="1.25em"
-                             xmlns="http://www.w3.org/2000/svg">
+                    <a class='nav-item d-inline-flex' href='#' role='button' onclick="deleteParameter(this, '${paramName}')" title='Delete parameter'>
+                        <svg class='mx-2 bi bi-list-task my-auto' fill='maroon' height='1.25em' viewBox='0 0 16 16'
+                             width='1.25em'
+                             xmlns='http://www.w3.org/2000/svg'>
                             <path
-                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                            <path fill-rule="evenodd"
-                                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                d='M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z' />
+                            <path fill-rule='evenodd'
+                                  d='M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z' />
                         </svg>
                     </a>
                 </td>
@@ -216,31 +216,45 @@ function addFunctionParamsToTable(paramName, paramType) {
     tableBody.append(getHTMLForParameterRow(paramName, paramType))
 }
 
+function shouldMarkArray(element) {
+    return element && (element.endsWith('[]') || element.endsWith('array'))
+        ? 'checked'
+        : ''
+}
+
+function shouldMark1DArray(element) {
+    return (element && !element.endsWith('[]')) || !element ? 'checked' : ''
+}
+
+function shouldMark2DArray(element) {
+    return element && element.endsWith('[]') ? 'checked' : ''
+}
+
 function getModalBodyForManagingParameter(variableName, variableType) {
     return `<p>Enter Variable Name and Type</p>
-             <div class="input-group">
-                <input id="variableName" type="text" class="form-control" placeholder="Name"
-                        value="${variableName || ''}">
-                <select class="custom-select" id="variableType">
-                    <option value="Default" ${shouldSelectDataType(
+             <div class='input-group'>
+                <input id='variableName' type='text' class='form-control' placeholder='Name'
+                        value='${variableName || ''}'>
+                <select class='custom-select' id='variableType'>
+                    <option value='Default' ${shouldSelectDataType(
                         { variableType },
                         'Default'
                     )} disabled>
                         Type
                     </option>
-                    <option value="Integer" ${shouldSelectDataType(
+                    <option value='Integer' ${shouldSelectDataType(
                         { variableType },
                         'Integer'
                     )}>
                         Integer
                     </option>
-                    <option value="Float" ${shouldSelectDataType(
+                    <option value='Float' ${shouldSelectDataType(
                         { variableType },
                         'Float'
                     )}>
                         Float
                     </option>
-                    <option value="Char" ${shouldSelectDataType(
+                    <option value='Char' ${shouldSelectDataType(
                         { variableType },
                         'Char'
                     )}>
@@ -249,13 +263,31 @@ function getModalBodyForManagingParameter(variableName, variableType) {
                 </select>
             </div>
             <hr>
-            <div class="form-check ml-1 mt-1">
-              <input class="form-check-input" type="checkbox" id="isArray" 
-                    ${shouldMarkArrayCheckbox({ variableType })}>
-              <label class="form-check-label" for="isArray">
+            <div class='form-check ml-1 mt-1'>
+              <input class='form-check-input' type='checkbox' id='isArray' 
+                    ${shouldMarkArray(
+                        variableType
+                    )} onchange="onArrayCheckboxChanged()" >
+              <label class='form-check-label' for='isArray'>
                 Is an array
               </label>
-            </div>`
+            </div>
+            <div id='arrayDimension'>
+                 <div class='form-check' >
+                      <div class='form-check form-check-inline'>
+                           <input class='form-check-input' type='radio' id='is1DArray' value='1D' name='dimension' ${shouldMark1DArray(
+                               variableType
+                           )}>
+                           <label class='form-check-label' for='1D'>1D</label>
+                      </div>
+                      <div class='form-check form-check-inline'>
+                           <input class='form-check-input' type='radio' name='dimension' value='2D' id='is2DArray' ${shouldMark2DArray(
+                               variableType
+                           )}>
+                           <label class='form-check-label' for='2D'>2D</label>
+                      </div>
+                 </div>
+            </div> `
 }
 
 function manageFunctionParams(currentObject, paramName, paramType) {
@@ -264,6 +296,7 @@ function manageFunctionParams(currentObject, paramName, paramType) {
         getModalBodyForManagingParameter(paramName, paramType)
     )
     $('#modal').modal('show')
+    $('#isArray').ready(onArrayCheckboxChanged)
     $('#okButton').one('click', () => {
         const variableName = $('#variableName').val()
         let variableType = $('#variableType option:selected').val()
@@ -276,7 +309,7 @@ function manageFunctionParams(currentObject, paramName, paramType) {
         } else {
             // We need to add the array suffix to the data type if the checkbox is checked
             variableType += $('#isArray').is(':checked') ? ' array' : ''
-
+            variableType += $('#is2DArray').is(':checked') ? ' []' : ''
             if (handleNamingConvention()) {
                 if (editMode) {
                     $(currentObject)
