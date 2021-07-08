@@ -151,6 +151,24 @@ function updateContextsDropdown() {
  */
 function addStartAndEndBlock(context) {
     const link = new joint.shapes.standard.Link()
+    var parameterString = ''
+    var returnType = ''
+    if (context !== 'main') {
+        const contextDetails = getCurrentContexts()[context]
+        if (contextDetails.parameters.length > 0) {
+            contextDetails.parameters.forEach((parameter) => {
+                parameterString +=
+                    parameter.variableType + ' ' + parameter.variableName + ','
+            })
+            parameterString = parameterString.slice(
+                0,
+                parameterString.length - 1
+            )
+        }
+        returnType = contextDetails.returnType
+            ? contextDetails.returnType + ' '
+            : 'void '
+    }
 
     let start = new joint.shapes.standard.Rectangle()
     start.position(350, 30)
@@ -169,7 +187,7 @@ function addStartAndEndBlock(context) {
             strokeWidth: 0,
         },
         label: {
-            text: `Start ${context}()`,
+            text: getWrapText(`Start ${context}(${parameterString})`),
             fill: '#ECF0F1',
         },
     })
@@ -179,7 +197,7 @@ function addStartAndEndBlock(context) {
 
     end.attr({
         label: {
-            text: `End ${context}()`,
+            text: getWrapText(`End ${returnType}${context}()`),
         },
         element: {
             type: 'end',
