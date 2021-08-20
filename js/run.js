@@ -139,9 +139,12 @@ async function delayLoop(currentElement) {
                     ...variablesStack.pop(),
                 }
                 Object.keys(variables).forEach((varName) => {
-                    const varValue = variables[varName].value
+                    let varValue = variables[varName].value
                     if (varValue) {
-                        handleAssignmentHelper(varName, varValue.toString())
+                        varValue = Array.isArray(varValue)
+                            ? JSON.stringify(varValue).slice(1, -1)
+                            : varValue.toString()
+                        handleAssignmentHelper(varName, varValue)
                     } else {
                         handleNullAssignment(varName, variables[varName].type)
                     }
@@ -159,7 +162,9 @@ async function delayLoop(currentElement) {
 
                 if (functionReturnVariablesStack.length) {
                     let variableName = functionReturnVariablesStack.pop()
-                    let variableValue = returnValue.toString()
+                    let variableValue = Array.isArray(returnValue)
+                        ? JSON.stringify(returnValue).slice(1, -1)
+                        : returnValue.toString()
                     handleAssignmentHelper(variableName, variableValue)
                 }
                 continue
@@ -196,7 +201,6 @@ async function delayLoop(currentElement) {
                 }
 
                 variablesStack.push({ ...variables })
-
                 visitedItemsStack.push(new Set(visitedItems))
                 previousContextStack.push(currentContextName)
                 const currentLink = findModel(
@@ -218,12 +222,24 @@ async function delayLoop(currentElement) {
                             it.variableName,
                             it.variableType
                         )
-                        handleAssignmentHelper(
-                            it.variableName,
-                            globalEval(
+                        let varValue =
+                            prevVariablesCopy[
                                 actualToFormalParamsMap.get(it.variableName)
-                            ).toString()
-                        )
+                            ] !== undefined
+                                ? prevVariablesCopy[
+                                      actualToFormalParamsMap.get(
+                                          it.variableName
+                                      )
+                                  ].value
+                                : globalEval(
+                                      actualToFormalParamsMap.get(
+                                          it.variableName
+                                      )
+                                  )
+                        varValue = Array.isArray(varValue)
+                            ? JSON.stringify(varValue).slice(1, -1)
+                            : varValue.toString()
+                        handleAssignmentHelper(it.variableName, varValue)
                     })
                 }
 
@@ -326,6 +342,10 @@ function handleDeclarationHelper(
     if (variables[variableName]) {
         throw new Error('Variable with the same name is already declared')
     }
+    if (variableType.includes('[]')) {
+        is2DArray = true
+        variableType = variableType.slice(0, -3)
+    }
     const type = types[variableType]
     if (type.includes('array')) {
         let value = []
@@ -402,7 +422,7 @@ function handleAssignmentHelper(variableName, variableValue) {
             } else {
                 if (isChar(variableValue)) {
                     globalEval(variableName + ' = ' + "'" + variableValue + "'")
-                } else{
+                } else {
                     throw new Error('Datatype mismatch')
                 }
             }
@@ -949,8 +969,8 @@ function handleRuntimeErrors(expression) {
 }
 
 function stringManipulations(variableName, userInput) {
-    let regExp = /\(([^)]+)\)/;
-    let parametersAsString = regExp.exec(userInput);
+    let regExp = /\(([^)]+)\)/
+    let parametersAsString = regExp.exec(userInput)
     if (userInput.includes('strcat')) {
         let parameters = parametersAsString[1].split(',')
         let firstVariable = parameters[0]
@@ -996,7 +1016,7 @@ function stringManipulations(variableName, userInput) {
     } else if (userInput.includes('toUpperCase')) {
         let variable = parametersAsString[1]
         if (isArrayNotation(variable) || variables[variable].type === 'char') {
-            return globalEval(variableName + '='+ variable+'.toUpperCase()')
+            return globalEval(variableName + '=' + variable + '.toUpperCase()')
         }
         return globalEval(
             variableName +
