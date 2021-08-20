@@ -69,6 +69,37 @@ let contexts = {
 
 updateContextsDropdown()
 
+function getParametersAndReturnType(contextName) {
+    if (contextName !== 'main') {
+        const context = getCurrentContexts()[contextName]
+        var parameterString = ''
+        if (context.parameters.length > 0) {
+            context.parameters.forEach((parameter) => {
+                parameterString +=
+                    parameter.variableType + ' ' + parameter.variableName + ','
+            })
+            parameterString = parameterString.slice(
+                0,
+                parameterString.length - 1
+            )
+        }
+        const returnType = context.returnType
+            ? `return ${context.returnType} ${contextName}()`
+            : `return void ${contextName}()`
+        var parametersAndReturnType = {
+            parameters: parameterString,
+            returnType: returnType,
+        }
+    } else {
+        var parametersAndReturnType = {
+            parameters: '',
+            returnType: `End ${contextName}()`,
+        }
+    }
+
+    return parametersAndReturnType
+}
+
 /**
  * This is called whenever the dropdown for current context a.k.a function is changed
  * We first fetch the previous context's updated graph and store it in our main object
@@ -88,6 +119,7 @@ function switchContext() {
         contexts[currentContextName] = {
             ...(contexts[currentContextName] || {}),
             start,
+            graph: graph.toJSON(),
         }
     } else {
         graph.fromJSON(toContext.graph)
@@ -114,6 +146,20 @@ function updateCurrentContexts(localContexts) {
         main: contexts.main,
         ...(localContexts || {}),
     }
+    contexts[currentContextName].graph = graph.toJSON()
+
+    for (context in localContexts) {
+        if (localContexts[context].graph) {
+            const parametersAndReturnType = getParametersAndReturnType(context)
+            contexts[context].graph.cells[0].attrs.label.text = getWrapText(
+                `Start ${context}(${parametersAndReturnType.parameters})`
+            )
+            contexts[context].graph.cells[1].attrs.label.text = getWrapText(
+                parametersAndReturnType.returnType
+            )
+        }
+    }
+    graph.fromJSON(contexts[currentContextName].graph)
 }
 
 /**
@@ -151,6 +197,7 @@ function updateContextsDropdown() {
  */
 function addStartAndEndBlock(context) {
     const link = new joint.shapes.standard.Link()
+    const parametersAndReturnType = getParametersAndReturnType(context)
 
     let start = new joint.shapes.standard.Rectangle()
     start.position(350, 30)
@@ -169,7 +216,9 @@ function addStartAndEndBlock(context) {
             strokeWidth: 0,
         },
         label: {
-            text: `Start ${context}()`,
+            text: getWrapText(
+                `Start ${context}(${parametersAndReturnType.parameters})`
+            ),
             fill: '#ECF0F1',
         },
     })
@@ -179,7 +228,7 @@ function addStartAndEndBlock(context) {
 
     end.attr({
         label: {
-            text: `End ${context}()`,
+            text: getWrapText(parametersAndReturnType.returnType),
         },
         element: {
             type: 'end',
