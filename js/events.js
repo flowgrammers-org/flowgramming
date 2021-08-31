@@ -396,7 +396,7 @@ function handleElementDoubleClick(elementView) {
                       <hr>
                       <div class="form-group">
                         <label for="initialisation">Initialisation</label>
-                        <input type="text" class="form-control" id="initialisation"
+                        <input type="text" placeholder="Ex: counter = 1" class="form-control" id="initialisation"
                             value="${
                                 currentElementValue.forLoop
                                     ? escapeQuotes(
@@ -407,7 +407,7 @@ function handleElementDoubleClick(elementView) {
                       </div>
                       <div class="form-group">
                         <label for="condition">Condition</label>
-                        <input type="text" class="form-control" id="condition"
+                        <input type="text" placeholder="Ex: counter < value" class="form-control" id="condition"
                             value="${
                                 currentElementValue.expression
                                     ? escapeQuotes(
@@ -418,7 +418,7 @@ function handleElementDoubleClick(elementView) {
                       </div>
                       <div class="form-group">
                         <label for="incrementation">Incrementation</label>
-                        <input type="text" class="form-control" id="incrementation"
+                        <input type="text" placeholder="Ex: counter = counter * 2" class="form-control" id="incrementation"
                             value="${
                                 currentElementValue.forLoop
                                     ? escapeQuotes(
