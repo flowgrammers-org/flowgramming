@@ -396,7 +396,7 @@ function handleElementDoubleClick(elementView) {
                       <hr>
                       <div class="form-group">
                         <label for="initialisation">Initialisation</label>
-                        <input type="text" placeholder="<counter> = value/variable" class="form-control" id="initialisation"
+                        <input type="text" placeholder="Ex: counter = 1" class="form-control" id="initialisation"
                             value="${
                                 currentElementValue.forLoop
                                     ? escapeQuotes(
