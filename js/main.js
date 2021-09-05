@@ -177,6 +177,13 @@ function getCurrentContexts() {
 }
 
 /**
+ * A callback used by function manager to add an imported function to the contexts
+ */
+function addNewContext(context) {
+    contexts = { ...contexts, ...context }
+}
+
+/**
  * Called when page is loaded.
  * and also whenever the user defined functions are added or deleted.
  */
