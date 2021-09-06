@@ -19,6 +19,7 @@
  */
 
 const signingKey = 'Flowgramming'
+const fnSigningKey = 'FlowgrammingFunction'
 
 function saveFlowChart() {
     // Usually, the contexts object will not have the latest graph of the current context.
@@ -41,7 +42,7 @@ function saveFlowChart() {
 
 function downloadFunction(functionName) {
     window.opener.switchContext()
-    const filename = `${functionName}.fgmin`
+    const filename = `${functionName}.fgfn`
     if (functionName in window.opener.getCurrentContexts()) {
         let contexts = {
             [functionName]: window.opener.getCurrentContexts()[functionName],
@@ -50,7 +51,7 @@ function downloadFunction(functionName) {
             filename,
             JSON.stringify(
                 JSON.decycle({
-                    signingKey,
+                    signingKey: fnSigningKey,
                     contexts,
                 })
             ),
@@ -90,8 +91,8 @@ function importFlowGram(file) {
 function importFunction(file) {
     try {
         const parsedFile = JSON.retrocycle(JSON.parse(file))
-        if (parsedFile.signingKey !== signingKey) {
-            swal("Flowgramming doesn't support that file!")
+        if (parsedFile.signingKey !== fnSigningKey) {
+            swal('Not a flowgramming function!')
             return
         }
         Object.keys(parsedFile.contexts).forEach((functionName) => {
