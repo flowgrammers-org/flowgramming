@@ -55,6 +55,8 @@ let functionMain = [
     'js/events.js',
     'js/tab.js',
     'js/functions.js',
+    'js/vendor/cycle.js',
+    'js/save.js',
 ]
 
 let mainCss = [

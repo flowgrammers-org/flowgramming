@@ -19,6 +19,7 @@
  */
 
 const signingKey = 'Flowgramming'
+const fnSigningKey = 'FlowgrammingFunction'
 
 function saveFlowChart() {
     // Usually, the contexts object will not have the latest graph of the current context.
@@ -37,6 +38,26 @@ function saveFlowChart() {
             })
         )
     )
+}
+
+function downloadFunction(functionName) {
+    window.opener.switchContext()
+    const filename = `${functionName}.fgfn`
+    if (functionName in window.opener.getCurrentContexts()) {
+        let contexts = {
+            [functionName]: window.opener.getCurrentContexts()[functionName],
+        }
+        saveFile(
+            filename,
+            JSON.stringify(
+                JSON.decycle({
+                    signingKey: fnSigningKey,
+                    contexts,
+                })
+            ),
+            `save-${functionName}`
+        )
+    }
 }
 
 function importFlowGram(file) {
@@ -67,19 +88,42 @@ function importFlowGram(file) {
     }
 }
 
-function openFromFile(file) {
+function importFunction(file) {
+    try {
+        const parsedFile = JSON.retrocycle(JSON.parse(file))
+        if (parsedFile.signingKey !== fnSigningKey) {
+            swal('Not a flowgramming function!')
+            return
+        }
+        Object.keys(parsedFile.contexts).forEach((functionName) => {
+            addFunctionToTable(functionName)
+        })
+        parentWindowContexts = {
+            ...parentWindowContexts,
+            ...parsedFile.contexts,
+        }
+        window.opener.addNewContext(parsedFile.contexts)
+    } catch (e) {
+        swal('Something went wrong!')
+    } finally {
+        hideLoader()
+    }
+}
+
+function openFromFile(file, fn = false) {
     showLoader('Importing', 'Please wait while your flowgram is imported')
     setTimeout(() => {
-        importFlowGram(file)
+        if (fn) importFunction(file)
+        else importFlowGram(file)
     }, 1000)
 }
 
-function saveFile(filename, data) {
+function saveFile(filename, data, saveBtn = 'save-btn') {
     const file = new Blob([data], { type: 'application/json;charset=utf-8' })
     if (window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(file, filename)
     } else {
-        const saveButton = document.getElementById('save-btn')
+        const saveButton = document.getElementById(saveBtn)
         saveButton.href = URL.createObjectURL(file)
         saveButton.download = filename
     }
