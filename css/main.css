@@ -149,3 +149,17 @@ button.close {
         transform: rotate(360deg);
     }
 }
+
+.chatcol {
+    background-color: #343a40;
+    border: 2px solid white;
+}
+
+.chatcol h6  {
+    padding: 6px;
+    color: white;
+}
+
+.chat-nav {
+    padding: 6px;
+}
