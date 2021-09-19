@@ -402,7 +402,7 @@ function handleAssignmentHelper(variableName, variableValue) {
             } else {
                 if (isChar(variableValue)) {
                     globalEval(variableName + ' = ' + "'" + variableValue + "'")
-                } else{
+                } else {
                     throw new Error('Datatype mismatch')
                 }
             }
@@ -948,13 +948,26 @@ function handleRuntimeErrors(expression) {
     }
 }
 
+function isString(s) {
+    if (s.startsWith("'") || s.startsWith('"')) return true
+    s = globalEval(s)
+    if (Array.isArray(s)) {
+        if (typeof s[0] === 'string') return true
+        return isNaN(s.join('')) && isNaN(parseFloat(s.join('')))
+    } else return isNaN(s) || isNaN(parseFloat(s))
+}
+
 function stringManipulations(variableName, userInput) {
-    let regExp = /\(([^)]+)\)/;
-    let parametersAsString = regExp.exec(userInput);
+    let regExp = /\(([^)]+)\)/
+    let parametersAsString = regExp.exec(userInput)
     if (userInput.includes('strcat')) {
         let parameters = parametersAsString[1].split(',')
         let firstVariable = parameters[0]
         let secondVariable = parameters[1]
+        if (!isString(firstVariable) || !isString(secondVariable))
+            throw new Error(
+                'Both parameters have to be of type character to concatenate'
+            )
         return globalEval(
             variableName +
                 '= ' +
@@ -996,7 +1009,7 @@ function stringManipulations(variableName, userInput) {
     } else if (userInput.includes('toUpperCase')) {
         let variable = parametersAsString[1]
         if (isArrayNotation(variable) || variables[variable].type === 'char') {
-            return globalEval(variableName + '='+ variable+'.toUpperCase()')
+            return globalEval(variableName + '=' + variable + '.toUpperCase()')
         }
         return globalEval(
             variableName +
