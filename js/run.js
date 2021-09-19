@@ -218,24 +218,34 @@ async function delayLoop(currentElement) {
 
                 if (functionParams) {
                     contexts[functionName].parameters.forEach((it) => {
-                        handleDeclarationHelper(
-                            it.variableName,
-                            it.variableType
-                        )
-                        let varValue =
+                        let varValue
+                        if (
                             prevVariablesCopy[
                                 actualToFormalParamsMap.get(it.variableName)
                             ] !== undefined
-                                ? prevVariablesCopy[
-                                      actualToFormalParamsMap.get(
-                                          it.variableName
-                                      )
-                                  ].value
-                                : globalEval(
-                                      actualToFormalParamsMap.get(
-                                          it.variableName
-                                      )
-                                  )
+                        ) {
+                            let varX =
+                                prevVariablesCopy[
+                                    actualToFormalParamsMap.get(it.variableName)
+                                ]
+                            varValue = varX.value
+                            handleDeclarationHelper(
+                                it.variableName,
+                                it.variableType,
+                                varX.arrayLength,
+                                varX.rowLen,
+                                varX.colLen,
+                                varX.is2DArray
+                            )
+                        } else {
+                            varValue = globalEval(
+                                actualToFormalParamsMap.get(it.variableName)
+                            )
+                            handleDeclarationHelper(
+                                it.variableName,
+                                it.variableType
+                            )
+                        }
                         varValue = Array.isArray(varValue)
                             ? JSON.stringify(varValue).slice(1, -1)
                             : varValue.toString()
@@ -268,6 +278,7 @@ async function delayLoop(currentElement) {
             }
         } catch (err) {
             swal(err.message || err.toString())
+            console.log(err)
             currentElement.attr('body/strokeWidth', strokeLow.width)
             currentElement.attr('body/stroke', strokeLow.color)
             currentElement = null
@@ -478,7 +489,6 @@ async function handleInput(element) {
     if (!variableName) {
         throw new Error('Assign a variable name to take input')
     }
-    renderProgram('Enter the value for variable ' + variableName)
     if (isArrayNotation(variableName)) {
         arrayNotation = variableName.split('[')
     }
@@ -486,6 +496,52 @@ async function handleInput(element) {
         variableName,
         arrayNotation
     )
+    if (isArrayNotation(variableName)) {
+        if (
+            arrayNotation.length > 2 &&
+            globalEval(arrayNotation[2].slice(0, -1)) >= colLen
+        )
+            throw new Error(
+                'The specified number of columns of the array (' +
+                    colLen +
+                    ') cannot hold these many values'
+            )
+        if (is2DArray && globalEval(arrayNotation[1].slice(0, -1)) >= rowLen)
+            throw new Error(
+                'The specified number of rows of the array (' +
+                    rowLen +
+                    ') cannot hold these many values'
+            )
+        if (
+            !is2DArray &&
+            globalEval(arrayNotation[1].slice(0, -1)) >= arrayLength
+        )
+            throw new Error(
+                'The specified length of the array (' +
+                    arrayLength +
+                    ') cannot hold these many values'
+            )
+
+        if (arrayNotation.length > 2) {
+            renderProgram(
+                'Enter the value for variable ' +
+                    arrayNotation[0] +
+                    '[' +
+                    globalEval(arrayNotation[1].slice(0, -1)) +
+                    '][' +
+                    globalEval(arrayNotation[2].slice(0, -1)) +
+                    ']'
+            )
+        } else {
+            renderProgram(
+                'Enter the value for variable ' +
+                    arrayNotation[0] +
+                    '[' +
+                    globalEval(arrayNotation[1].slice(0, -1)) +
+                    ']'
+            )
+        }
+    } else renderProgram('Enter the value for variable ' + variableName)
 
     const userInput = await allowUser()
     if (userInput === 'Stopped') return
@@ -794,11 +850,11 @@ function handle1Darrays(type, userInput, checkType, variableName, parsingType) {
             userInput = temp.toString()
         }
     }
-
     let val = userInput.split(',')
     for (let i = 0; i < val.length; i++) {
         if (checkType(val[i])) {
             val[i] = parsingType(val[i])
+        } else if (val[i] === '"N/A"') {
         } else {
             throw new Error(
                 'Data type mismatch\n\nDeclared array ' +
@@ -842,7 +898,9 @@ function handleArrays(
                 parseInt(arrayNotation[1].split(']')[0]) >= parseInt(rowLen)
             )
                 throw new Error(
-                    'The specified length of array cannot hold these many values'
+                    'The specified length of array (' +
+                        rowLen +
+                        ') cannot hold these many values'
                 )
             if (is2DArray && arrayNotation.length < 3) {
                 val = handle1Darrays(
@@ -862,7 +920,9 @@ function handleArrays(
                     parseInt(arrayNotation[2].split(']')[0]) >= parseInt(colLen)
                 )
                     throw new Error(
-                        'The specified number of columns of the array cannot hold these many values'
+                        'The specified number of columns of the array (' +
+                            colLen +
+                            ') cannot hold these many values'
                     )
                 if (isInput) {
                     typeCheck = checkType(userInput)
@@ -889,6 +949,8 @@ function handleArrays(
             if (is2DArray && !userInput.includes(';')) {
                 userInput = userInput.replaceAll('],', '];')
             }
+            if (is2DArray && type === 'character' && !userInput.includes(';'))
+                userInput = userInput.replaceAll(',', ';')
             val = userInput.split(';')
             if (is2DArray) {
                 for (let i = 0; i < val.length; i++) {
@@ -909,7 +971,9 @@ function handleArrays(
                     )
                     if (x.length > parseInt(colLen)) {
                         throw new Error(
-                            'The specified number of columns of the array cannot hold these many values'
+                            'The specified number of columns (' +
+                                colLen +
+                                ') of the array cannot hold these many values'
                         )
                     }
                     val[i] = x
@@ -926,14 +990,21 @@ function handleArrays(
             globalEval(variableName + '=[' + val + ']')
         }
 
-        if (
-            (!is2DArray && val.length > parseInt(arrayLength)) ||
-            (is2DArray &&
-                val.length > parseInt(rowLen) &&
-                !isArrayNotation(variableName))
+        if (!is2DArray && val.length > parseInt(arrayLength)) {
+            throw new Error(
+                ' The specified length of array (' +
+                    arrayLength +
+                    ') cannot hold these many values'
+            )
+        } else if (
+            is2DArray &&
+            val.length > parseInt(rowLen) &&
+            !isArrayNotation(variableName)
         ) {
             throw new Error(
-                ' The specified length of array cannot hold these many values'
+                ' The specified length of array (' +
+                    rowLen +
+                    ') cannot hold these many values'
             )
         }
         return val
