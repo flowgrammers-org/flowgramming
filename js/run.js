@@ -278,7 +278,6 @@ async function delayLoop(currentElement) {
             }
         } catch (err) {
             swal(err.message || err.toString())
-            console.log(err)
             currentElement.attr('body/strokeWidth', strokeLow.width)
             currentElement.attr('body/stroke', strokeLow.color)
             currentElement = null
@@ -838,6 +837,15 @@ function handleArrayAssignment(userInput, type) {
     }
 }
 
+function removeQuotes(s) {
+    if (
+        (s.startsWith("'") && s.endsWith("'")) ||
+        (s.startsWith('"') && s.endsWith('"'))
+    ) {
+        return s.slice(1, -1)
+    }
+}
+
 function handle1Darrays(type, userInput, checkType, variableName, parsingType) {
     if (type === 'character' && userInput.search(',') === -1) {
         let temp = [...userInput]
@@ -852,9 +860,16 @@ function handle1Darrays(type, userInput, checkType, variableName, parsingType) {
     }
     let val = userInput.split(',')
     for (let i = 0; i < val.length; i++) {
+        if (val[i].includes('N/A')) val[i] = removeQuotes(val[i])
         if (checkType(val[i])) {
             val[i] = parsingType(val[i])
-        } else if (val[i] === '"N/A"') {
+        } else if (
+            val[i] === 'N/A' ||
+            val[i].replace(/^'+|'+$/g, '') === 'N/A' ||
+            val[i].replace(/^"+|"+$/g, '') === 'N/A'
+        ) {
+            val[i] = val[i].replace(/^"+|"+$/g, '')
+            val[i] = "'" + val[i].replace(/^'+|'+$/g, '') + "'"
         } else {
             throw new Error(
                 'Data type mismatch\n\nDeclared array ' +
