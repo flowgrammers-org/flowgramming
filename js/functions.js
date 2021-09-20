@@ -37,9 +37,16 @@ $(document).ready(function () {
  * with the locally updated contexts object
  */
 function saveFunctions() {
+    $('#saveFunctionsModal').modal('hide')
     if (parentWindowContexts)
         window.opener.updateCurrentContexts(parentWindowContexts)
     window.close()
+}
+
+function showSaveFunctionsModal() {
+    if ($('#addFn')[0][0].value !== '') {
+        $('#saveFunctionsModal').modal('show')
+    } else saveFunctions()
 }
 
 function manageFunctionProps(anchorObj, name) {

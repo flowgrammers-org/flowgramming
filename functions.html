@@ -129,7 +129,10 @@
                             <h4>Create / Edit a function</h4>
                         </div>
                         <div class="card-body">
-                            <form onsubmit="return saveFunction(this)">
+                            <form
+                                id="addFn"
+                                onsubmit="return saveFunction(this)"
+                            >
                                 <div class="form-group">
                                     <label for="functionName"
                                         >Function Name</label
@@ -225,7 +228,7 @@
                                     type="submit"
                                     class="btn btn-info btn-block mb-5"
                                 >
-                                    Save the function
+                                    Save the function and continue
                                 </button>
                             </form>
                         </div>
@@ -257,13 +260,41 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="saveFunctionsModal" role="dialog">
+            <div class="modal-dialog modal-sm vertical-align-center">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p>
+                            Are you sure you want to close without saving the
+                            function?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary mr-auto"
+                            data-dismiss="modal"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            class="btn btn-outline-danger"
+                            type="button"
+                            onclick="saveFunctions()"
+                        >
+                            Yes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <nav class="navbar fixed-bottom navbar-light bg-light">
             <button
-                onclick="saveFunctions()"
+                onclick="showSaveFunctionsModal()"
                 type="button"
                 class="ml-auto btn btn-info btn-block"
             >
-                Done
+                Save Functions and Close
             </button>
         </nav>
     </body>

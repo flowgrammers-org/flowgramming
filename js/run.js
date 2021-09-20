@@ -139,9 +139,12 @@ async function delayLoop(currentElement) {
                     ...variablesStack.pop(),
                 }
                 Object.keys(variables).forEach((varName) => {
-                    const varValue = variables[varName].value
+                    let varValue = variables[varName].value
                     if (varValue) {
-                        handleAssignmentHelper(varName, varValue.toString())
+                        varValue = Array.isArray(varValue)
+                            ? JSON.stringify(varValue).slice(1, -1)
+                            : varValue.toString()
+                        handleAssignmentHelper(varName, varValue)
                     } else {
                         handleNullAssignment(varName, variables[varName].type)
                     }
@@ -159,7 +162,9 @@ async function delayLoop(currentElement) {
 
                 if (functionReturnVariablesStack.length) {
                     let variableName = functionReturnVariablesStack.pop()
-                    let variableValue = returnValue.toString()
+                    let variableValue = Array.isArray(returnValue)
+                        ? JSON.stringify(returnValue).slice(1, -1)
+                        : returnValue.toString()
                     handleAssignmentHelper(variableName, variableValue)
                 }
                 continue
@@ -196,7 +201,6 @@ async function delayLoop(currentElement) {
                 }
 
                 variablesStack.push({ ...variables })
-
                 visitedItemsStack.push(new Set(visitedItems))
                 previousContextStack.push(currentContextName)
                 const currentLink = findModel(
@@ -214,16 +218,38 @@ async function delayLoop(currentElement) {
 
                 if (functionParams) {
                     contexts[functionName].parameters.forEach((it) => {
-                        handleDeclarationHelper(
-                            it.variableName,
-                            it.variableType
-                        )
-                        handleAssignmentHelper(
-                            it.variableName,
-                            globalEval(
+                        let varValue
+                        if (
+                            prevVariablesCopy[
                                 actualToFormalParamsMap.get(it.variableName)
-                            ).toString()
-                        )
+                            ] !== undefined
+                        ) {
+                            let varX =
+                                prevVariablesCopy[
+                                    actualToFormalParamsMap.get(it.variableName)
+                                ]
+                            varValue = varX.value
+                            handleDeclarationHelper(
+                                it.variableName,
+                                it.variableType,
+                                varX.arrayLength,
+                                varX.rowLen,
+                                varX.colLen,
+                                varX.is2DArray
+                            )
+                        } else {
+                            varValue = globalEval(
+                                actualToFormalParamsMap.get(it.variableName)
+                            )
+                            handleDeclarationHelper(
+                                it.variableName,
+                                it.variableType
+                            )
+                        }
+                        varValue = Array.isArray(varValue)
+                            ? JSON.stringify(varValue).slice(1, -1)
+                            : varValue.toString()
+                        handleAssignmentHelper(it.variableName, varValue)
                     })
                 }
 
@@ -326,6 +352,10 @@ function handleDeclarationHelper(
     if (variables[variableName]) {
         throw new Error('Variable with the same name is already declared')
     }
+    if (variableType.includes('[]')) {
+        is2DArray = true
+        variableType = variableType.slice(0, -3)
+    }
     const type = types[variableType]
     if (type.includes('array')) {
         let value = []
@@ -402,7 +432,7 @@ function handleAssignmentHelper(variableName, variableValue) {
             } else {
                 if (isChar(variableValue)) {
                     globalEval(variableName + ' = ' + "'" + variableValue + "'")
-                } else{
+                } else {
                     throw new Error('Datatype mismatch')
                 }
             }
@@ -458,7 +488,6 @@ async function handleInput(element) {
     if (!variableName) {
         throw new Error('Assign a variable name to take input')
     }
-    renderProgram('Enter the value for variable ' + variableName)
     if (isArrayNotation(variableName)) {
         arrayNotation = variableName.split('[')
     }
@@ -466,6 +495,52 @@ async function handleInput(element) {
         variableName,
         arrayNotation
     )
+    if (isArrayNotation(variableName)) {
+        if (
+            arrayNotation.length > 2 &&
+            globalEval(arrayNotation[2].slice(0, -1)) >= colLen
+        )
+            throw new Error(
+                'The specified number of columns of the array (' +
+                    colLen +
+                    ') cannot hold these many values'
+            )
+        if (is2DArray && globalEval(arrayNotation[1].slice(0, -1)) >= rowLen)
+            throw new Error(
+                'The specified number of rows of the array (' +
+                    rowLen +
+                    ') cannot hold these many values'
+            )
+        if (
+            !is2DArray &&
+            globalEval(arrayNotation[1].slice(0, -1)) >= arrayLength
+        )
+            throw new Error(
+                'The specified length of the array (' +
+                    arrayLength +
+                    ') cannot hold these many values'
+            )
+
+        if (arrayNotation.length > 2) {
+            renderProgram(
+                'Enter the value for variable ' +
+                    arrayNotation[0] +
+                    '[' +
+                    globalEval(arrayNotation[1].slice(0, -1)) +
+                    '][' +
+                    globalEval(arrayNotation[2].slice(0, -1)) +
+                    ']'
+            )
+        } else {
+            renderProgram(
+                'Enter the value for variable ' +
+                    arrayNotation[0] +
+                    '[' +
+                    globalEval(arrayNotation[1].slice(0, -1)) +
+                    ']'
+            )
+        }
+    } else renderProgram('Enter the value for variable ' + variableName)
 
     const userInput = await allowUser()
     if (userInput === 'Stopped') return
@@ -762,6 +837,15 @@ function handleArrayAssignment(userInput, type) {
     }
 }
 
+function removeQuotes(s) {
+    if (
+        (s.startsWith("'") && s.endsWith("'")) ||
+        (s.startsWith('"') && s.endsWith('"'))
+    ) {
+        return s.slice(1, -1)
+    }
+}
+
 function handle1Darrays(type, userInput, checkType, variableName, parsingType) {
     if (type === 'character' && userInput.search(',') === -1) {
         let temp = [...userInput]
@@ -774,11 +858,18 @@ function handle1Darrays(type, userInput, checkType, variableName, parsingType) {
             userInput = temp.toString()
         }
     }
-
     let val = userInput.split(',')
     for (let i = 0; i < val.length; i++) {
+        if (val[i].includes('N/A')) val[i] = removeQuotes(val[i])
         if (checkType(val[i])) {
             val[i] = parsingType(val[i])
+        } else if (
+            val[i] === 'N/A' ||
+            val[i].replace(/^'+|'+$/g, '') === 'N/A' ||
+            val[i].replace(/^"+|"+$/g, '') === 'N/A'
+        ) {
+            val[i] = val[i].replace(/^"+|"+$/g, '')
+            val[i] = "'" + val[i].replace(/^'+|'+$/g, '') + "'"
         } else {
             throw new Error(
                 'Data type mismatch\n\nDeclared array ' +
@@ -822,7 +913,9 @@ function handleArrays(
                 parseInt(arrayNotation[1].split(']')[0]) >= parseInt(rowLen)
             )
                 throw new Error(
-                    'The specified length of array cannot hold these many values'
+                    'The specified length of array (' +
+                        rowLen +
+                        ') cannot hold these many values'
                 )
             if (is2DArray && arrayNotation.length < 3) {
                 val = handle1Darrays(
@@ -842,7 +935,9 @@ function handleArrays(
                     parseInt(arrayNotation[2].split(']')[0]) >= parseInt(colLen)
                 )
                     throw new Error(
-                        'The specified number of columns of the array cannot hold these many values'
+                        'The specified number of columns of the array (' +
+                            colLen +
+                            ') cannot hold these many values'
                     )
                 if (isInput) {
                     typeCheck = checkType(userInput)
@@ -869,6 +964,8 @@ function handleArrays(
             if (is2DArray && !userInput.includes(';')) {
                 userInput = userInput.replaceAll('],', '];')
             }
+            if (is2DArray && type === 'character' && !userInput.includes(';'))
+                userInput = userInput.replaceAll(',', ';')
             val = userInput.split(';')
             if (is2DArray) {
                 for (let i = 0; i < val.length; i++) {
@@ -889,7 +986,9 @@ function handleArrays(
                     )
                     if (x.length > parseInt(colLen)) {
                         throw new Error(
-                            'The specified number of columns of the array cannot hold these many values'
+                            'The specified number of columns (' +
+                                colLen +
+                                ') of the array cannot hold these many values'
                         )
                     }
                     val[i] = x
@@ -906,14 +1005,21 @@ function handleArrays(
             globalEval(variableName + '=[' + val + ']')
         }
 
-        if (
-            (!is2DArray && val.length > parseInt(arrayLength)) ||
-            (is2DArray &&
-                val.length > parseInt(rowLen) &&
-                !isArrayNotation(variableName))
+        if (!is2DArray && val.length > parseInt(arrayLength)) {
+            throw new Error(
+                ' The specified length of array (' +
+                    arrayLength +
+                    ') cannot hold these many values'
+            )
+        } else if (
+            is2DArray &&
+            val.length > parseInt(rowLen) &&
+            !isArrayNotation(variableName)
         ) {
             throw new Error(
-                ' The specified length of array cannot hold these many values'
+                ' The specified length of array (' +
+                    rowLen +
+                    ') cannot hold these many values'
             )
         }
         return val
@@ -949,8 +1055,8 @@ function handleRuntimeErrors(expression) {
 }
 
 function stringManipulations(variableName, userInput) {
-    let regExp = /\(([^)]+)\)/;
-    let parametersAsString = regExp.exec(userInput);
+    let regExp = /\(([^)]+)\)/
+    let parametersAsString = regExp.exec(userInput)
     if (userInput.includes('strcat')) {
         let parameters = parametersAsString[1].split(',')
         let firstVariable = parameters[0]
@@ -996,7 +1102,7 @@ function stringManipulations(variableName, userInput) {
     } else if (userInput.includes('toUpperCase')) {
         let variable = parametersAsString[1]
         if (isArrayNotation(variable) || variables[variable].type === 'char') {
-            return globalEval(variableName + '='+ variable+'.toUpperCase()')
+            return globalEval(variableName + '=' + variable + '.toUpperCase()')
         }
         return globalEval(
             variableName +
