@@ -27,6 +27,10 @@
         "gulp-concat": "^2.6.1",
         "gulp-nodemon": "^2.5.0",
         "gulp-uglify-es": "^2.0.0",
-        "gulp-uglifycss": "^1.1.0"
+        "gulp-uglifycss": "^1.1.0",
+        "hosted-git-info": "^4.0.2",
+        "normalize-url": "^7.0.1",
+        "path-parse": "^1.0.7",
+        "y18n": "^5.0.8"
     }
 }
