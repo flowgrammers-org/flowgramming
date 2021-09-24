@@ -18,7 +18,7 @@
  # *************************************************************************************
  */
 
-const latestCacheName = 'flowgramming-v1632445998'
+const latestCacheName = 'flowgramming-v1632446274'
 
 /* Start the service worker and cache all of the app's content */
 self.addEventListener('install', function (e) {

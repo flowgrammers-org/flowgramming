@@ -1214,8 +1214,7 @@ h2,h3{page-break-after:avoid}@page{size:a3}body{min-width:992px !important}.cont
 #zoomout{margin-right:.25rem;padding-right:.5rem;border-right:1px solid white}.hidden{display:none !important}
 button.close{width:10%;margin-left:auto;margin-bottom:-3px}.loader{border:16px solid #f3f3f3;border-top:16px solid #3498db;border-radius:50%;width:6em;height:6em;animation:spin 2s linear infinite;margin:1em auto}
 @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}
-}.chatcol{background-color:#343a40;border:2px solid white}.chatcol h6{padding:6px;color:white}
-.chat-nav{padding:6px}.chat{width:100%;height:100%;float:right;background:#f2f5f8;border-top-right-radius:5px;border-bottom-right-radius:5px;color:#434651;overflow:auto}
+}.chat{width:100%;height:100%;float:right;background:#f2f5f8;border-top-right-radius:5px;border-bottom-right-radius:5px;color:#434651;overflow:auto}
 .chat .chat-history{padding:30px 30px 20px;border-bottom:2px solid white}.chat .chat-history .message-data{margin-bottom:15px}
 .chat .chat-history .message-data-time{color:#a8aab1;padding-left:6px}.chat .chat-history .message{color:white;padding:18px 20px;line-height:26px;font-size:16px;border-radius:7px;margin-bottom:30px;width:90%;position:relative}
 .chat .chat-history .message:after{bottom:100%;left:7%;border:solid transparent;content:' ';height:0;width:0;position:absolute;pointer-events:none;border-bottom-color:#86bb71;border-width:10px;margin-left:-10px}
