@@ -415,7 +415,11 @@ function handleAssignmentHelper(variableName, variableValue) {
     handleRuntimeErrors(variableValue)
     try {
         if (type === 'int') {
-            if (stringManipulationRegex.test(variableValue)) {
+            if (isArrayNotation(variableValue)) {
+                let val = handleArrayAssignment(variableValue, type)
+                globalEval(variableName + ' = ' + val)
+                variableValue = val
+            } else if (stringManipulationRegex.test(variableValue)) {
                 variableValue = parseInt(
                     stringManipulations(variableName, variableValue)
                 )
@@ -424,8 +428,13 @@ function handleAssignmentHelper(variableName, variableValue) {
                 globalEval(variableName + ' = ' + variableValue)
             }
         } else if (type === 'float') {
-            variableValue = parseFloat(globalEval(variableValue))
-            globalEval(variableName + ' = ' + variableValue)
+            if (isArrayNotation(variableValue)) {
+                let val = handleArrayAssignment(variableValue, type)
+                globalEval(variableName + ' = ' + val)
+            } else {
+                variableValue = parseFloat(globalEval(variableValue))
+                globalEval(variableName + ' = ' + variableValue)
+            }
         } else if (type === 'char') {
             if (stringManipulationRegex.test(variableValue)) {
                 variableValue = stringManipulations(variableName, variableValue)
