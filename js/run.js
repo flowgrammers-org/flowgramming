@@ -1054,6 +1054,15 @@ function handleRuntimeErrors(expression) {
     }
 }
 
+function isString(s) {
+    if (s.startsWith("'") || s.startsWith('"')) return true
+    s = globalEval(s)
+    if (Array.isArray(s)) {
+        if (typeof s[0] === 'string') return true
+        return isNaN(s.join('')) && isNaN(parseFloat(s.join('')))
+    } else return isNaN(s) || isNaN(parseFloat(s))
+}
+
 function stringManipulations(variableName, userInput) {
     let regExp = /\(([^)]+)\)/
     let parametersAsString = regExp.exec(userInput)
@@ -1061,6 +1070,10 @@ function stringManipulations(variableName, userInput) {
         let parameters = parametersAsString[1].split(',')
         let firstVariable = parameters[0]
         let secondVariable = parameters[1]
+        if (!isString(firstVariable) || !isString(secondVariable))
+            throw new Error(
+                'Both parameters have to be of type character to concatenate'
+            )
         return globalEval(
             variableName +
                 '= ' +
