@@ -831,13 +831,43 @@ function storeVariables(variableName, arrayNotation, variableValue, type) {
                 variables[arrayNotation[0]].value[
                     parseInt(indexPosition)
                 ] = initializeArray(variables[arrayNotation[0]].colLen)
+            else if (
+                variables[arrayNotation[0]].value[parseInt(indexPosition)]
+                    .length < variables[arrayNotation[0]].colLen
+            ) {
+                variables[arrayNotation[0]].value[parseInt(indexPosition)] = [
+                    ...variables[arrayNotation[0]].value[
+                        parseInt(indexPosition)
+                    ],
+                    ...initializeArray(
+                        variables[arrayNotation[0]].colLen -
+                            variables[arrayNotation[0]].value[
+                                parseInt(indexPosition)
+                            ].length
+                    ),
+                ]
+            }
             variables[arrayNotation[0]].value[parseInt(indexPosition)][
                 parseInt(indexJ)
             ] = variableValue
-        } else
+        } else {
+            if (
+                !variables[arrayNotation[0]].is2DArray &&
+                variables[arrayNotation[0]].value.length <
+                    variables[arrayNotation[0]].arrayLength
+            ) {
+                variables[arrayNotation[0]].value = [
+                    ...variables[arrayNotation[0]].value,
+                    ...initializeArray(
+                        variables[arrayNotation[0]].arrayLength -
+                            variables[arrayNotation[0]].value.length
+                    ),
+                ]
+            }
             variables[arrayNotation[0]].value[
                 parseInt(indexPosition)
             ] = variableValue
+        }
     } else {
         variables[variableName] = {
             ...variables[variableName],
