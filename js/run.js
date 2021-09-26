@@ -627,15 +627,40 @@ async function handleOutput(element) {
         let exp = element.attr('element/expression')
         if (isArrayNotation(exp)) {
             let arrayNotation = exp.split('[')
-            let i = arrayNotation[1].split(']')[0]
-            if (i >= variables[arrayNotation[0]].rowLen)
-                throw new Error("The specified row doesn't exist in the array")
-            let expr = variables[arrayNotation[0]].value[i]
-            if (arrayNotation.length > 2) {
-                let j = arrayNotation[2].split(']')[0]
-                if (j >= variables[arrayNotation[0]].colLen)
+            let i = globalEval(arrayNotation[1].split(']')[0])
+            let expr
+            if (variables[arrayNotation[0]].is2DArray) {
+                if (
+                    variables[arrayNotation[0]].rowLen &&
+                    i >= variables[arrayNotation[0]].rowLen
+                )
                     throw new Error(
-                        "The specified column doesn't exist in the array"
+                        'The specified row (' +
+                            i +
+                            ") doesn't exist in the array"
+                    )
+            } else {
+                if (
+                    variables[arrayNotation[0]].arrayLength &&
+                    i >= variables[arrayNotation[0]].arrayLength
+                )
+                    throw new Error(
+                        ' The specified length of array (' +
+                            variables[arrayNotation[0]].arrayLength +
+                            ') cannot hold these many values'
+                    )
+            }
+            expr = variables[arrayNotation[0]].value[i]
+            if (arrayNotation.length > 2) {
+                let j = globalEval(arrayNotation[2].split(']')[0])
+                if (
+                    variables[arrayNotation[0]].colLen &&
+                    j >= variables[arrayNotation[0]].colLen
+                )
+                    throw new Error(
+                        'The specified column (' +
+                            j +
+                            ") doesn't exist in the array"
                     )
                 expr = variables[arrayNotation[0]].value[i][j]
             }
@@ -802,6 +827,10 @@ function storeVariables(variableName, arrayNotation, variableValue, type) {
         if (arrayNotation.length > 2) {
             let indexJ = arrayNotation[2].split(']')[0]
             if (!isInteger(indexJ)) indexJ = globalEval(indexJ)
+            if (!variables[arrayNotation[0]].value[parseInt(indexPosition)])
+                variables[arrayNotation[0]].value[
+                    parseInt(indexPosition)
+                ] = initializeArray(variables[arrayNotation[0]].colLen)
             variables[arrayNotation[0]].value[parseInt(indexPosition)][
                 parseInt(indexJ)
             ] = variableValue
