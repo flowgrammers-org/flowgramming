@@ -73,6 +73,7 @@ function getWrapText(text) {
             width: 120,
             height: 70,
         },
+        {},
         { ellipsis: true }
     )
 }

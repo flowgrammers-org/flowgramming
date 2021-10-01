@@ -8322,6 +8322,9 @@ var joint = {
 
                         // remove overflowing lines
                         lines.splice(Math.floor(height / lineHeight));
+                        if (opt.ellipsis) {
+                            lines[lines.length-1] = lines[lines.length-1].slice(0,-3)+'...'
+                        }
 
                         break;
                     }
