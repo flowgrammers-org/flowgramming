@@ -1025,7 +1025,7 @@ function handleArrays(
                 }
             }
         } else {
-            if (stringManipulationRegex.test(userInput)) {
+            if (stringManipulationRegex.test(userInput.replaceAll('"', "'"))) {
                 val = stringManipulations(variableName, userInput)
                 return val
             }
