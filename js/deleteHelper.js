@@ -232,10 +232,21 @@ function makeLinks(newStart, currentEnd, prevLink, nextLink) {
 }
 
 function deleteBlock(currentElement) {
-    prevLink = findPrevLink(currentElement.id)
-    nextLink = findNextLink(currentElement.id)
-    currentEnd = findModel(nextLink.attr('element/target'))
-    newStart = findModel(prevLink.attr('element/source'))
+    let prevLink = findPrevLink(currentElement.id),
+        nextLink = findNextLink(currentElement.id),
+        currentEnd = findModel(nextLink.attr('element/target')),
+        newStart = findModel(prevLink.attr('element/source'))
+    if (currentElement.attr('element/type') === 'declare') {
+        let variableArray = currentElement.attr('element/variableArray')
+        if (variableArray.length > 1) {
+            for (let i = 0; i < variableArray.length; i++) {
+                delete variables[variableArray[i]]
+            }
+        } else {
+            delete variables[currentElement.attr('element/variableName')]
+        }
+        updateVariablesInWatchWindow()
+    }
     translateUp(currentEnd, null, currentElement)
     makeLinks(newStart, currentEnd, prevLink, nextLink)
     prevLink.remove()
