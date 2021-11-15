@@ -91,7 +91,8 @@ body {
     width: 35%;
     float: right;
     height: 60%;
-    border-bottom: 1px solid gray;
+    background-color: #343a40;
+    border-top: 2px solid white;
 }
 
 .variable-watch {
@@ -148,4 +149,13 @@ button.close {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.chatcol h6 {
+    padding: 6px;
+    color: white;
+}
+
+.chat-nav {
+    padding: 6px;
 }
