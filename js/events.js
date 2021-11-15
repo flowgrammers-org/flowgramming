@@ -302,6 +302,11 @@ function handleElementDoubleClick(elementView) {
                                 isArrayChecked,
                             },
                         })
+
+                        currentElement.size({
+                            width: getWrapText(variableLabel.slice(0, -2)).length*8 + 10,
+                            height: 80
+                        })
                     }
                 }
             }
@@ -328,6 +333,11 @@ function handleElementDoubleClick(elementView) {
                 } else {
                     swal('Enter input variable name')
                 }
+
+                currentElement.size({
+                    width: getWrapText('Input ' + variableName).length*8 + 10,
+                    height: 80
+                })
             }
             break
         }
@@ -352,7 +362,18 @@ function handleElementDoubleClick(elementView) {
                                 expression,
                             },
                         })
-                    } else {
+                        if(expression.length>10) {
+                            currentElement.size({
+                                width: expression.length*5 + 10,
+                                height: 70
+                            })
+    
+                            currentElement.size({
+                                width: getWrapText(expression).length*8 + 10,
+                                height: 80
+                            })
+                        }
+                        } else {
                         swal('Enter the comment')
                     }
                 }
@@ -385,6 +406,14 @@ function handleElementDoubleClick(elementView) {
                             element: {
                                 expression,
                             },
+                        })
+                        currentElement.size({
+                            width: getWrapText(
+                                (currentElementType === 'output'
+                                    ? 'Print '
+                                    : '') + expression
+                            ).length*8 + 10,
+                            height: 80
                         })
                     } else {
                         swal('Enter the expression')
@@ -452,6 +481,11 @@ function handleElementDoubleClick(elementView) {
                                 },
                             },
                         })
+
+                        currentElement.size({
+                            width: getWrapText(`${init}; ${cond}; ${incr}`).length*8 + 10,
+                            height: 80
+                        })
                     }
                 }
             }
@@ -495,6 +529,14 @@ function handleElementDoubleClick(elementView) {
                             variableValue,
                         },
                     })
+
+                    currentElement.size({
+                        width: getWrapText(
+                            variableName + ' = ' + variableValue
+                        ).length*8 + 10,
+                        height: 80
+                    })
+
                 }
             }
             break
@@ -548,6 +590,15 @@ function handleElementDoubleClick(elementView) {
                             functionParams,
                             functionVariable,
                         },
+                    })
+
+                    currentElement.size({
+                        width: getWrapText(
+                            (functionVariable
+                                ? `${functionVariable} = `
+                                : '') + `${functionName}(${functionParams})`
+                        ).length*8 + 10,
+                        height: 80
                     })
                 }
             }

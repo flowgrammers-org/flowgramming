@@ -67,14 +67,26 @@ function getRectangle() {
  */
 
 function getWrapText(text) {
-    return joint.util.breakText(
-        text,
-        {
-            width: 120,
-            height: 70,
-        },
-        { ellipsis: true }
-    )
+    if(text.length<10) {
+        return joint.util.breakText(
+            text,
+            {
+                width: 120,
+                height: 70,
+            },
+            { ellipsis: true}
+        )
+    }
+    else {
+        return joint.util.breakText(
+            text,
+            {
+                width: text.length*8,
+                height: 70,
+            },
+            { ellipsis: true}
+        )
+    }
 }
 
 function getCircle() {
@@ -141,21 +153,39 @@ function addElement(currentLink, element, type) {
         currentEnd = findModel(currentLink.attr('element/target'))
         currentStart = findModel(currentLink.attr('element/source'))
         const startPosition = currentStart.position()
-        if (startPosition.x <= vertices[0].x) {
-            startPosition.x += 125
+        if (['if', 'ifStart'].includes(currentLink.attr('element/type'))) {
+            console.log("asdfghngfs")
+            if (startPosition.x <= vertices[0].x) {
+                startPosition.x += 75
+            } else {
+                startPosition.x -= 125
+            }
         } else {
-            startPosition.x -= 175
+            if (startPosition.x <= vertices[0].x) {
+                startPosition.x += 125
+            } else {
+                startPosition.x -= 175
+            }
         }
         element.position(startPosition.x, startPosition.y + 100)
         currentLink.set({ target: element })
         currentLink.attr('element/target', element.id)
         link = new joint.shapes.standard.Link()
-        link.vertices([
-            {
-                x: vertices[1].x,
-                y: vertices[1].y + 100,
-            },
-        ])
+        if (['if', 'ifStart'].includes(currentLink.attr('element/type'))) {
+            link.vertices([
+                {
+                    x: vertices[1].x-75,
+                    y: vertices[1].y + 100,
+                },
+            ])
+        } else {
+            link.vertices([
+                {
+                    x: vertices[1].x-75,
+                    y: vertices[1].y + 100,
+                },
+            ])
+        }
         element.attr({
             element: { type },
             outgoing_link: {
@@ -1042,6 +1072,12 @@ function addElementIf(currentLink, element, type) {
         { x: ifPosition.x + 200, y: ifPosition.y + 50 },
         { x: ifPosition.x + 200, y: endCircle.position().y + 25 },
     ])
+    if (['if', 'ifStart'].includes(currentLink.attr('element/type'))) {
+        trueLink.vertices([
+            { x: ifPosition.x + 150, y: ifPosition.y + 50 },
+            { x: ifPosition.x + 150, y: endCircle.position().y + 25 },
+        ])
+    }
     trueLink.source(element)
     trueLink.target(endCircle)
     trueLink.addTo(graph)
@@ -1064,6 +1100,12 @@ function addElementIf(currentLink, element, type) {
         { x: ifPosition.x - 100, y: ifPosition.y + 50 },
         { x: ifPosition.x - 100, y: endCircle.position().y + 25 },
     ])
+    if (['if', 'ifStart'].includes(currentLink.attr('element/type'))) {
+        falseLink.vertices([
+            { x: ifPosition.x - 60, y: ifPosition.y + 50 },
+            { x: ifPosition.x - 60, y: endCircle.position().y + 25 },
+        ])
+    }
     falseLink.source(element)
     falseLink.target(endCircle)
     falseLink.addTo(graph)
