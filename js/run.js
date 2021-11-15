@@ -28,7 +28,7 @@ const strokeHigh = {
 }
 let visitedItems = new Set()
 const stringManipulationRegex = /(([a-zA-Z]+)|([a-zA-Z]+\.[a-zA-Z]+))\(([a-zA-Z0-9]|,|]|\[|')+\)/
-const mathFunctionRegex = /(?:[0-9-+*/^()x]|abs|pow|ln|sqrt|log|sign|a?(?:sin|cos|tan|arcsin|arccos|arctan)h?)+/
+const mathFunctionRegex = /(?:[0-9-+*/^()x]|abs|pow|ln|sqrt|log|sign|ceil|floor|round|a?(?:sin|cos|tan|arcsin|arccos|arctan|ceil|floor|round)h?)+/
 // The HashMap that sets the delay in milliseconds after processing each block
 // in the flowgram. However, in case the speed is not stored in localStorage,
 // we set the speed to 'medium' in the dropdown in index.html. To support that,
@@ -432,6 +432,10 @@ function handleAssignmentHelper(variableName, variableValue) {
             if (isArrayNotation(variableValue)) {
                 let val = handleArrayAssignment(variableValue, type)
                 globalEval(variableName + ' = ' + val)
+            } else if (mathFunctionRegex.test(variableValue)) {
+                variableValue = parseFloat(
+                    mathFunctions(variableName, variableValue)
+                )
             } else {
                 variableValue = parseFloat(globalEval(variableValue))
                 globalEval(variableName + ' = ' + variableValue)
@@ -1284,5 +1288,26 @@ function mathFunctions(variableName, userInput) {
     if (userInput.includes('arctan')) {
         let variable = parseFloat(parametersAsString[1])
         return globalEval(variableName + '=' + 'Math.atan(' + variable + ')')
+    }
+    if (userInput.includes('ceil')) {
+        let variable = parseFloat(parametersAsString[1])
+        console.log(
+            globalEval(variableName + '=' + 'Math.ceil(' + variable + ')')
+        )
+        return globalEval(variableName + '=' + 'Math.ceil(' + variable + ')')
+    }
+    if (userInput.includes('floor')) {
+        let variable = parseFloat(parametersAsString[1])
+        return globalEval(variableName + '=' + 'Math.floor(' + variable + ')')
+    }
+    if (userInput.includes('round')) {
+        let parameters = parametersAsString[1].split(',')
+        let a = parseFloat(parameters[0])
+        let b = parseInt(parameters[1])
+        console.log(a, b)
+        if (b) {
+            return globalEval(variableName + '=' + a.toFixed(b))
+        }
+        return globalEval(variableName + '=' + 'Math.toRound(' + a + ')')
     }
 }
