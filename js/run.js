@@ -28,7 +28,7 @@ const strokeHigh = {
 }
 let visitedItems = new Set()
 const stringManipulationRegex = /(([a-zA-Z]+)|([a-zA-Z]+\.[a-zA-Z]+))\(([a-zA-Z0-9]|,|]|\[|')+\)/
-const mathFunctionRegex = /(?:[0-9-+*/^()x]|abs|pow|ln|sqrt|log|sign|ceil|floor|round|a?(?:sin|cos|tan|arcsin|arccos|arctan|ceil|floor|round)h?)+/
+const mathFunctionRegex = /\b(abs|pow|ln|sqrt|log|sgn|ceil|floor|round|sin|cos|tan|arcsin|arccos|arctan)\b/
 // The HashMap that sets the delay in milliseconds after processing each block
 // in the flowgram. However, in case the speed is not stored in localStorage,
 // we set the speed to 'medium' in the dropdown in index.html. To support that,
@@ -1221,33 +1221,32 @@ function stringManipulations(variableName, userInput) {
 function mathFunctions(variableName, userInput) {
     let regExp = /\(([^)]+)\)/
     let parametersAsString = regExp.exec(userInput)
-    console.log(parametersAsString)
     if (userInput.includes('abs')) {
-        let variable = parseInt(parametersAsString[1])
+        let variable = parseInt(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.abs(' + variable + ')')
     }
     if (userInput.includes('sqrt')) {
-        let variable = parseInt(parametersAsString[1])
+        let variable = parseInt(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.sqrt(' + variable + ')')
     }
     if (userInput.includes('sgn')) {
-        let variable = parseInt(parametersAsString[1])
+        let variable = parseInt(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.sign(' + variable + ')')
     }
     if (userInput.includes('pow')) {
         let parameters = parametersAsString[1].split(',')
-        let a = parseInt(parameters[0])
-        let b = parseInt(parameters[1])
+        let a = parseInt(globalEval(parametersAsString[0]))
+        let b = parseInt(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.pow(' + a + ',' + b + ')')
     }
     if (userInput.includes('ln')) {
-        let variable = parseInt(parametersAsString[1])
+        let variable = parseInt(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.log(' + variable + ')')
     }
     if (userInput.includes('log')) {
         let parameters = parametersAsString[1].split(',')
-        let a = parseInt(parameters[0])
-        let b = parseInt(parameters[1])
+        let a = parseInt(globalEval(parametersAsString[0]))
+        let b = parseInt(globalEval(parametersAsString[1]))
         if (a === 10) {
             return globalEval(
                 variableName + '=' + 'Math.log(' + b + ') / Math.LN10'
@@ -1259,55 +1258,51 @@ function mathFunctions(variableName, userInput) {
         }
     }
     if (userInput.includes('sin')) {
-        let variable = parseFloat(parametersAsString[1])
-        console.log(Math.sin(30 * (Math.PI / 180)))
+        let variable = parseFloat(globalEval(parametersAsString[1]))
         return globalEval(
             variableName + '=' + 'Math.sin(' + variable + '*(Math.PI/180)' + ')'
         )
     }
     if (userInput.includes('cos')) {
-        let variable = parseFloat(parametersAsString[1])
+        let variable = parseFloat(globalEval(parametersAsString[1]))
         return globalEval(
             variableName + '=' + 'Math.cos(' + variable + '*(Math.PI/180)' + ')'
         )
     }
     if (userInput.includes('tan')) {
-        let variable = parseFloat(parametersAsString[1])
+        let variable = parseFloat(globalEval(parametersAsString[1]))
         return globalEval(
             variableName + '=' + 'Math.tan(' + variable + '*(Math.PI/180)' + ')'
         )
     }
     if (userInput.includes('arcsin')) {
-        let variable = parseFloat(parametersAsString[1])
+        let variable = parseFloat(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.asin(' + variable + ')')
     }
     if (userInput.includes('arccos')) {
-        let variable = parseFloat(parametersAsString[1])
+        let variable = parseFloat(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.acos(' + variable + ')')
     }
     if (userInput.includes('arctan')) {
-        let variable = parseFloat(parametersAsString[1])
+        let variable = parseFloat(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.atan(' + variable + ')')
     }
     if (userInput.includes('ceil')) {
-        let variable = parseFloat(parametersAsString[1])
-        console.log(
-            globalEval(variableName + '=' + 'Math.ceil(' + variable + ')')
-        )
+        let variable = parseFloat(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.ceil(' + variable + ')')
     }
     if (userInput.includes('floor')) {
-        let variable = parseFloat(parametersAsString[1])
+        let variable = parseFloat(globalEval(parametersAsString[1]))
         return globalEval(variableName + '=' + 'Math.floor(' + variable + ')')
     }
     if (userInput.includes('round')) {
         let parameters = parametersAsString[1].split(',')
-        let a = parseFloat(parameters[0])
-        let b = parseInt(parameters[1])
-        console.log(a, b)
-        if (b) {
+        let a = parseFloat(globalEval(parameters[0]))
+        if (parameters.length > 1) {
+            let b = parseInt(globalEval(parameters[1]))
             return globalEval(variableName + '=' + a.toFixed(b))
+        } else {
+            return globalEval(variableName + '=' + 'Math.round(' + a + ')')
         }
-        return globalEval(variableName + '=' + 'Math.toRound(' + a + ')')
     }
 }
