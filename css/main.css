@@ -91,7 +91,8 @@ body {
     width: 35%;
     float: right;
     height: 60%;
-    border-bottom: 1px solid gray;
+    background-color: #343a40;
+    border-top: 2px solid white;
 }
 
 .variable-watch {
@@ -150,12 +151,7 @@ button.close {
     }
 }
 
-.chatcol {
-    background-color: #343a40;
-    border: 2px solid white;
-}
-
-.chatcol h6  {
+.chatcol h6 {
     padding: 6px;
     color: white;
 }
