@@ -827,21 +827,53 @@ function handleArrayAssignment(userInput, type) {
                 return userInput
             }
         } else {
+            var variableArray = userInput.split('[')[0];
+            if(variableArray.includes("+")) {
+                variableArray = variableArray.split('+')[1];
+            }
             if (
                 isArrayNotation(userInput) &&
-                userInput.split('[')[0] in variables
+                variableArray in variables
             ) {
-                let arrayNotation = userInput.split('[')
-                let i = globalEval(arrayNotation[1].split(']')[0])
-                let val = variables[arrayNotation[0]].value[i]
-                if (arrayNotation.length > 2) {
-                    let j = globalEval(arrayNotation[2].split(']')[0])
-                    val = variables[arrayNotation[0]].value[i][j]
+                let arrayNotation = userInput.split('[')[0]
+                if(userInput.includes("+")) {
+                    var variable;
+                    var var1 = userInput.split('+')[0];
+                    var var2 = userInput.split('+')[1];
+                    if(var1.includes('[')) {
+                        arrayNotation = var1;
+                        variable = var2;
+                    }
+                    else {
+                        arrayNotation = var2;
+                        variable = var1;
+                    }
+
+                    let i = globalEval(arrayNotation.split('[')[1][0]);
+                    let val = variables[arrayNotation.split('[')[0]].value[i];
+                    if(userInput.split('[').length > 2) {
+                        let j = globalEval(userInput.split(']')[2]);
+                        val = variables[arrayNotation.split('[')[0]].value[i][j];
+                    }
+                    val = globalEval(variable + '+' + val);
+                    return val;
+
                 }
-                return val
-            } else return globalEval(userInput).toString()
+                else {
+                    let i = globalEval(arrayNotation[1].split(']')[0])
+                    let val = variables[arrayNotation[0]].value[i]
+                    if (arrayNotation.length > 2) {
+                        let j = globalEval(arrayNotation[2].split(']')[0])
+                        val = variables[arrayNotation[0]].value[i][j]
+                    }
+                    return val
+                }
+            } else {
+                return globalEval(userInput).toString()
+            }
         }
     } catch (e) {
+        console.log(e);
         handleNotInitializedVariables(e)
     }
 }
