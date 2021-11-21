@@ -67,6 +67,14 @@ function cppBlockClose() {
     return '\t}\n'
 }
 
+function cppLoopClose() {
+    return cppBlockClose()
+}
+
+function cppIfClose() {
+    return cppBlockClose()
+}
+
 function cppHandleArray(variable) {
     return cppForLoop({
         init: 'i=0',
@@ -110,8 +118,20 @@ function cppDeclaration(variable) {
             let variables = variable.name.split(',')
             let code = '\t' + type + ' '
             variables.forEach((x) => {
-                code += x + '[' + variable.length + '], '
+                if (variable.is2DArray) {
+                    code +=
+                        x +
+                        '[' +
+                        variable.rowLen +
+                        ']' +
+                        '[' +
+                        variable.colLen +
+                        '], '
+                } else {
+                    code += x + '[' + variable.length + '], '
+                }
             })
+
             return code.slice(0, -2) + ';\n'
         } else return '\t' + type + ' ' + variable.name + ';\n'
     return ''
