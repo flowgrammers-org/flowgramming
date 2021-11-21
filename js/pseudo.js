@@ -41,7 +41,7 @@ function pseudoDoWhileLoopClose(expression) {
     expression === undefined || expression.name === undefined
         ? (expression = { name: 'true' })
         : null
-    return '\twhile (' + expression.name + ');\n'
+    return '\twhile (' + expression.name + ');\n\tendLoop\n'
 }
 
 function pseudoForLoop(obj) {
@@ -98,8 +98,16 @@ function pseudoAssignment(assignment, indent) {
 
 function pseudoFunctionCall(fn, indent) {
     if (fn.returnVar !== '') {
-        return '\t' + fn.returnVar + ' = ' + fn.name + ' (' + fn.params + ')\n'
-    } else return '\t' + fn.name + ' (' + fn.params + ')\n'
+        return (
+            '\t' +
+            fn.returnVar +
+            ' = call ' +
+            fn.name +
+            ' (' +
+            fn.params +
+            ')\n'
+        )
+    } else return '\t call ' + fn.name + ' (' + fn.params + ')\n'
 }
 
 function pseudoHeaders() {

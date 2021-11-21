@@ -103,6 +103,7 @@ function getLanguageExtension() {
     let ext = {
         cpp: 'cpp',
         python: 'py',
+        pseudo: 'ps',
     }
     return ext[language]
 }
