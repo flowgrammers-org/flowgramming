@@ -339,6 +339,25 @@
                         />
                     </svg>
                 </a>
+                <a
+                    class="nav-item d-flex"
+                    href="#"
+                    id="code-convert"
+                    title="Convert to Pseudocode"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1.5em"
+                        height="1.5em"
+                        fill="white"
+                        class="mx-2 bi bi-code-slash my-auto"
+                        viewBox="0 0 16 16"
+                    >
+                        <path
+                            d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"
+                        />
+                    </svg>
+                </a>
             </div>
         </nav>
 
@@ -347,9 +366,20 @@
                 <div id="myHolder" style="transform-origin: 0 0"></div>
             </div>
             <div class="chatcol">
+<<<<<<< HEAD
                 <h6 style="float: left;">Flowgramming CodeBot</h6>
                 <div style="float: right;" class="chat-nav">
                     <a class="chat-zoom"  href="#" id="chatzoomin" title="Zoom in">
+=======
+                <h6 style="float: left">Flowgramming CodeBot</h6>
+                <div style="float: right" class="chat-nav">
+                    <a
+                        class="chat-zoom"
+                        href="#"
+                        id="chatzoomin"
+                        title="Zoom in"
+                    >
+>>>>>>> 0010438beabd37ca5e16ee94d967a7d387409a94
                         <svg
                             class="mx-2 bi bi-zoom-in my-auto"
                             fill="white"
@@ -371,7 +401,16 @@
                             />
                         </svg>
                     </a>
+<<<<<<< HEAD
                     <a class="chat-zoom" href="#" id="chatzoomout" title="Zoom out">
+=======
+                    <a
+                        class="chat-zoom"
+                        href="#"
+                        id="chatzoomout"
+                        title="Zoom out"
+                    >
+>>>>>>> 0010438beabd37ca5e16ee94d967a7d387409a94
                         <svg
                             class="mx-2 bi bi-zoom-out my-auto"
                             fill="white"
@@ -568,7 +607,7 @@
                 'Please wait while your flowgram is converted'
             )
             setTimeout(() => {
-                convert($('#languageSelected').val())
+                convert()
             }, 1000)
         })
         let functionManagerWindow

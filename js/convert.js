@@ -44,7 +44,11 @@ let varArray = {}
 
 function isArray(element) {
     try {
-        return element.split(' ').length !== 1
+        return (
+            element.split(' ').length !== 1 ||
+            element.includes('array') ||
+            element.includes('[]')
+        )
     } catch (e) {
         return false
     }
@@ -60,14 +64,12 @@ function variableHelper(element, declare = false, varName = '') {
         varArray[name] = {
             name,
             type,
+            length: element.attr('element/arrayLength'),
+            colLen: element.attr('element/colLen'),
+            is2DArray: element.attr('element/is2DArray'),
+            isArray: element.attr('element/isArrayChecked'),
+            rowLen: element.attr('element/rowLen'),
         }
-        isArray(element.attr('element/variableType'))
-            ? (varArray[name] = {
-                  ...varArray[name],
-                  length: element.attr('element/arrayLength'),
-                  isArray: true,
-              })
-            : null
     }
     return varArray[name]
 }
@@ -91,7 +93,7 @@ function functionCallHelper(element) {
         name,
         params: element.attr('element/functionParams'),
         returnVar,
-        returnType: contexts[name].returnType.split(' ')[0],
+        returnType: contexts[name].returnType,
         isArray: isArray(contexts[name].returnType),
         variable: varArray[returnVar],
     }
@@ -156,7 +158,7 @@ function booleanExpressionHelper(element) {
             convertLoop(falseBlock, nextElement)
         }
         indent = originalIndent
-        code += indent + window[`${language}BlockClose`]()
+        code += indent + window[`${language}IfClose`]()
     }
 }
 
@@ -176,7 +178,7 @@ function whileLoopHelper(element) {
         indent += expr.indent
         LoopHelper(element)
         indent = originalIndent
-        code += indent + window[`${language}BlockClose`]()
+        code += indent + window[`${language}LoopClose`]()
     }
 }
 
@@ -188,7 +190,7 @@ function forLoopHelper(element) {
     indent += window[`${language}ForLoop`](forObj).indent
     LoopHelper(element)
     indent = originalIndent
-    code += indent + window[`${language}BlockClose`]()
+    code += indent + window[`${language}LoopClose`]()
 }
 
 //Handling do part of do-while Loop
@@ -298,6 +300,7 @@ function convertLoop(currentElement, end = null) {
             }
         } catch (err) {
             error = true
+            console.log(err)
             swal(err.message || err.toString())
             break
         }
@@ -337,12 +340,12 @@ function functionDefinitions(lang) {
     switchContext()
 }
 
-function convert(language) {
+function convert(language = 'pseudo') {
     code = window[`${language}Headers`]()
     functionDefinitions(language)
     code += window[`${language}FunctionDefinition`]({
         name: 'main',
-        type: 'int',
+        type: 'void',
         params: [],
     })
     indent = ''
@@ -352,7 +355,7 @@ function convert(language) {
     }
     start = findModel(contexts[currentContextName].start.id)
     convertLoop(start, language)
-    code += window[`${language}FunctionClose`](0)
+    code += window[`${language}FunctionClose`]('')
     if (!error) {
         openNewTab('code.html', 'CodeConverter')
         hideLoader()
