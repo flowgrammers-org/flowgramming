@@ -1,6 +1,7 @@
 /*
  # *************************************************************************************
- # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana
+ # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
+ # Adithi Narayan, Aishwarya B, Adithi Giridharan.
  # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
  #
  # Flowgramming is free software: you can redistribute it and/or modify
@@ -41,7 +42,7 @@ function pseudoDoWhileLoopClose(expression) {
     expression === undefined || expression.name === undefined
         ? (expression = { name: 'true' })
         : null
-    return '\twhile (' + expression.name + ');\n'
+    return '\twhile (' + expression.name + ');\n\tendLoop\n'
 }
 
 function pseudoForLoop(obj) {
@@ -98,8 +99,16 @@ function pseudoAssignment(assignment, indent) {
 
 function pseudoFunctionCall(fn, indent) {
     if (fn.returnVar !== '') {
-        return '\t' + fn.returnVar + ' = ' + fn.name + ' (' + fn.params + ')\n'
-    } else return '\t' + fn.name + ' (' + fn.params + ')\n'
+        return (
+            '\t' +
+            fn.returnVar +
+            ' = call ' +
+            fn.name +
+            ' (' +
+            fn.params +
+            ')\n'
+        )
+    } else return '\t call ' + fn.name + ' (' + fn.params + ')\n'
 }
 
 function pseudoHeaders() {

@@ -1,6 +1,7 @@
 /*
  # *************************************************************************************
- # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana
+ # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
+ # Adithi Narayan, Aishwarya B, Adithi Giridharan.
  # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
  #
  # Flowgramming is free software: you can redistribute it and/or modify
@@ -891,39 +892,33 @@ function handleArrayAssignment(userInput, type) {
                 return userInput
             }
         } else {
-            var variableArray = userInput.split('[')[0];
-            if(variableArray.includes("+")) {
-                variableArray = variableArray.split('+')[1];
+            var variableArray = userInput.split('[')[0]
+            if (variableArray.includes('+')) {
+                variableArray = variableArray.split('+')[1]
             }
-            if (
-                isArrayNotation(userInput) &&
-                variableArray in variables
-            ) {
+            if (isArrayNotation(userInput) && variableArray in variables) {
                 let arrayNotation = userInput.split('[')[0]
-                if(userInput.includes("+")) {
-                    var variable;
-                    var var1 = userInput.split('+')[0];
-                    var var2 = userInput.split('+')[1];
-                    if(var1.includes('[')) {
-                        arrayNotation = var1;
-                        variable = var2;
-                    }
-                    else {
-                        arrayNotation = var2;
-                        variable = var1;
+                if (userInput.includes('+')) {
+                    var variable
+                    var var1 = userInput.split('+')[0]
+                    var var2 = userInput.split('+')[1]
+                    if (var1.includes('[')) {
+                        arrayNotation = var1
+                        variable = var2
+                    } else {
+                        arrayNotation = var2
+                        variable = var1
                     }
 
-                    let i = globalEval(arrayNotation.split('[')[1][0]);
-                    let val = variables[arrayNotation.split('[')[0]].value[i];
-                    if(userInput.split('[').length > 2) {
-                        let j = globalEval(userInput.split(']')[2]);
-                        val = variables[arrayNotation.split('[')[0]].value[i][j];
+                    let i = globalEval(arrayNotation.split('[')[1][0])
+                    let val = variables[arrayNotation.split('[')[0]].value[i]
+                    if (userInput.split('[').length > 2) {
+                        let j = globalEval(userInput.split(']')[2])
+                        val = variables[arrayNotation.split('[')[0]].value[i][j]
                     }
-                    val = globalEval(variable + '+' + val);
-                    return val;
-
-                }
-                else {
+                    val = globalEval(variable + '+' + val)
+                    return val
+                } else {
                     let i = globalEval(arrayNotation[1].split(']')[0])
                     let val = variables[arrayNotation[0]].value[i]
                     if (arrayNotation.length > 2) {
@@ -937,7 +932,7 @@ function handleArrayAssignment(userInput, type) {
             }
         }
     } catch (e) {
-        console.log(e);
+        console.log(e)
         handleNotInitializedVariables(e)
     }
 }
