@@ -1,6 +1,7 @@
 /*
  # *************************************************************************************
- # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana
+ # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
+ # Adithi Narayan, Aishwarya B, Adithi Giridharan.
  # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
  #
  # Flowgramming is free software: you can redistribute it and/or modify
@@ -18,7 +19,7 @@
  # *************************************************************************************
  */
 
-const latestCacheName = 'flowgramming-v1637553143'
+const latestCacheName = 'flowgramming-v1637553335'
 
 /* Start the service worker and cache all of the app's content */
 self.addEventListener('install', function (e) {
