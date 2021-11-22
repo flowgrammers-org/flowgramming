@@ -31,6 +31,8 @@ function stopScripts() {
 }
 let indexMain = ['js/main.js', 'js/!(functions)*.js']
 let indexVendor = [
+    'js/vendor/fileSaver.min.js',
+    'js/vendor/jszip.min.js',
     'js/vendor/jquery.js',
     'js/vendor/popper.js',
     'js/vendor/bootstrap.js',
@@ -40,7 +42,7 @@ let indexVendor = [
     'js/vendor/backbone.js',
     'js/vendor/cycle.js',
     'js/vendor/joint.js',
-    'js/vendor/require.js',
+    'js/vendor/require.js'
 ]
 
 let functionVendor = [
