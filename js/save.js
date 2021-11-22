@@ -118,14 +118,3 @@ function openFromFile(file, fn = false) {
         else importFlowGram(file)
     }, 1000)
 }
-
-function saveFile(filename, data, saveBtn = 'save-btn') {
-    const file = new Blob([data], { type: 'application/json;charset=utf-8' })
-    if (window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(file, filename)
-    } else {
-        const saveButton = document.getElementById(saveBtn)
-        saveButton.href = URL.createObjectURL(file)
-        saveButton.download = filename
-    }
-}
