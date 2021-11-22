@@ -136,7 +136,8 @@
             $('#code-area').text('\n' + code)
             $('#download').attr(
                 'href',
-                'data:text/plain;charset=utf-8,' + encodeURIComponent(code)
+                'data:text/plain;charset=utf-8,' +
+                    encodeURIComponent(btoa(code.replaceAll('\n', '\\n')))
             )
             $('#download').attr(
                 'download',
