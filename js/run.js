@@ -893,34 +893,49 @@ function handleArrayAssignment(userInput, type) {
             }
         } else {
             var variableArray = userInput.split('[')[0]
+            operators=['+','-','*','/','%']
+            operators.forEach((op)=> {
+                if(variableArray.includes(op)) {
+                    variableArray = variableArray.split(op)[1];
+                }
+            });
             if (variableArray.includes('+')) {
-                variableArray = variableArray.split('+')[1]
+                variableArray = variableArray.split('+')[1];
             }
             if (isArrayNotation(userInput) && variableArray in variables) {
-                let arrayNotation = userInput.split('[')[0]
-                if (userInput.includes('+')) {
-                    var variable
-                    var var1 = userInput.split('+')[0]
-                    var var2 = userInput.split('+')[1]
-                    if (var1.includes('[')) {
-                        arrayNotation = var1
-                        variable = var2
-                    } else {
-                        arrayNotation = var2
-                        variable = var1
+                
+                let flag=false
+                let val
+                operators.forEach(op=>{
+                    if (userInput.includes(op)) {
+                        let arrayNotation = userInput.split('[')[0]
+                        var variable
+                        var var1 = userInput.split(op)[0]
+                        var var2 = userInput.split(op)[1]
+                        if (var1.includes('[')) {
+                            arrayNotation = var1
+                            variable = var2
+                        } else {
+                            arrayNotation = var2
+                            variable = var1
+                        }
+    
+                        let i = globalEval(arrayNotation.split('[')[1][0])
+                        val = variables[arrayNotation.split('[')[0]].value[i]
+                        if (userInput.split('[').length > 2) {
+                            let j = globalEval(userInput.split(']')[2])
+                            val = variables[arrayNotation.split('[')[0]].value[i][j]
+                        }
+                        val = globalEval(variable + op + val)
+                        flag=true
                     }
-
-                    let i = globalEval(arrayNotation.split('[')[1][0])
-                    let val = variables[arrayNotation.split('[')[0]].value[i]
-                    if (userInput.split('[').length > 2) {
-                        let j = globalEval(userInput.split(']')[2])
-                        val = variables[arrayNotation.split('[')[0]].value[i][j]
-                    }
-                    val = globalEval(variable + '+' + val)
+                })
+                    if(flag)
                     return val
-                } else {
+                    else{
+                    let arrayNotation = userInput.split('[')
                     let i = globalEval(arrayNotation[1].split(']')[0])
-                    let val = variables[arrayNotation[0]].value[i]
+                    val = variables[arrayNotation[0]].value[i]
                     if (arrayNotation.length > 2) {
                         let j = globalEval(arrayNotation[2].split(']')[0])
                         val = variables[arrayNotation[0]].value[i][j]
