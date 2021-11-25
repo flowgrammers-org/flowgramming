@@ -524,20 +524,31 @@
     <script src="js/build/indexMain.js"></script>
     <script>
         function saveFile(filename, data, saveBtn = 'save-btn') {
-        showLoader('Downloading', 'Please wait while your flowgram is downloaded');
-        var zip = new JSZip();
-        const file = new Blob([data], { type: 'application/json;charset=utf-8' })
-        if (window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(file, filename)
-        } else {
-            zip.file(filename, file);
-            zip.generateAsync({type:"blob"})
-            .then(function(content) {
-                saveAs(content, "Untitled.zip");
-                hideLoader();
+            showLoader(
+                'Downloading',
+                'Please wait while your flowgram is downloaded'
+            )
+            var zip = new JSZip()
+            const file = new Blob([data], {
+                type: 'application/json;charset=utf-8',
             })
+            if (window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveOrOpenBlob(file, filename)
+            } else {
+                zip.file(filename, file)
+                zip.generateAsync({
+                    type: 'blob',
+                    compression: 'DEFLATE',
+                    compressionOptions: {
+                        /* compression level ranges from 1 (best speed) to 9 (best compression) */
+                        level: 3,
+                    },
+                }).then(function (content) {
+                    saveAs(content, 'Untitled.zip')
+                    hideLoader()
+                })
+            }
         }
-    }
     </script>
 
     <script>
