@@ -893,20 +893,19 @@ function handleArrayAssignment(userInput, type) {
             }
         } else {
             var variableArray = userInput.split('[')[0]
-            operators=['+','-','*','/','%']
-            operators.forEach((op)=> {
-                if(variableArray.includes(op)) {
-                    variableArray = variableArray.split(op)[1];
+            operators = ['+', '-', '*', '/', '%']
+            operators.forEach((op) => {
+                if (variableArray.includes(op)) {
+                    variableArray = variableArray.split(op)[1]
                 }
-            });
+            })
             if (variableArray.includes('+')) {
-                variableArray = variableArray.split('+')[1];
+                variableArray = variableArray.split('+')[1]
             }
             if (isArrayNotation(userInput) && variableArray in variables) {
-                
-                let flag=false
+                let flag = false
                 let val
-                operators.forEach(op=>{
+                operators.forEach((op) => {
                     if (userInput.includes(op)) {
                         let arrayNotation = userInput.split('[')[0]
                         var variable
@@ -919,20 +918,22 @@ function handleArrayAssignment(userInput, type) {
                             arrayNotation = var2
                             variable = var1
                         }
-    
+
                         let i = globalEval(arrayNotation.split('[')[1][0])
                         val = variables[arrayNotation.split('[')[0]].value[i]
                         if (userInput.split('[').length > 2) {
                             let j = globalEval(userInput.split(']')[2])
-                            val = variables[arrayNotation.split('[')[0]].value[i][j]
+                            val =
+                                variables[arrayNotation.split('[')[0]].value[i][
+                                    j
+                                ]
                         }
                         val = globalEval(variable + op + val)
-                        flag=true
+                        flag = true
                     }
                 })
-                    if(flag)
-                    return val
-                    else{
+                if (flag) return val
+                else {
                     let arrayNotation = userInput.split('[')
                     let i = globalEval(arrayNotation[1].split(']')[0])
                     val = variables[arrayNotation[0]].value[i]
@@ -1277,8 +1278,8 @@ function mathFunctions(variableName, userInput) {
     }
     if (userInput.includes('pow')) {
         let parameters = parametersAsString[1].split(',')
-        let a = parseInt(globalEval(parametersAsString[0]))
-        let b = parseInt(globalEval(parametersAsString[1]))
+        let a = parseInt(globalEval(parameters[0]))
+        let b = parseInt(globalEval(parameters[1]))
         return globalEval(variableName + '=' + 'Math.pow(' + a + ',' + b + ')')
     }
     if (userInput.includes('ln')) {
@@ -1287,8 +1288,8 @@ function mathFunctions(variableName, userInput) {
     }
     if (userInput.includes('log')) {
         let parameters = parametersAsString[1].split(',')
-        let a = parseInt(globalEval(parametersAsString[0]))
-        let b = parseInt(globalEval(parametersAsString[1]))
+        let a = parseInt(globalEval(parameters[0]))
+        let b = parseInt(globalEval(parameters[1]))
         if (a === 10) {
             return globalEval(
                 variableName + '=' + 'Math.log(' + b + ') / Math.LN10'
