@@ -425,6 +425,9 @@ function handleAssignmentHelper(variableName, variableValue) {
                 variableValue = parseInt(
                     mathFunctions(variableName, variableValue)
                 )
+            }
+            if (stringManipulationRegex.test(variableValue)) {
+                variableValue = stringManipulations(variableName, variableValue)
             } else {
                 variableValue = parseInt(globalEval(variableValue))
                 globalEval(variableName + ' = ' + variableValue)
@@ -437,6 +440,8 @@ function handleAssignmentHelper(variableName, variableValue) {
                 variableValue = parseFloat(
                     mathFunctions(variableName, variableValue)
                 )
+            } else if (stringManipulationRegex.test(variableValue)) {
+                variableValue = stringManipulations(variableName, variableValue)
             } else {
                 variableValue = parseFloat(globalEval(variableValue))
                 globalEval(variableName + ' = ' + variableValue)
@@ -1190,6 +1195,13 @@ function stringManipulations(variableName, userInput) {
             throw new Error(
                 'Both parameters have to be of type character to concatenate'
             )
+        if (!Array.isArray(globalEval(secondVariable)))
+            secondVariable = JSON.stringify(
+                globalEval(secondVariable).split('')
+            )
+        if (!Array.isArray(globalEval(firstVariable)))
+            firstVariable = JSON.stringify(globalEval(firstVariable).split(''))
+
         return globalEval(
             variableName +
                 '= ' +
@@ -1203,12 +1215,19 @@ function stringManipulations(variableName, userInput) {
         return globalEval(variableName + '=' + userInput)
     } else if (userInput.includes('strcmp')) {
         let parameters = parametersAsString[1].split(',')
-        let firstVariable = parameters[0]
-        let secondVariable = parameters[1]
-        if (
-            JSON.stringify(globalEval(firstVariable)) ===
-            JSON.stringify(globalEval(secondVariable))
-        ) {
+        let firstVariable = globalEval(parameters[0])
+        let secondVariable = globalEval(parameters[1])
+        if (Array.isArray(firstVariable)) {
+            firstVariable = firstVariable.join('')
+        }
+        if (Array.isArray(secondVariable)) {
+            secondVariable = secondVariable.join('')
+        }
+        console.log(
+            JSON.stringify(firstVariable),
+            JSON.stringify(secondVariable)
+        )
+        if (JSON.stringify(firstVariable) === JSON.stringify(secondVariable)) {
             globalEval(variableName + '=' + 0)
             return 0
         }
