@@ -195,10 +195,17 @@ async function delayLoop(currentElement) {
                     const formalParamKeys = contexts[functionName].parameters
                     const actualParamKeys = functionParams.split(',')
                     for (let idx = 0; idx < paramsLength; ++idx) {
-                        actualToFormalParamsMap.set(
-                            formalParamKeys[idx].variableName,
-                            actualParamKeys[idx]
-                        )
+                        if(actualParamKeys[idx].includes('[')) {
+                            actualToFormalParamsMap.set(
+                                formalParamKeys[idx].variableName,
+                                handleArrayAssignment(actualParamKeys[idx])
+                            )
+                        } else {
+                            actualToFormalParamsMap.set(
+                                formalParamKeys[idx].variableName,
+                                actualParamKeys[idx]
+                            )
+                        }
                     }
                 }
 
