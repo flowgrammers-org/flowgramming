@@ -62,7 +62,7 @@ function downloadFunction(functionName) {
 }
 
 function saveFn(filename, data, saveBtn = 'save-btn') {
-    showLoader('Downloading', 'Please wait while your function is downloaded')
+    showProgress('Downloading', 'Please wait while your function is downloaded')
     const file = new Blob([data], { type: 'application/json;charset=utf-8' })
     if (window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(file, filename)

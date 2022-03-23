@@ -79,6 +79,23 @@ window.showLoader = (title, text) => {
     })
 }
 
+window.showProgress = (title, text) => {
+    loadingToast = Swal.fire({
+        heightAuto: false,
+        html: `
+            <div class="p-4">
+                <h2><b>${title}</b></h2>
+                <p>${text}</p>
+                <div class="progress hide" id="progress_bar">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">
+                    </div>
+                </div>
+                <p id="progress_res"></p>
+            </div>`,
+        showConfirmButton: false,
+    })
+}
+
 window.hideLoader = () => {
     if (loadingToast) {
         loadingToast.close()
