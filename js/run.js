@@ -19,7 +19,7 @@
  # *************************************************************************************
  */
 
-let strokeLow = {
+ let strokeLow = {
     width: 0,
     color: 'black',
 }
@@ -29,7 +29,7 @@ const strokeHigh = {
 }
 let visitedItems = new Set()
 const stringManipulationRegex = /(([a-zA-Z]+)|([a-zA-Z]+\.[a-zA-Z]+))\(([a-zA-Z0-9]|,|]|\[|')+\)/
-const mathFunctionRegex = /\b(abs|pow|ln|sqrt|log|sgn|ceil|floor|round|sin|cos|tan|arcsin|arccos|arctan)\b/
+const mathFunctionRegex = /\b(abs|pow|ln|sqrt|log|sgn|ceil|floor|round|sin|cos|tan|arcsin|arccos|arctan|random)\b/
 // The HashMap that sets the delay in milliseconds after processing each block
 // in the flowgram. However, in case the speed is not stored in localStorage,
 // we set the speed to 'medium' in the dropdown in index.html. To support that,
@@ -1373,5 +1373,9 @@ function mathFunctions(variableName, userInput) {
         } else {
             return globalEval(variableName + '=' + 'Math.round(' + a + ')')
         }
+    }
+    if (userInput.includes('random')) {
+        let variable = parseFloat(globalEval(parametersAsString[1]))
+        return globalEval(variableName + '=' + 'Math.floor(Math.random() *' + variable + ')')
     }
 }
