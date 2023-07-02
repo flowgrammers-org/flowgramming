@@ -1,6 +1,6 @@
 /*
  # *************************************************************************************
- # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
+ # Copyright (C) 2023 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
  # Adithi Narayan, Aishwarya B, Adithi Giridharan.
  # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
  #
@@ -29,7 +29,7 @@ const strokeHigh = {
 }
 let visitedItems = new Set()
 const stringManipulationRegex = /(([a-zA-Z]+)|([a-zA-Z]+\.[a-zA-Z]+))\(([a-zA-Z0-9]|,|]|\[|')+\)/
-const mathFunctionRegex = /\b(abs|pow|ln|sqrt|log|sgn|ceil|floor|round|sin|cos|tan|arcsin|arccos|arctan)\b/
+const mathFunctionRegex = /\b(abs|pow|ln|sqrt|log|sgn|ceil|floor|round|sin|cos|tan|arcsin|arccos|arctan|random)\b/
 // The HashMap that sets the delay in milliseconds after processing each block
 // in the flowgram. However, in case the speed is not stored in localStorage,
 // we set the speed to 'medium' in the dropdown in index.html. To support that,
@@ -195,7 +195,7 @@ async function delayLoop(currentElement) {
                     const formalParamKeys = contexts[functionName].parameters
                     const actualParamKeys = functionParams.split(',')
                     for (let idx = 0; idx < paramsLength; ++idx) {
-                        if(actualParamKeys[idx].includes('[')) {
+                        if (actualParamKeys[idx].includes('[')) {
                             actualToFormalParamsMap.set(
                                 formalParamKeys[idx].variableName,
                                 handleArrayAssignment(actualParamKeys[idx])
@@ -1373,5 +1373,11 @@ function mathFunctions(variableName, userInput) {
         } else {
             return globalEval(variableName + '=' + 'Math.round(' + a + ')')
         }
+    }
+    if (userInput.includes('random')) {
+        let variable = parseFloat(globalEval(parametersAsString[1]))
+        return globalEval(
+            variableName + '=' + 'Math.round(Math.random() *' + variable + ')'
+        )
     }
 }
