@@ -1,6 +1,6 @@
 /*
  # *************************************************************************************
- # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
+ # Copyright (C) 2023 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
  # Adithi Narayan, Aishwarya B, Adithi Giridharan.
  # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
  #
