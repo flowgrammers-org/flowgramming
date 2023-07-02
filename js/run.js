@@ -19,7 +19,7 @@
  # *************************************************************************************
  */
 
- let strokeLow = {
+let strokeLow = {
     width: 0,
     color: 'black',
 }
@@ -195,7 +195,7 @@ async function delayLoop(currentElement) {
                     const formalParamKeys = contexts[functionName].parameters
                     const actualParamKeys = functionParams.split(',')
                     for (let idx = 0; idx < paramsLength; ++idx) {
-                        if(actualParamKeys[idx].includes('[')) {
+                        if (actualParamKeys[idx].includes('[')) {
                             actualToFormalParamsMap.set(
                                 formalParamKeys[idx].variableName,
                                 handleArrayAssignment(actualParamKeys[idx])
@@ -1376,6 +1376,8 @@ function mathFunctions(variableName, userInput) {
     }
     if (userInput.includes('random')) {
         let variable = parseFloat(globalEval(parametersAsString[1]))
-        return globalEval(variableName + '=' + 'Math.floor(Math.random() *' + variable + ')')
+        return globalEval(
+            variableName + '=' + 'Math.round(Math.random() *' + variable + ')'
+        )
     }
 }
