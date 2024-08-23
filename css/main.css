@@ -87,19 +87,44 @@ body {
     cursor: pointer !important;
 }
 
-.chatcol {
-    width: 35%;
+.codeBotSection {
     float: right;
-    height: 60%;
+    height: 100%;
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chatcol {
+    width: 100%;
     background-color: #343a40;
     border-top: 2px solid white;
+    resize: vertical;
+    overflow: auto;
+    min-height: 45%;
+    max-height: 90%;
 }
 
 .variable-watch {
-    width: 35%;
-    float: right;
-    height: 40%;
+    flex-grow: 1;
+    width: 100%;
     overflow: scroll;
+    min-height: 10%;
+}
+
+.variable-watch thead {
+    background-color: none;
+}
+
+/* Add a resize handle */
+.chatcol::after {
+    content: '';
+    display: block;
+    height: 10px;
+    background: #666;
+    cursor: row-resize;
+    margin-top: -5px;
 }
 
 #arrayTypeButton {
@@ -151,9 +176,15 @@ button.close {
     }
 }
 
-.chatcol h6 {
+.chatHeader h6 {
     padding: 6px;
     color: white;
+}
+
+.chatHeader {
+    height: fit-content;
+    background-color: #343a40;
+    border-top: white solid 2px;
 }
 
 .chat-nav {
