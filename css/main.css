@@ -103,7 +103,7 @@ body {
     resize: vertical;
     overflow: auto;
     min-height: 45%;
-    max-height: 90%;
+    max-height: 65%;
 }
 
 .variable-watch {
@@ -111,6 +111,7 @@ body {
     width: 100%;
     overflow: scroll;
     min-height: 10%;
+    max-height: 45%;
 }
 
 .variable-watch thead {
