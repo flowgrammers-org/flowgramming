@@ -30,9 +30,13 @@
     /*overflow-y: scroll;*/
     /*overflow-x: scroll;*/
 }
+.chat-fixed {
+    border-top: 2px solid white;
+    background-color: #f2f5f8;
+}
 .chat .chat-history {
     padding: 30px 30px 20px;
-    border-bottom: 2px solid white;
+    /* border-bottom: 2px solid white; */
     /*overflow-y: scroll;*/
     /*height: 575px;*/
 }
@@ -52,6 +56,9 @@
     margin-bottom: 30px;
     width: 90%;
     position: relative;
+}
+.chat .chat-history ul {
+    word-wrap: break-word;
 }
 .chat .chat-history .message:after {
     bottom: 100%;
@@ -76,35 +83,43 @@
     border-bottom-color: #94c2ed;
     left: 93%;
 }
-.chat .chat-message {
-    padding: 30px;
+.chat-fixed .chat-message {
+    padding: 10px 30px;
+    display: flex;
 }
-.chat .chat-message textarea {
-    width: 100%;
+.chat-fixed .chat-message textarea {
+    width: 95%;
     border: none;
     padding: 10px 20px;
     font: 14px/22px 'Lato', Arial, sans-serif;
-    margin-bottom: 10px;
     border-radius: 5px;
-    resize: none;
+    border: 1px solid black;
+    resize: vertical;
+    min-height: 40px;
+    max-height: 80px;
+    margin: 10px 5px;
 }
-.chat .chat-message .fa-file-o,
-.chat .chat-message .fa-file-image-o {
+.chat-fixed .chat-message .fa-file-o,
+.chat-fixed .chat-message .fa-file-image-o {
     font-size: 16px;
     color: gray;
     cursor: pointer;
 }
-.chat .chat-message button {
-    float: right;
-    color: #94c2ed;
+.chat-fixed .chat-message button {
     font-size: 16px;
     text-transform: uppercase;
     border: none;
     cursor: pointer;
     font-weight: bold;
-    background: #f2f5f8;
+    background-color: black;
+    padding: 7px 6px 7px 9px;
+    border-radius: 50%;
+    align-items: center;
+    height: fit-content;
+    width: fit-content;
+    margin: 10px 5px;
 }
-.chat .chat-message button:hover {
+.chat-fixed .chat-message button:hover {
     color: #75b1e8;
 }
 .online,

@@ -425,18 +425,33 @@
                             <ul style="list-style-type: none"></ul>
                         </div>
                         <!-- end chat-history -->
-                        <div class="chat-message clearfix">
-                            <textarea
-                                name="message-to-send"
-                                id="message-to-send"
-                                placeholder="Type your message"
-                                rows="2"
-                            ></textarea>
-                            <button id="chatsend">Send</button>
-                        </div>
-                        <!-- end chat-message -->
                     </div>
                     <!-- end chat -->
+                </div>
+                <div class="chat-fixed">
+                    <div class="chat-message clearfix">
+                        <textarea
+                            name="message-to-send"
+                            id="message-to-send"
+                            placeholder="Type your message..."
+                            class="adaptive-textarea"
+                            rows="1"
+                        ></textarea>
+                        <button id="chatsend">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24px"
+                                viewBox="0 -960 960 960"
+                                width="24px"
+                                fill="white"
+                            >
+                                <path
+                                    d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- end chat-message -->
                 </div>
                 <div class="variable-watch">
                     <table class="table text-center table-sm">
@@ -659,6 +674,21 @@
                 'You are about to refresh the page. All your changes will be lost!',
                 callback
             )
+        })
+        $('.adaptive-textarea').on('input', function () {
+            $(this).css('height', 'auto')
+            $(this).css(
+                'height',
+                Math.min(
+                    this.scrollHeight,
+                    6 * parseFloat($(this).css('font-size'))
+                ) + 'px'
+            )
+        })
+        $('#chatsend').click(function () {
+            $('.adaptive-textarea').each(function () {
+                $(this).css('height', 'auto')
+            })
         })
         // Let's get hold of the dropdown that controls the speed of flowgram execution
         const speedOfExecutionDropdown = $('#speedOfExecution')

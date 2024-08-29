@@ -25,7 +25,9 @@ $textarea = $('#message-to-send')
 $chatHistoryList = $chatHistory.find('ul')
 
 function scrollToBottom() {
-    document.getElementById('message-to-send').scrollIntoView()
+    document
+        .querySelector('.chat-history')
+        .scrollIntoView({ behavior: 'smooth', block: 'end' })
 }
 
 function renderUser() {

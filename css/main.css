@@ -102,16 +102,16 @@ body {
     border-top: 2px solid white;
     resize: vertical;
     overflow: auto;
-    min-height: 45%;
-    max-height: 65%;
+    min-height: 25%;
+    max-height: 55%;
 }
 
 .variable-watch {
     flex-grow: 1;
     width: 100%;
+    min-height: 20%;
+    max-height: 75%;
     overflow: scroll;
-    min-height: 10%;
-    max-height: 45%;
 }
 
 .variable-watch thead {
