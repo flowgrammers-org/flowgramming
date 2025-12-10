@@ -1,6 +1,7 @@
 /*
  # *************************************************************************************
- # Copyright (C) 2021 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana
+ # Copyright (C) 2025 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
+ # Adithi Narayan, Aishwarya B, Adithi Giridharan.
  # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
  #
  # Flowgramming is free software: you can redistribute it and/or modify
@@ -42,7 +43,7 @@ let indexVendor = [
     'js/vendor/backbone.js',
     'js/vendor/cycle.js',
     'js/vendor/joint.js',
-    'js/vendor/require.js'
+    'js/vendor/require.js',
 ]
 
 let functionVendor = [

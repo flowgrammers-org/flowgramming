@@ -1,6 +1,6 @@
 /*
  # *************************************************************************************
- # Copyright (C) 2023 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
+ # Copyright (C) 2025 Ritwik Murali, Harshit Agarwal, Rajkumar S, Gali Mary Sanjana,
  # Adithi Narayan, Aishwarya B, Adithi Giridharan.
  # This file is part of Flowgramming <https://github.com/flowgrammers-org/flowgramming>.
  #
@@ -186,6 +186,15 @@ async function delayLoop(currentElement) {
 
                 let actualToFormalParamsMap = new Map()
                 let prevVariablesCopy
+                if (!contexts[functionName]) {
+                    if (functionName) {
+                        throw new Error(
+                            `${functionName} is not defined. Define the function before calling it`
+                        )
+                    } else {
+                        throw new Error('Enter a function name.')
+                    }
+                }
                 if (functionParams) {
                     prevVariablesCopy = {
                         ...variables,
